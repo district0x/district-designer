@@ -1,0 +1,217 @@
+links:
+  The FC4 Framework: https://fundingcircle.github.io/fc4-framework/
+  Structurizr Express: https://structurizr.com/express
+---
+
+elements:
+- type: Person
+  name: District Creator
+  description: A user creating and managing a district.
+  tags: ''
+  position: '1625,50'
+- type: Software System
+  name: District Designer
+  description: No-code platform for creating full-featured blockchain applications.
+  tags: Internal
+  containers:
+  - type: Container
+    name: Database
+    description: Stores all data in indexed format
+    technology: Datomic Cloud
+    tags: Database
+    position: '1000,1200'
+  - type: Container
+    name: Decentralised Event Store
+    description: Serverless, distributed, peer-to-peer database. Stores all application events, that don't need to be pushed into the blockchain.
+    technology: OrbitDB IPFS
+    tags: Database
+    position: '200,500'
+  - type: Container
+    name: District Designer Client Side
+    description: Web UI for creating, managing and using a district
+    technology: ClojureScript
+    tags: WebBrowser
+    position: '1800,700'
+  - type: Container
+    name: District Designer Server
+    description: Serves user requests by fetching data from the database
+    technology: ClojureScript Node.js
+    tags: ''
+    position: '1800,1200'
+  - type: Container
+    name: District Designer Syncer
+    description: Validates data coming from decentralised sources, then passes them into the database in the correct format
+    technology: ClojureScript Node.js
+    tags: ''
+    position: '200,1200'
+  - type: Container
+    name: Smart Contracts
+    description: Handle all funds related and other security-critical actions in District Designer system.
+    technology: Solidity Ethereum
+    tags: ''
+    position: '700,700'
+- type: Person
+  name: District User
+  description: A user using a district.
+  tags: ''
+  position: '2025,50'
+- type: Software System
+  name: Ethereum Blockchain
+  description: Distributed computing platform and operating system featuring smart contract functionality.
+  tags: External
+  position: '700,100'
+- type: Software System
+  name: IPFS
+  description: Protocol and peer-to-peer network for storing and sharing data in a distributed file system.
+  tags: External
+  position: '200,100'
+
+relationships:
+- source: Decentralised Event Store
+  description: pushes events
+  technology: OrbitDB
+  destination: District Designer Syncer
+  tags: ''
+- source: District Creator
+  description: creates district
+  technology: Browser
+  destination: District Designer Client Side
+  tags: ''
+- source: District Designer Client Side
+  description: requests data
+  technology: Datalog
+  destination: District Designer Server
+  tags: ''
+- source: District Designer Client Side
+  description: pushes and receives events
+  technology: Datalog
+  destination: Decentralised Event Store
+  tags: ''
+  vertices:
+  - '1400,650'
+- source: District Designer Client Side
+  description: makes transactions
+  technology: MetaMask/Status/...
+  destination: Smart Contracts
+  tags: ''
+- source: District Designer Server
+  description: requests data
+  technology: Datomic REST API
+  destination: Database
+  tags: ''
+- source: District Designer Syncer
+  description: validates and formatts data
+  technology: Datomic REST API
+  destination: Database
+  tags: ''
+- source: District User
+  description: uses district
+  technology: Browser
+  destination: District Designer Client Side
+  tags: ''
+- source: Ethereum Blockchain
+  description: is hosting
+  technology: ''
+  destination: Smart Contracts
+  tags: ''
+- source: IPFS
+  description: is hosting
+  technology: ''
+  destination: Decentralised Event Store
+  tags: ''
+- source: Smart Contracts
+  description: pushes events
+  technology: Web3.js
+  destination: District Designer Syncer
+  tags: ''
+
+styles:
+- type: element
+  tag: Container
+  width: ''
+  height: ''
+  background: '#1168bd'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: ''
+  metadata: ''
+  description: ''
+- type: element
+  tag: Database
+  width: ''
+  height: ''
+  background: ''
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: Cylinder
+  metadata: ''
+  description: ''
+- type: element
+  tag: Element
+  width: ''
+  height: ''
+  background: ''
+  color: '#ffffff'
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: RoundedBox
+  metadata: ''
+  description: ''
+- type: element
+  tag: External
+  width: ''
+  height: ''
+  background: '#999999'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: ''
+  metadata: ''
+  description: ''
+- type: element
+  tag: Person
+  width: ''
+  height: ''
+  background: '#08427b'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: Person
+  metadata: ''
+  description: ''
+- type: element
+  tag: Software System
+  width: ''
+  height: ''
+  background: '#1168bd'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: ''
+  metadata: ''
+  description: ''
+- type: element
+  tag: WebBrowser
+  width: ''
+  height: ''
+  background: ''
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: WebBrowser
+  metadata: ''
+  description: ''
+type: Container
+scope: District Designer
+description: System Context diagram for District Designer
+
+size: A5_Landscape

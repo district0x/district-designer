@@ -1,0 +1,64 @@
+link__for_use_with: https://structurizr.com/express
+link__diagram_scheme_description: https://c4model.com/
+---
+type: System Context
+scope: District Designer
+description: System Context diagram for District Designer
+
+elements:
+- type: Person
+  name: User
+  description: A user creating or using a district.
+  position: '1025,50'
+- type: Software System
+  name: District Designer
+  description: No-code platform for creating full-featured blockchain applications.
+  position: '1000,1000'
+- type: Software System
+  name: Ethereum Blockchain
+  description: Distributed computing platform and operating system featuring smart contract functionality.
+  position: '1800,600'
+  tags: External
+- type: Software System
+  name: IPFS
+  description: Protocol and peer-to-peer network for storing and sharing data in a distributed file system.
+  position: '300,600'
+  tags: External
+
+relationships:
+- source: User
+  description: creates or uses district
+  destination: District Designer
+  technology: Browser
+- source: User
+  description: Submits transactions
+  destination: Ethereum Blockchain
+  technology: MetaMask
+- source: User
+  description: Uploads files and logs events
+  destination: IPFS
+  technology: Browser
+- source: Ethereum Blockchain
+  description: Provides smart-contracts and emits events
+  destination: District Designer
+- source: IPFS
+  description: Provides files and emits events
+  destination: District Designer
+
+styles:
+- type: element
+  tag: Element
+  color: '#ffffff'
+  shape: RoundedBox
+- type: element
+  tag: Person
+  background: '#08427b'
+  shape: Person
+- type: element
+  tag: External
+  background: '#999999'  
+- type: element
+  tag: Software System
+  background: '#1168bd'
+
+size: A5_Landscape
