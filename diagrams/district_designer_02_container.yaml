@@ -33,7 +33,7 @@ elements:
     tags: WebBrowser
     position: '1800,700'
   - type: Container
-    name: District Designer Server
+    name: District Designer API
     description: Serves user requests by fetching data from the database
     technology: ClojureScript Node.js
     tags: ''
@@ -80,7 +80,7 @@ relationships:
 - source: District Designer Client Side
   description: requests data
   technology: Datalog
-  destination: District Designer Server
+  destination: District Designer API
   tags: ''
 - source: District Designer Client Side
   description: pushes and receives events
@@ -94,7 +94,7 @@ relationships:
   technology: MetaMask/Status/...
   destination: Smart Contracts
   tags: ''
-- source: District Designer Server
+- source: District Designer API
   description: requests data
   technology: Datomic REST API
   destination: Database
