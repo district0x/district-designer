@@ -1,265 +1,199 @@
+links:
+  The FC4 Framework: https://fundingcircle.github.io/fc4-framework/
+  Structurizr Express: https://structurizr.com/express
 ---
+
 elements:
-  - type: 'Software System'
-    name: 'Decentralised Event Store'
-    description: 'Serverless, distributed, peer-to-peer database. Stores all application events, that do not need to be pushed into the blockchain.'
-    tags: External
-    containers:
-      - type: Container
-        name: 'Access Controller'
-        description: 'Verifies Ethereum signature for an event.'
-        technology: ""
-        tags: External
-        position: '2605,355'
-      - type: Container
-        name: OrbitDB
-        description: 'Stores all application events, that do not need to be pushed into the blockchain.'
-        technology: ""
-        tags: Database
-        position: '2605,815'
-  - type: 'Software System'
-    name: 'District Designer'
-    description: 'No-code platform for creating full-featured blockchain applications.'
-    tags: Internal
-    containers:
-      - type: Container
-        name: Database
-        description: 'Stores all data in indexed format.'
-        technology: 'Datomic Cloud'
-        tags: Database
-        position: '1215,1655'
-      - type: Container
-        name: 'District Designer Client Side'
-        description: 'Web UI for creating, managing and using a district'
-        technology: ClojureScript
-        tags: WebBrowser
-        position: '70,550'
-      - type: Container
-        name: 'District Designer Server Side'
-        description: ""
-        technology: 'ClojureScript Node.js'
-        tags: ""
-        components:
-          - type: Component
-            name: 'Datalog Endpoint'
-            description: 'Serves datalog queries'
-            technology: 'ClojureScript Node.js'
-            tags: ""
-            position: '625,1175'
-          - type: Component
-            name: 'Event Processor'
-            description: 'Validates and processes event data for database insertion'
-            technology: 'ClojureScript Node.js'
-            tags: ""
-            position: '1060,680'
-          - type: Component
-            name: 'Event Push Endpoint'
-            description: 'Endpoint for pushing events into the event store'
-            technology: 'ClojureScript Node.js'
-            tags: ""
-            position: '1060,195'
-          - type: Component
-            name: Listeners
-            description: 'Listens to event store and smart-contracts'
-            technology: 'ClojureScript Web3.js OrbitDB'
-            tags: ""
-            position: '1870,975'
-  - type: 'Software System'
-    name: Ethereum
-    description: 'Distributed computing platform and operating system featuring smart contract functionality.'
-    tags: External
-    containers:
-      - type: Container
-        name: 'Smart Contracts'
-        description: 'Handles all funds related and other security-critical actions in District Designer system.'
-        technology: ""
-        tags: External
-        position: '2610,1255'
-  - type: 'Software System'
-    name: 'Other System'
-    description: 'Different System leveraging District Designer data and smart-contracts'
-    tags: Other
-    position: '2945,1765'
+- type: Person
+  name: District Creator
+  description: A user creating and managing a district.
+  tags: ''
+  position: '1625,50'
+- type: Software System
+  name: District Designer
+  description: No-code platform for creating full-featured blockchain applications.
+  tags: Internal
+  containers:
+  - type: Container
+    name: Database
+    description: Stores all data in indexed format
+    technology: Datomic Cloud
+    tags: Database
+    position: '400,1200'
+  - type: Container
+    name: Decentralised Event Store
+    description: Serverless, distributed, peer-to-peer database. Stores all application events, that don't need to be pushed into the blockchain.
+    technology: OrbitDB IPFS
+    tags: Database
+    position: '200,700'
+  - type: Container
+    name: District Designer Client Side
+    description: Web UI for creating, managing and using a district
+    technology: ClojureScript
+    tags: WebBrowser
+    position: '1800,700'
+  - type: Container
+    name: District Designer Server Side
+    description: Listens to Event Store and Smart Contracts. Validates incoming data. Serves queries from client. Inserts data into event store and database.
+    technology: ClojureScript Node.js
+    tags: ''
+    position: '1400,1200'
+  - type: Container
+    name: Smart Contracts
+    description: Handle all funds related and other security-critical actions in District Designer system.
+    technology: Solidity Ethereum
+    tags: ''
+    position: '700,500'
+- type: Person
+  name: District User
+  description: A user using a district.
+  tags: ''
+  position: '2025,50'
+- type: Software System
+  name: Ethereum Blockchain
+  description: Distributed computing platform and operating system featuring smart contract functionality.
+  tags: External
+  position: '700,100'
+- type: Software System
+  name: IPFS
+  description: Protocol and peer-to-peer network for storing and sharing data in a distributed file system.
+  tags: External
+  position: '200,100'
+
 relationships:
-  - source: 'Access Controller'
-    description: 'pushes valid events'
-    technology: OrbitDB
-    destination: OrbitDB
-    tags: ""
-  - source: 'Datalog Endpoint'
-    description: 'fetches data'
-    technology: 'Datomic REST API'
-    destination: Database
-    tags: ""
-  - source: 'District Designer Client Side'
-    description: 'makes datalog queries'
-    technology: Datalog
-    destination: 'Datalog Endpoint'
-    tags: ""
-  - source: 'District Designer Client Side'
-    description: 'pushes events signed with Ethereum wallet and receives responses'
-    technology: 'MetaMask, HTTP'
-    destination: 'Event Push Endpoint'
-    tags: ""
-  - source: 'District Designer Client Side'
-    description: 'makes transactions'
-    technology: MetaMask/Status/...
-    destination: 'Smart Contracts'
-    tags: ""
-    vertices:
-      - '1825,1325'
-  - source: 'Event Processor'
-    description: 'inserts data'
-    technology: 'Datomic REST API'
-    destination: Database
-    tags: ""
-  - source: 'Event Push Endpoint'
-    description: 'passes event and receives response'
-    technology: ClojureScript
-    destination: 'Event Processor'
-    tags: ""
-  - source: 'Event Push Endpoint'
-    description: 'passes only valid events'
-    technology: ClojureScript
-    destination: 'Access Controller'
-    tags: ""
-  - source: Listeners
-    description: 'passes ordered events'
-    technology: ClojureScript
-    destination: 'Event Processor'
-    tags: ""
-  - source: OrbitDB
-    description: 'pushes events'
-    technology: OrbitDB
-    destination: Listeners
-    tags: ""
-  - source: 'Other System'
-    description: ""
-    technology: ""
-    destination: 'Smart Contracts'
-    tags: ""
-  - source: 'Other System'
-    description: ""
-    technology: ""
-    destination: 'Smart Contracts'
-    tags: ""
-  - source: 'Other System'
-    description: ""
-    technology: ""
-    destination: OrbitDB
-    tags: ""
-    vertices:
-      - '3150,965'
-  - source: 'Other System'
-    description: ""
-    technology: ""
-    destination: 'Access Controller'
-    tags: ""
-    vertices:
-      - '3310,595'
-  - source: 'Smart Contracts'
-    description: 'pushes events'
-    technology: Web3.js
-    destination: Listeners
-    tags: ""
+- source: Decentralised Event Store
+  description: pushes and receives events
+  technology: OrbitDB
+  destination: District Designer Server Side
+  tags: ''
+- source: District Creator
+  description: creates district
+  technology: Browser
+  destination: District Designer Client Side
+  tags: ''
+- source: District Designer Client Side
+  description: makes API calls
+  technology: HTTPS
+  destination: District Designer Server Side
+  tags: ''
+- source: District Designer Client Side
+  description: makes transactions
+  technology: MetaMask/Status/...
+  destination: Smart Contracts
+  tags: ''
+- source: District Designer Server Side
+  description: fetches and inserts data
+  technology: Datomic REST API
+  destination: Database
+  tags: ''
+- source: District User
+  description: uses district
+  technology: Browser
+  destination: District Designer Client Side
+  tags: ''
+- source: Ethereum Blockchain
+  description: is hosting
+  technology: ''
+  destination: Smart Contracts
+  tags: ''
+- source: IPFS
+  description: is hosting
+  technology: ''
+  destination: Decentralised Event Store
+  tags: ''
+- source: Smart Contracts
+  description: pushes events
+  technology: Web3.js
+  destination: District Designer Server Side
+  tags: ''
+
 styles:
-  - type: element
-    tag: Component
-    width: ""
-    height: ""
-    background: '#85bbf0'
-    color: '#000000'
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: ""
-    metadata: ""
-    description: ""
-  - type: element
-    tag: Container
-    width: ""
-    height: ""
-    background: '#438dd5'
-    color: ""
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: ""
-    metadata: ""
-    description: ""
-  - type: element
-    tag: Database
-    width: ""
-    height: ""
-    background: ""
-    color: ""
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: Cylinder
-    metadata: ""
-    description: ""
-  - type: element
-    tag: Element
-    width: ""
-    height: ""
-    background: ""
-    color: '#ffffff'
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: RoundedBox
-    metadata: ""
-    description: ""
-  - type: element
-    tag: Other
-    width: ""
-    height: ""
-    background: '#999999'
-    color: ""
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: ""
-    metadata: ""
-    description: ""
-  - type: element
-    tag: Person
-    width: ""
-    height: ""
-    background: '#08427b'
-    color: ""
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: Person
-    metadata: ""
-    description: ""
-  - type: element
-    tag: 'Software System'
-    width: ""
-    height: ""
-    background: '#1168bd'
-    color: ""
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: ""
-    metadata: ""
-    description: ""
-  - type: element
-    tag: WebBrowser
-    width: ""
-    height: ""
-    background: ""
-    color: ""
-    border: ""
-    opacity: ""
-    fontSize: ""
-    shape: WebBrowser
-    metadata: ""
-    description: ""
-type: Component
-scope: 'District Designer Server Side'
-description: 'The component diagram for the District Designer Server Side.'
-size: Slide_16_10
+- type: element
+  tag: Container
+  width: ''
+  height: ''
+  background: '#1168bd'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: ''
+  metadata: ''
+  description: ''
+- type: element
+  tag: Database
+  width: ''
+  height: ''
+  background: ''
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: Cylinder
+  metadata: ''
+  description: ''
+- type: element
+  tag: Element
+  width: ''
+  height: ''
+  background: ''
+  color: '#ffffff'
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: RoundedBox
+  metadata: ''
+  description: ''
+- type: element
+  tag: External
+  width: ''
+  height: ''
+  background: '#999999'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: ''
+  metadata: ''
+  description: ''
+- type: element
+  tag: Person
+  width: ''
+  height: ''
+  background: '#08427b'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: Person
+  metadata: ''
+  description: ''
+- type: element
+  tag: Software System
+  width: ''
+  height: ''
+  background: '#1168bd'
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: ''
+  metadata: ''
+  description: ''
+- type: element
+  tag: WebBrowser
+  width: ''
+  height: ''
+  background: ''
+  color: ''
+  border: ''
+  opacity: ''
+  fontSize: ''
+  shape: WebBrowser
+  metadata: ''
+  description: ''
+type: Container
+scope: District Designer
+description: System Context diagram for District Designer
+
+size: A5_Landscape
