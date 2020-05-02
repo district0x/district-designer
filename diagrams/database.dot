@@ -1,0 +1,153 @@
+digraph G {
+  fontname = "Bitstream Vera Sans"
+  fontsize = 8
+  dpi = 300
+
+  node [
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    shape = "record"
+  ]
+
+  edge [
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    arrowhead = "open"
+    labelangle = 45
+    labeldistance = 1.1
+  ]
+DistrictDesigner [label="{DistrictDesigner|admins: String[1..n]\l}";]
+Network [label="{\<\<enum\>\>\nNetwork|MAINNET\lRINKEBY\l}";]
+Offer [label="{Offer|uuid: ID\loffer-config: OfferConfig\lfield-uuid\ltrades: Trade[0..n]\lcreated-on: DateTime\lcreator: User\l}";]
+TCR [label="{TCR|uuid: ID\ltype: TCRType\lvoting-token-contract: TokenContract\lreg-entry-representation: TCRRegEntryRepresentation\lreg-entry-representation-token-contract: TokenContract\lreg-entry-field-configs: FieldConfig[1..n]\lreg-entries: TCRRegEntry[0..n]\lparam-changes: TCRParamChange[0..n]\lpermission-submit-reg-entry: PermissionUserRoles\lpermission-submit-param-change: PermissionUserRoles\lcreated-on: DateTime\lglobal-enabled?: Boolean\lglobal-logo: File\lglobal-description: String\lreg-entry-deposit: Integer\lreg-entry-challenge-period-duration: Integer\lreg-entry-vote-commit-period-duration: Integer\lreg-entry-vote-reveal-period-duration: Integer\lreg-entry-stake-dispensation: Integer\lreg-entry-vote-quorum: Integer\lparam-change-deposit: Integer\lparam-change-challenge-period-duration: Integer\lparam-change-vote-commit-period-duration: Integer\lparam-change-vote-reveal-period-duration: Integer\lparam-change-stake-dispensation: Integer\lparam-change-vote-quorum: Integer\l}";]
+OfferConfig [label="{OfferConfig|uuid: ID\lname: String\loffered-value-type: OfferValueType\lrequested-value-type: OfferValueType\loffered-value-tokens: TokenContract[0..n]\lrequested-value-tokens: TokenContract[0..n]\loffer-type: OfferType\loffer-field-configs: FieldConfig[1..n]\lresponse-field-configs: FieldConfig[0..n]\ldispute-field-configs: FieldConfig[0..n]\lfeedback-field-configs: FieldConfig[0..n]\lfee-create-offer: Integer\lfee-offer-response: Integer\lpermission-create-offer: PermissionUserRoles\lpermission-offer-response: PermissionUserRoles\lpermission-resolve-dispute: PermissionUserRoles\lglobal-enabled?: Boolean\lglobal-logo: File\lglobal-description: String\luser-ratings: OfferConfigUserRating[0..n]\l}";]
+TCRRegEntryRepresentation [label="{\<\<enum\>\>\nTCRRegEntryRepresentation|ERC721\lERC1155\lBASIC_SMART_CONTRACT\l}";]
+TokenContractType [label="{\<\<enum\>\>\nTokenContractType|ERC20\lERC721\lERC1155\l}";]
+User [label="{User|address: String\lglobal-rating: Float\lglobal-ratings-count: Integer\lfield-uuid\l}";]
+Module [label="{Module|id: String\lname: String\ladmin: String\ldescription: String\lpreview-images: File[1..n]\l}";]
+Theme [label="{Theme|id: String\lname: String\ldescription: String\ladmin: String\lpreview-images: File[1..n]\lfiles: File[1..n]\l}";]
+Message [label="{Message|uuid: ID\lsender: User\lreceiver: User\ltype: String\ltext: String\lencrypted?: Boolean\lcreated-on: DateTime\l}";]
+District [label="{District|uuid: ID\lname: String\lsubdomain: String\ltitle: String\ldescription: String\llogo: File\lcover-image: File\lfavicon: File\lga-tracking-id: String\lactive?: Boolean\lcreated-on: DateTime\lupdated-on: DateTime\ladmin: String\ltreasury: String\luser-roles: UserRole[1..n]\lpermissions-user-roles\lfiles: File[0..n]\ltheme: Theme\ltheme-settings: String\lless-file: File\lcss-file: File\lmodules: Module[0..n]\lpages: UIComponent[1..n]\luser-profiles: UserProfile[0..n]\loffer-configs: OfferConfig[0..n]\l}";]
+UIComponent [label="{UIComponent|uuid: ID\lname: String\ltype: String\lchildren: UIComponent[0..n]\lsettings: String\l}";]
+OfferValueType [label="{\<\<enum\>\>\nOfferValueType|ERC20\lERC721\lERC1155\lDELIVERABLE\l}";]
+UserRole [label="{UserRole|uuid: ID\lname: String\laddresses: String[0..n]\l}";]
+UserProfile [label="{UserProfile|uuid: ID\lname: String\lfield-configs: FieldConfig[1..n]\lglobal-enabled?: Boolean\lglobal-logo: File\lglobal-description: String\l}";]
+NFTToken [label="{NFTToken|uuid: ID\lid: Integer\ltotal-supply: Integer\lfield-uuid\l}";]
+TCRVoteOption [label="{\<\<enum\>\>\nTCRVoteOption|VOTE_INCLUDE\lVOTE_EXCLUDE\lNO_VOTE\l}";]
+TCRType [label="{\<\<enum\>\>\nTCRType|PERMANENT_REG_ENTRIES\lIMPERMANENT_REG_ENTRIES\l}";]
+TokenContract [label="{TokenContract|address: String\lnetwork: Network\lname: String\lname: TokenContractType\lsymbol: String\ldecimals: Integer\lcontroller: String\limplementation: String\lmetadata-format: String\lmetadata-format-settings: String\ltotal-supply: Integer\labi: File\lnft-tokens: NFTToken[0..n]\l}";]
+File [label="{File|ipfs-hash: String\lname: String\ldirectory?: Boolean\lencrypted?: Boolean\ldecryptable-by: String\l}";]
+TradedValue [label="{TradedValue|token-contract: TokenContract\lamount: Integer\lnft-token: NFTToken\l}";]
+TCRRegEntry [label="{TCRRegEntry|uuid: ID\lfield-uuid\lchallenges: TCRChallenge[0..n]\lcreated-on: DateTime\l}";]
+TCRVote [label="{TCRVote|uuid: ID\lvoter: User\loption: TCRVoteOption\lamount: Integer\lcreated-on: DateTime\lrevealed-on: DateTime\lclaimed-reward-on: DateTime\lreclaimed-votes-on: DateTime\l}";]
+TCRChallenge [label="{TCRChallenge|uuid: ID\lchallenger: User\lindex: Integer\lcreated-on: DateTime\lchallenge-period-end: DateTime\lvote-commit-period-end: DateTime\lvote-reveal-period-end: DateTime\lvotes-include: Integer\lvotes-exclude: Integer\lvotes-total: Integer\lvotes: TCRVote[0..n]\lreward-pool: Integer\lreward-amount: Integer\lclaimed-reward-on: DateTime\lcomment: String\l}";]
+PermissionUserRoles [label="{PermissionUserRoles|uuid: ID\lpermission: Permission\luser-roles: UserRole[0..n]\l}";]
+TCRParamChange [label="{TCRParamChange|uuid: ID\lfield-uuid\ldb: String\lkey: String\lvalue: Integer\lprevious-value: Integer\lcreated-on: DateTime\lapplied-on: DateTime\lchallenges: TCRChallenge[0..n]\l}";]
+Permission [label="{Permission|uuid: ID\lname: String\ldescription: String\l}";]
+OfferConfigUserRating [label="{OfferConfigUserRating|uuid: ID\luser: User\lrating: Float\lratings-count: Integer\l}";]
+Trade [label="{Trade|uuid: ID\loffer: Offer\lrespondent: User\lcreated-on: DateTime\lupdated-on: DateTime\lofferer-traded-values: TradedValue[0..n]\lofferer-traded-values-textual-repr: String\lofferer-traded-on: DateTime\lofferer-feedback-message: Message\lofferer-feedback-rating: Float\lrespondent-traded-values: TradedValue[0..n]\lrespondent-traded-values-textual-repr: String\lrespondent-traded-on: DateTime\lrespondent-feedback-message: Message\lrespondent-feedback-rating: Float\lcompleted-on: DateTime\lmessages: Message[0..n]\lraised-dispute-message: Message\lresolved-dispute-message: Message\l}";]
+FieldConfig [label="{FieldConfig|uuid: ID\lname: String\lnamespace: String\ltype: String\lsettings: String\l}";]
+OfferType [label="{\<\<enum\>\>\nOfferType|FIXED_PRICE\lDYNAMIC_PRICE\lHIGEST_BID_WINS\lOFFERER_PICKS_WINNER\lONE_OF_FIXED_PRICES\lALL_FIXED_PRICES\l}";]
+Offer -> OfferConfig [label=" offer-config";]
+Offer -> Trade [label=" trades
+0..n";]
+Offer -> User [label=" creator";]
+TCR -> TCRType [label=" type";]
+TCR -> TokenContract [label=" voting-token-contract";]
+TCR -> TCRRegEntryRepresentation [label=" reg-entry-representation";]
+TCR -> TokenContract [label=" reg-entry-representation-token-contract";]
+TCR -> FieldConfig [label=" reg-entry-field-configs
+1..n";]
+TCR -> TCRRegEntry [label=" reg-entries
+0..n";]
+TCR -> TCRParamChange [label=" param-changes
+0..n";]
+TCR -> PermissionUserRoles [label=" permission-submit-reg-entry";]
+TCR -> PermissionUserRoles [label=" permission-submit-param-change";]
+TCR -> File [label=" global-logo";]
+OfferConfig -> OfferValueType [label=" offered-value-type";]
+OfferConfig -> OfferValueType [label=" requested-value-type";]
+OfferConfig -> TokenContract [label=" offered-value-tokens
+0..n";]
+OfferConfig -> TokenContract [label=" requested-value-tokens
+0..n";]
+OfferConfig -> OfferType [label=" offer-type";]
+OfferConfig -> FieldConfig [label=" offer-field-configs
+1..n";]
+OfferConfig -> FieldConfig [label=" response-field-configs
+0..n";]
+OfferConfig -> FieldConfig [label=" dispute-field-configs
+0..n";]
+OfferConfig -> FieldConfig [label=" feedback-field-configs
+0..n";]
+OfferConfig -> PermissionUserRoles [label=" permission-create-offer";]
+OfferConfig -> PermissionUserRoles [label=" permission-offer-response";]
+OfferConfig -> PermissionUserRoles [label=" permission-resolve-dispute";]
+OfferConfig -> File [label=" global-logo";]
+OfferConfig -> OfferConfigUserRating [label=" user-ratings
+0..n";]
+Module -> File [label=" preview-images
+1..n";]
+Theme -> File [label=" preview-images
+1..n";]
+Theme -> File [label=" files
+1..n";]
+Message -> User [label=" sender";]
+Message -> User [label=" receiver";]
+District -> File [label=" logo";]
+District -> File [label=" cover-image";]
+District -> File [label=" favicon";]
+District -> UserRole [label=" user-roles
+1..n";]
+District -> File [label=" files
+0..n";]
+District -> Theme [label=" theme";]
+District -> File [label=" less-file";]
+District -> File [label=" css-file";]
+District -> Module [label=" modules
+0..n";]
+District -> UIComponent [label=" pages
+1..n";]
+District -> UserProfile [label=" user-profiles
+0..n";]
+District -> OfferConfig [label=" offer-configs
+0..n";]
+UIComponent -> UIComponent [label=" children
+0..n";]
+UserProfile -> FieldConfig [label=" field-configs
+1..n";]
+UserProfile -> File [label=" global-logo";]
+TokenContract -> Network [label=" network";]
+TokenContract -> TokenContractType [label=" name";]
+TokenContract -> File [label=" abi";]
+TokenContract -> NFTToken [label=" nft-tokens
+0..n";]
+TradedValue -> TokenContract [label=" token-contract";]
+TradedValue -> NFTToken [label=" nft-token";]
+TCRRegEntry -> TCRChallenge [label=" challenges
+0..n";]
+TCRVote -> User [label=" voter";]
+TCRVote -> TCRVoteOption [label=" option";]
+TCRChallenge -> User [label=" challenger";]
+TCRChallenge -> TCRVote [label=" votes
+0..n";]
+PermissionUserRoles -> Permission [label=" permission";]
+PermissionUserRoles -> UserRole [label=" user-roles
+0..n";]
+TCRParamChange -> TCRChallenge [label=" challenges
+0..n";]
+OfferConfigUserRating -> User [label=" user";]
+Trade -> Offer [label=" offer";]
+Trade -> User [label=" respondent";]
+Trade -> TradedValue [label=" offerer-traded-values
+0..n";]
+Trade -> Message [label=" offerer-feedback-message";]
+Trade -> TradedValue [label=" respondent-traded-values
+0..n";]
+Trade -> Message [label=" respondent-feedback-message";]
+Trade -> Message [label=" messages
+0..n";]
+Trade -> Message [label=" raised-dispute-message";]
+Trade -> Message [label=" resolved-dispute-message";]
+
+}
