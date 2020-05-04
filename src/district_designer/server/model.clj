@@ -545,10 +545,28 @@
                  [MAINNET RINKEBY]
 
                  ^:enum
-                 TokenContractType
+                 TokenType
                  [ERC20 ERC721 ERC1155]
 
 
+                 TokenFactory
+                 [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  address
+
+                  ^{:type Network}
+                  network
+
+                  ^{:type TokenType}
+                  token-type
+
+                  ^{:type String}
+                  implementation
+
+                  ^{:type File}
+                  abi]
+                 
+                 
                  TokenContract
                  [^{:type String
                     :datomic/unique :db.unique/identity}
@@ -560,8 +578,8 @@
                   ^{:type String}
                   name
 
-                  ^{:type TokenContractType}
-                  name
+                  ^{:type TokenType}
+                  type
 
                   ^{:type String}
                   symbol
