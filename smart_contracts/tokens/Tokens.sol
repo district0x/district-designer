@@ -4,9 +4,7 @@ import "../district_designer/DistrictDesigner.sol";
 
 contract Tokens {
 
-  DistrictDesigner _;
-
-  constructor() public {}
+  constructor(DistrictDesigner _districtDesigner) public {}
 
   event TokenCreatedEvent(
     bytes16 district,
