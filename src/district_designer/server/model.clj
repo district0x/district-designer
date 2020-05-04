@@ -9,8 +9,19 @@
 
                  DistrictDesigner
                  [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  address
+
+                  ^{:type UserRole
                     :cardinality [1 n]}
-                  admins]
+                  user-roles
+
+                  ^{:type UserRole}
+                  admin-user-role
+
+                  ^{:type PermissionUserRole
+                    :cardinality [1 n]}
+                  permissions-user-roles]
 
 
                  District
@@ -44,7 +55,7 @@
                   ga-tracking-id
 
                   ^{:type Boolean}
-                  active?
+                  emergency?
 
                   ^{:type DateTime}
                   created-on
@@ -53,14 +64,14 @@
                   updated-on
 
                   ^{:type String}
-                  admin
-
-                  ^{:type String}
                   treasury
 
                   ^{:type UserRole
                     :cardinality [1 n]}
                   user-roles
+
+                  ^{:type UserRole}
+                  admin-user-role
 
                   ^{:type PermissionUserRole
                     :cardinality [1 n]}
@@ -96,7 +107,11 @@
 
                   ^{:type OfferConfig
                     :cardinality [0 n]}
-                  offer-configs]
+                  offer-configs
+
+                  ^{:type TokenContract
+                    :cardinality [0 n]}
+                  token-contracts]
 
                  UserRole
                  [^{:type ID
@@ -112,9 +127,9 @@
 
 
                  Permission
-                 [^{:type ID
+                 [^{:type String
                     :datomic/unique :db.unique/identity}
-                  uuid
+                  id
 
                   ^{:type String}
                   name
@@ -124,11 +139,7 @@
 
 
                  PermissionUserRoles
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type Permission}
+                 [^{:type Permission}
                   permission
 
                   ^{:type UserRole
@@ -175,7 +186,10 @@
 
                   ^{:type File
                     :cardinality [1 n]}
-                  files]
+                  files
+
+                  ^{:type Integer}
+                  installs-count]
 
 
                  Module
@@ -187,6 +201,9 @@
                     :datomic/unique :db.unique/identity}
                   name
 
+                  ^{:type File}
+                  logo
+
                   ^{:type String}
                   admin
 
@@ -195,7 +212,36 @@
 
                   ^{:type File
                     :cardinality [1 n]}
-                  preview-images]
+                  preview-images
+
+                  ^{:type Integer}
+                  installs-count]
+
+
+                 Wizard
+                 [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  id
+
+                  ^{:type String
+                    :datomic/unique :db.unique/identity}
+                  name
+
+                  ^{:type File}
+                  logo
+
+                  ^{:type String}
+                  admin
+
+                  ^{:type String}
+                  description
+
+                  ^{:type File
+                    :cardinality [1 n]}
+                  preview-images
+
+                  ^{:type Integer}
+                  completions-count]
 
 
                  UIComponent
