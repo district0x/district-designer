@@ -3,31 +3,31 @@ pragma solidity >=0.4.22 <0.7.0;
 contract DistrictDesigner {
 
   event PermissionsInitializedEvent(
-    bytes16 indexed _district,
-    bytes32[] _permissionIds,
-    bytes16[][] _permissionUserRoles,
-    bytes16[] _userRoles,
-    address[][] _userRoleaddresses,
-    bytes16 _adminUserRole
+    bytes16 indexed district,
+    bytes32[] permissionIds,
+    bytes16[][] permissionUserRoles,
+    bytes16[] userRoles,
+    address[][] userRoleaddresses,
+    bytes16 adminUserRole
   );
 
   event PermissionsUpdatedEvent(
-    bytes16 indexed _district,
-    bytes16 _district,
-    bytes32[] _permissionIds,
-    bytes16[][] _userRoles
+    bytes16 indexed district,
+    bytes16 district,
+    bytes32[] permissionIds,
+    bytes16[][] userRoles
   );
 
   event UserRolesUpdatedEvent(
-    bytes16 indexed _district,
-    bytes16[] _userRoles,
-    address[][] _addresses,
-    bytes16[] _removeUserRoles
+    bytes16 indexed district,
+    bytes16[] userRoles,
+    address[][] addresses,
+    bytes16[] removeUserRoles
   );
 
   event DistrictsEmergencyEvent(
-    bytes16[] _districts,
-    bool _isEmergency
+    bytes16[] districts,
+    bool isEmergency
   );
 
   constructor(
@@ -106,9 +106,4 @@ contract DistrictDesigner {
   ) public
   {}
 
-  function setDistrictsEmergency(
-    bytes16[] _district,
-    address _isEmergency
-  ) public
-  {}
 }

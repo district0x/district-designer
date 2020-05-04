@@ -8,9 +8,24 @@ contract Tokens {
 
   constructor() public {}
 
-  event TokenCreatedEvent();
+  event TokenCreatedEvent(
+    bytes16 district,
+    address tokenAddress,
+    string implementation,
+    string tokenName,
+    string tokenSymbol,
+    uint8 decimalUnits,
+    address controller
+  );
 
   function fireTokenCreatedEvent(
+    bytes16 _district,
+    address _tokenAddress,
+    string _implementation,
+    string _tokenName,
+    string _tokenSymbol,
+    uint8 _decimalUnits,
+    address _controller
   ) public
   {}
 
