@@ -105,9 +105,9 @@
                     :cardinality [0 n]}
                   user-profiles
 
-                  ^{:type OfferConfig
+                  ^{:type OffersGroup
                     :cardinality [0 n]}
-                  offer-configs
+                  offers-groups
 
                   ^{:type TokenContract
                     :cardinality [0 n]}
@@ -321,15 +321,34 @@
 
 
                  ^:enum
-                 OfferValueType
-                 [ERC20 ERC721 ERC1155 DELIVERABLE]
+                 TradeAssetCategory
+                 [ETH ERC20 ERC721 ERC1155 DELIVERABLE]
 
                  ^:enum
                  OfferType
-                 [FIXED_PRICE DYNAMIC_PRICE HIGEST_BID_WINS OFFERER_PICKS_WINNER
-                  ONE_OF_FIXED_PRICES ALL_FIXED_PRICES]
+                 [FIXED_PRICE DYNAMIC_PRICE HIGEST_BID_WINS OFFERER_PICKS_WINNER MULTIPLE_FIXED_PRICES]
 
-                 OfferConfig
+                 TradeAsset
+                 [^{:type TokenContract}
+                  token-contract
+
+                  ^{:type TradeAssetCategory}
+                  category]
+
+
+                 OffersGroupFactory
+                 [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  address
+
+                  ^{:type Integer}
+                  version
+
+                  ^{:type File}
+                  abi]
+
+                 
+                 OffersGroup
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
@@ -337,19 +356,22 @@
                   ^{:type String}
                   name
 
-                  ^{:type OfferValueType}
-                  offered-value-type
+                  ^{:type String}
+                  address
 
-                  ^{:type OfferValueType}
-                  requested-value-type
+                  ^{:type Integer}
+                  version
 
-                  ^{:type TokenContract
+                  ^{:type File}
+                  abi
+
+                  ^{:type TradeAsset
                     :cardinality [0 n]}
-                  offered-value-tokens
+                  assets-to-offer
 
-                  ^{:type TokenContract
+                  ^{:type TradeAsset
                     :cardinality [0 n]}
-                  requested-value-tokens
+                  assets-to-request
 
                   ^{:type OfferType}
                   offer-type
@@ -361,14 +383,6 @@
                   ^{:type FieldConfig
                     :cardinality [0 n]}
                   response-field-configs
-
-                  ^{:type FieldConfig
-                    :cardinality [0 n]}
-                  dispute-field-configs
-
-                  ^{:type FieldConfig
-                    :cardinality [0 n]}
-                  feedback-field-configs
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint
@@ -386,9 +400,6 @@
                   ^{:type PermissionUserRoles}
                   permission-offer-response
 
-                  ^{:type PermissionUserRoles}
-                  permission-resolve-dispute
-
                   ^{:type Boolean}
                   global-enabled?
 
@@ -398,17 +409,17 @@
                   ^{:type String}
                   global-description
 
-                  ^{:type OfferConfigUserRating
+                  ^{:type OffersGroupUserRating
                     :cardinality [0 n]}
-                  user-ratings]
+                  user-ratings
+
+                  ^{:type String
+                    :cardinality [0 n]}
+                  dispute-resolvers]
 
 
-                 OfferConfigUserRating
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type User}
+                 OffersGroupUserRating
+                 [^{:type User}
                   user
 
                   ^{:type Float}
@@ -424,30 +435,49 @@
                     :datomic/unique :db.unique/identity}
                   uuid
 
-                  ^{:type OfferConfig}
-                  offer-config
+                  ^{:type OffersGroup}
+                  offers-group
 
                   ^{:type UnknownType}
                   field-uuid
 
-                  ^{:type Trade
+                  ^{:type OfferType}
+                  type
+
+                  ^{:type TradeValue}
+                  offered-value
+
+                  ^{:type TradeValue
                     :cardinality [0 n]}
-                  trades
+                  requested-values
+
+                  ^{:type TradeAuction}
+                  requested-auction
+
+                  ^{:type OfferResponse}
+                  auction-highest-bid-response
+
+                  ^{:type OfferResponse
+                    :cardinality [0 n]}
+                  offer-responses
 
                   ^{:type DateTime}
                   created-on
 
                   ^{:type User}
-                  creator]
+                  offerer
+
+                  ^{:type Boolean}
+                  closed?
+
+                  ^{:type Boolean}
+                  close-after-first-trade?]
 
 
-                 Trade
+                 OfferResponse
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
-
-                  ^{:type Offer}
-                  offer
 
                   ^{:type User}
                   respondent
@@ -458,62 +488,121 @@
                   ^{:type DateTime}
                   updated-on
 
-                  ^{:type TradedValue
-                    :cardinality [0 n]}
-                  offerer-traded-values
-
-                  ^{:type String}
-                  offerer-traded-values-textual-repr
+                  ^{:type DateTime}
+                  canceled-on
 
                   ^{:type DateTime}
-                  offerer-traded-on
+                  traded-on
 
-                  ^{:type Message}
-                  offerer-feedback-message
-
-                  ^{:type Float}
-                  offerer-feedback-rating
-
-                  ^{:type TradedValue
-                    :cardinality [0 n]}
-                  respondent-traded-values
-
-                  ^{:type String}
-                  respondent-traded-values-textual-repr
+                  ^{:type UnknownType}
+                  field-uuid
 
                   ^{:type DateTime}
-                  respondent-traded-on
+                  updated-on
 
-                  ^{:type Message}
-                  respondent-feedback-message
+                  ^{:type TradeValue}
+                  offerer-traded-value
 
-                  ^{:type Float}
-                  respondent-feedback-rating
+                  ^{:type Feedback}
+                  offerer-feedback
 
-                  ^{:type DateTime}
-                  completed-on
+                  ^{:type TradeValue}
+                  respondent-traded-value
+
+                  ^{:type Feedback}
+                  respondent-feedback
 
                   ^{:type Message
                     :cardinality [0 n]}
                   messages
 
-                  ^{:type Message}
-                  raised-dispute-message
+                  ^{:type String
+                    :cardinality [0 n]}
+                  dispute-resolvers
+
+                  ^{:type DateTime}
+                  dispute-raised-on
+
+                  ^{:type DateTime}
+                  dispute-resolved-on
+
+                  ^{:type String}
+                  dispute-resolved-by
 
                   ^{:type Message}
-                  resolved-dispute-message]
+                  dispute-raising-message
+
+                  ^{:type Message}
+                  dispute-resolving-message
+
+                  ^{:type TradeValue}
+                  dispute-resolved-value-for-offerer
+
+                  ^{:type TradeValue}
+                  dispute-resolved-value-for-respondent]
 
 
-                 TradedValue
-                 [^{:type TokenContract}
-                  token-contract
+                 TradeValue
+                 [^{:type TradeAsset}
+                  asset
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
                   amount
 
                   ^{:type NFTToken}
-                  nft-token]
+                  nft-token
+
+                  ^{:type String}
+                  textual-repr]
+
+
+                 TradeAuction
+                 [^{:type TradeAsset}
+                  asset
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  start-amount
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  end-amount
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  min-amount
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  min-bid-step
+
+                  ^{:type Integer}
+                  duration]
+
+
+                 Feedback
+                 [^{:type ID
+                    :datomic/unique :db.unique/identity}
+                  uuid
+
+                  ^{:type User}
+                  sender
+
+                  ^{:type User}
+                  receiver
+
+                  ^{:type Float}
+                  rating
+
+                  ^{:type DateTime}
+                  created-on
+
+                  ^{:type DateTime}
+                  updated-on
+
+                  ^{:type String}
+                  text]
 
 
                  Message
@@ -629,11 +718,11 @@
 
                  ^:enum
                  TCRType
-                 [PERMANENT_REG_ENTRIES IMPERMANENT_REG_ENTRIES]
+                 [INITIAL_CHALLENGE_PERIOD CHALLENGEABLE_ANYTIME]
 
                  ^:enum
-                 TCRRegEntryRepresentation
-                 [ERC721 ERC1155 BASIC_SMART_CONTRACT]
+                 TCRRegEntryRepresentationCategory
+                 [ERC721 ERC1155 NO_TOKEN]
                  
                  
                  TCR
@@ -647,8 +736,8 @@
                   ^{:type TokenContract}
                   voting-token-contract
 
-                  ^{:type TCRRegEntryRepresentation}
-                  reg-entry-representation
+                  ^{:type TCRRegEntryRepresentationCategory}
+                  reg-entry-representation-category
 
                   ^{:type TokenContract}
                   reg-entry-representation-token-contract
@@ -697,7 +786,7 @@
                   reg-entry-vote-reveal-period-duration
 
                   ^{:type Integer}
-                  reg-entry-stake-dispensation
+                  reg-entry-challenge-deposit-dispensation
 
                   ^{:type Integer}
                   reg-entry-vote-quorum
@@ -716,7 +805,7 @@
                   param-change-vote-reveal-period-duration
 
                   ^{:type Integer}
-                  param-change-stake-dispensation
+                  param-change-challenge-deposit-dispensation
 
                   ^{:type Integer}
                   param-change-vote-quorum]
