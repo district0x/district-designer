@@ -14,6 +14,7 @@ contract RegistryEntry is Challengable {
   ) public
   {}
 
-  function markAsMinted() public
+  function markAsMinted(
+  ) public
   {}
 }

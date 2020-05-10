@@ -6,29 +6,28 @@ import "./OffersGroup.sol";
 
 contract OffersGroupFactory {
 
-// Compiler is weird for these 2 events
-//  event OffersGroupCreatedEvent(
-//    bytes16 indexed district,
-//    bytes16 OffersGroup,
-//    address OffersGroupAddress,
-//    OffersGroup.TradeAsset[] assetsToOffer,
-//    OffersGroup.TradeAsset[] assetsToRequest,
-//    OffersGroup.OfferType offerType,
-//    OffersGroup.Fees fees,
-//    OffersGroup.PermissionIds permissionIds,
-//    address[] disputeResolvers,
-//    OffersGroup.OfferSettings offerSettings,
-//    uint timestamp
-//  );
-//
-//  event OffersGroupUpdatedEvent(
-//    bytes16 indexed OffersGroup,
-//    OffersGroup.TradeAsset[] addedAssetsToOffer,
-//    OffersGroup.TradeAsset[] addedAssetsToRequest,
-//    OffersGroup.Fees fees,
-//    address[] disputeResolvers,
-//    uint timestamp
-//  );
+  event OffersGroupCreatedEvent(
+    bytes16 district,
+    bytes16 offersGroup,
+    address offersGroupAddress,
+    OffersGroup.TradeAsset[] assetsToOffer,
+    OffersGroup.TradeAsset[] assetsToRequest,
+    OffersGroup.OfferType offerType,
+    OffersGroup.Fees fees,
+    OffersGroup.PermissionIds permissionIds,
+    address[] disputeResolvers,
+    OffersGroup.OfferSettings offerSettings,
+    uint timestamp
+  );
+
+  event OffersGroupUpdatedEvent(
+    bytes16 offersGroup,
+    OffersGroup.TradeAsset[] addedAssetsToOffer,
+    OffersGroup.TradeAsset[] addedAssetsToRequest,
+    OffersGroup.Fees fees,
+    address[] disputeResolvers,
+    uint timestamp
+  );
 
   event OfferCreatedEvent(
     bytes16 offer,

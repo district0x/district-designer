@@ -9,14 +9,15 @@ contract ParamChangeEntry is Challengable {
   constructor(
     address _creator,
     bytes16 _paramChangeEntry,
-    TCR.ParameterGroup _paramGroup,
+    TCR.EntriesGroup _entriesGroup,
     string memory _key,
     uint _value
   )
   public
   {}
 
-  function markAsApplied() public
+  function markAsApplied(
+  ) public
   {}
 
 }

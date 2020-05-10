@@ -22,11 +22,6 @@ contract OffersGroup {
     DELIVERABLE
   }
 
-  struct TradeAsset {
-    address tokenAddress;
-    TradeAssetCategory category;
-  }
-
   struct PermissionIds {
     bytes32 createOffer;
     bytes32 offerResponse;
@@ -39,6 +34,11 @@ contract OffersGroup {
 
   struct OfferSettings {
     bool allowMultipleTrades;
+  }
+
+  struct TradeAsset {
+    address tokenAddress;
+    TradeAssetCategory category;
   }
 
   struct TradeValue {

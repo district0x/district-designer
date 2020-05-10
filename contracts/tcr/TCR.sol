@@ -14,9 +14,23 @@ contract TCR {
     NO_TOKEN
   }
 
-  enum ParameterGroup {
+  enum EntriesGroup {
     REGISTRY_ENTRIES,
     PARAM_CHANGE_ENTRIES
+  }
+
+  enum EntryStatus {
+    ChallengePeriod,
+    CommitPeriod,
+    RevealPeriod,
+    Blacklisted,
+    Whitelisted
+  }
+
+  enum VoteOption {
+    Include,
+    Exclude,
+    NoVote
   }
 
   struct RegistryEntryRepresentation {
@@ -66,7 +80,7 @@ contract TCR {
   function createParamChangeEntry(
     address _creator,
     bytes16 _paramChangeEntry,
-    ParameterGroup _paramGroup,
+    EntriesGroup _entriesGroup,
     string memory _key,
     uint _value
   ) public
