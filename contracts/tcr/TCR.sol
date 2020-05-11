@@ -1,7 +1,11 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
+import  "../_libs/proxy/ProxyFactory.sol";
+
 contract TCR {
+
+  uint public constant version = 1;
 
   enum TCRType {
     INITIAL_CHALLENGE_PERIOD,

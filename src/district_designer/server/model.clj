@@ -105,7 +105,7 @@
                     :cardinality [0 n]}
                   user-profiles
 
-                  ^{:type OffersGroup
+                  ^{:type OfferGroup
                     :cardinality [0 n]}
                   offers-groups
 
@@ -336,7 +336,7 @@
                   category]
 
 
-                 OffersGroupFactory
+                 OfferGroupFactory
                  [^{:type String
                     :datomic/unique :db.unique/identity}
                   address
@@ -348,7 +348,7 @@
                   abi]
 
                  
-                 OffersGroup
+                 OfferGroup
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
@@ -364,6 +364,9 @@
 
                   ^{:type File}
                   abi
+
+                  ^{:type File}
+                  offer-abi
 
                   ^{:type TradeAsset
                     :cardinality [0 n]}
@@ -409,7 +412,7 @@
                   ^{:type String}
                   global-description
 
-                  ^{:type OffersGroupUserRating
+                  ^{:type OfferGroupUserRating
                     :cardinality [0 n]}
                   user-ratings
 
@@ -418,7 +421,7 @@
                   dispute-resolvers]
 
 
-                 OffersGroupUserRating
+                 OfferGroupUserRating
                  [^{:type User}
                   user
 
@@ -435,7 +438,7 @@
                     :datomic/unique :db.unique/identity}
                   uuid
 
-                  ^{:type OffersGroup}
+                  ^{:type OfferGroup}
                   offers-group
 
                   ^{:type UnknownType}
@@ -503,11 +506,11 @@
                   ^{:type TradeValue}
                   offerer-traded-value
 
-                  ^{:type Feedback}
-                  offerer-feedback
-
                   ^{:type TradeValue}
                   respondent-traded-value
+
+                  ^{:type Feedback}
+                  offerer-feedback
 
                   ^{:type Feedback}
                   respondent-feedback
@@ -520,26 +523,31 @@
                     :cardinality [0 n]}
                   dispute-resolvers
 
-                  ^{:type DateTime}
-                  dispute-raised-on
+                  ^{:type OfferDispute}
+                  dispute]
+
+
+                 OfferDispute
+                 [^{:type DateTime}
+                  raised-on
 
                   ^{:type DateTime}
-                  dispute-resolved-on
+                  resolved-on
 
                   ^{:type String}
-                  dispute-resolved-by
+                  resolved-by
 
                   ^{:type Message}
-                  dispute-raising-message
+                  raising-message
 
                   ^{:type Message}
-                  dispute-resolving-message
+                  resolving-message
 
                   ^{:type TradeValue}
-                  dispute-resolved-value-for-offerer
+                  resolved-value-for-offerer
 
                   ^{:type TradeValue}
-                  dispute-resolved-value-for-respondent]
+                  resolved-value-for-respondent]
 
 
                  TradeValue
@@ -630,10 +638,6 @@
 
 
                  ^:enum
-                 Network
-                 [MAINNET RINKEBY]
-
-                 ^:enum
                  TokenType
                  [ERC20 ERC721 ERC1155]
 
@@ -643,14 +647,23 @@
                     :datomic/unique :db.unique/identity}
                   address
 
-                  ^{:type Network}
-                  network
+                  ^{:type Integer}
+                  version
 
                   ^{:type TokenType}
                   token-type
 
-                  ^{:type String}
-                  implementation
+                  ^{:type File}
+                  abi]
+
+
+                 TokenFactoryEventsContract
+                 [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  address
+
+                  ^{:type Integer}
+                  version
 
                   ^{:type File}
                   abi]
@@ -660,9 +673,6 @@
                  [^{:type String
                     :datomic/unique :db.unique/identity}
                   address
-
-                  ^{:type Network}
-                  network
 
                   ^{:type String}
                   name
@@ -730,6 +740,10 @@
                     :datomic/unique :db.unique/identity}
                   uuid
 
+                  ^{:type String
+                    :datomic/unique :db.unique/identity}
+                  address
+
                   ^{:type TCRType}
                   type
 
@@ -750,15 +764,21 @@
                     :cardinality [0 n]}
                   reg-entries
 
-                  ^{:type TCRParamChange
+                  ^{:type TCRParamChangeEntry
                     :cardinality [0 n]}
-                  param-changes
+                  param-change-entries
 
                   ^{:type PermissionUserRoles}
                   permission-submit-reg-entry
 
                   ^{:type PermissionUserRoles}
                   permission-submit-param-change
+
+                  ^{:type TCRParameters}
+                  reg-entry-parameters
+
+                  ^{:type TCRParameters}
+                  param-change-entry-parameters
                   
                   ^{:type DateTime}
                   created-on
@@ -770,46 +790,7 @@
                   global-logo
 
                   ^{:type String}
-                  global-description
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint}
-                  reg-entry-deposit
-
-                  ^{:type Integer}
-                  reg-entry-challenge-period-duration
-
-                  ^{:type Integer}
-                  reg-entry-vote-commit-period-duration
-
-                  ^{:type Integer}
-                  reg-entry-vote-reveal-period-duration
-
-                  ^{:type Integer}
-                  reg-entry-challenge-deposit-dispensation
-
-                  ^{:type Integer}
-                  reg-entry-vote-quorum
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint}
-                  param-change-deposit
-
-                  ^{:type Integer}
-                  param-change-challenge-period-duration
-
-                  ^{:type Integer}
-                  param-change-vote-commit-period-duration
-
-                  ^{:type Integer}
-                  param-change-vote-reveal-period-duration
-
-                  ^{:type Integer}
-                  param-change-challenge-deposit-dispensation
-
-                  ^{:type Integer}
-                  param-change-vote-quorum]
-
+                  global-description]
 
 
                  TCRRegEntry
@@ -828,7 +809,7 @@
                   created-on]
 
 
-                 TCRParamChange
+                 TCRParamChangeEntry
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
@@ -848,7 +829,7 @@
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
-                  previous-value
+                  original-value
 
                   ^{:type DateTime}
                   created-on
@@ -856,9 +837,33 @@
                   ^{:type DateTime}
                   applied-on
 
+                  ^{:type DateTime}
+                  creator-reward-claimed-on
+
                   ^{:type TCRChallenge
                     :cardinality [0 n]}
                   challenges]
+
+
+                 TCRParameters
+                 [^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  deposit
+
+                  ^{:type Integer}
+                  challenge-period-duration
+
+                  ^{:type Integer}
+                  vote-commit-period-duration
+
+                  ^{:type Integer}
+                  vote-reveal-period-duration
+
+                  ^{:type Integer}
+                  challenge-deposit-dispensation
+
+                  ^{:type Integer}
+                  vote-quorum]
 
 
                  TCRChallenge
@@ -868,9 +873,6 @@
 
                   ^{:type User}
                   challenger
-
-                  ^{:type Integer}
-                  index
 
                   ^{:type DateTime}
                   created-on
@@ -906,10 +908,10 @@
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
-                  reward-amount
+                  challenger-reward-amount
 
                   ^{:type DateTime}
-                  claimed-reward-on
+                  challenger-reward-claimed-on
 
                   ^{:type String}
                   comment]
@@ -917,7 +919,7 @@
 
                  ^:enum
                  TCRVoteOption
-                 [VOTE_INCLUDE VOTE_EXCLUDE NO_VOTE]
+                 [INCLUDE EXCLUDE NO_VOTE]
 
 
                  TCRVote
@@ -942,10 +944,10 @@
                   revealed-on
 
                   ^{:type DateTime}
-                  claimed-reward-on
+                  reward-claimed-on
 
                   ^{:type DateTime}
-                  reclaimed-votes-on]]))
+                  votes-reclaimed-on]]))
 
 (def graphviz-schema (hodur-graphviz/schema meta-db))
 

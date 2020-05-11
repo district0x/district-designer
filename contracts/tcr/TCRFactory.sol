@@ -2,13 +2,18 @@ pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../district_designer/DistrictDesigner.sol";
+import "../district_designer/DDProxyFactory.sol";
 import "./TCR.sol";
 
+
 contract TCRFactory {
+
+  uint public constant version = 1;
 
   event TCRCreatedEvent(
     bytes16 district,
     bytes16 tcr,
+    uint tcrVersion,
     address tcrAddress,
     address votingToken,
     TCR.TCRType tcrType,
@@ -34,7 +39,8 @@ contract TCRFactory {
     address creator,
     TCR.EntriesGroup paramGroup,
     string key,
-    uint value
+    uint value,
+    uint originalValue
   );
 
   event ChallengeCreatedEvent(
@@ -97,7 +103,14 @@ contract TCRFactory {
     uint timestamp
   );
 
-  constructor(DistrictDesigner _districtDesigner) public {}
+  function initialize(
+    DistrictDesigner _districtDesigner,
+    address _TCRContractBase,
+    address _registryEntryContractBase,
+    address _paramChangeEntryContractBase
+  ) public {
+  }
+
 
   function createTCR(
     bytes16 _district,
@@ -108,6 +121,14 @@ contract TCRFactory {
     TCR.PermissionIds memory _permissionIds,
     TCR.Parameters memory _regParameters,
     TCR.Parameters memory _paramChangeParameters
+  ) public
+  {}
+
+
+  function setBaseContracts(
+    address _TCRContractBase,
+    address _registryEntryContractBase,
+    address _paramChangeEntryContractBase
   ) public
   {}
 
@@ -126,7 +147,8 @@ contract TCRFactory {
     address _creator,
     TCR.EntriesGroup _paramGroup,
     string memory _key,
-    uint _value
+    uint _value,
+    uint _originalValue
   ) public
   {}
 

@@ -3,6 +3,8 @@ pragma experimental ABIEncoderV2;
 
 contract DistrictDesigner {
 
+  uint public constant version = 1;
+
   event PermissionsInitializedEvent(
     bytes16 indexed district,
     bytes32[] permissionIds,
@@ -30,14 +32,14 @@ contract DistrictDesigner {
     bool isEmergency
   );
 
-  constructor(
+  function initialize(
     bytes32[] memory _DDPermissionIds,
     bytes16[][] memory _DDPermissionUserRoles,
     bytes16[] memory _DDUserRoles,
     address[][] memory _DDUserRoleaddresses,
     bytes16 _DDAdminUserRole)
-  public {
-  }
+  public {}
+
 
   function isAllowed(
     bytes16 _district,
@@ -47,6 +49,7 @@ contract DistrictDesigner {
     returns (bool) {
     return true;
   }
+
 
   function initializePermissions(
     bytes16 _district,
@@ -58,12 +61,22 @@ contract DistrictDesigner {
   ) public
   {}
 
+
   function updatePermissions(
     bytes16 _district,
     bytes32[] memory _permissionIds,
     bytes16[][] memory _userRoles
   ) public
   {}
+
+
+  function updatePermission(
+    bytes16 _district,
+    bytes32[] memory _permissionIds,
+    bytes16[][] memory _userRoles
+  ) public
+  {}
+
 
   function updateUserRoles(
     bytes16 _district,
@@ -73,12 +86,22 @@ contract DistrictDesigner {
   ) public
   {}
 
+
+  function updateUserRole(
+    bytes16 _district,
+    bytes16 _userRole,
+    address[] memory _addresses
+  ) public
+  {}
+
+
   function adminUserRole(
     bytes16 _district
   ) public view
   returns (bytes16 _userRole) {
     return _userRole;
   }
+
 
   function districtTreasury(
     bytes16 _district
@@ -87,11 +110,13 @@ contract DistrictDesigner {
     return _treasury;
   }
 
+
   function setDistrictTreasury(
     bytes16 _district,
     address _treasury
   ) public
   {}
+
 
   function isDistrictEmergency(
     bytes16 _district
@@ -99,6 +124,7 @@ contract DistrictDesigner {
   returns (bool _isEmergency) {
     return _isEmergency;
   }
+
 
   function setDistrictEmergency(
     bytes16 _district,
