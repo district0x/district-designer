@@ -20,6 +20,6 @@ contract ERC721Factory {
     string memory _tokenSymbol
   ) public
   {
-    ERC721 _;
+    DDERC721 _;
   }
 }
