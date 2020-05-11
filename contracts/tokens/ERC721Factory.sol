@@ -2,7 +2,7 @@ pragma solidity >=0.4.22 <0.7.0;
 
 import "./TokenFactoryEvents.sol";
 import "../district_designer/DistrictDesigner.sol";
-import "./DDERC1155.sol";
+import "./DDERC721.sol";
 
 contract ERC721Factory {
 
@@ -20,6 +20,6 @@ contract ERC721Factory {
     string memory _tokenSymbol
   ) public
   {
-    DDERC1155 _;
+    ERC721 _;
   }
 }
