@@ -97,12 +97,6 @@ contract TCR {
   {}
 
 
-  function burnRegistryEntryToken(
-    bytes16 _regEntry
-  ) public
-  {}
-
-
   function applyParamChangeEntry(
     bytes16 _paramChangeEntry
   ) public

@@ -4,6 +4,8 @@ pragma experimental ABIEncoderV2;
 import "../district_designer/DistrictDesigner.sol";
 import "../district_designer/DDProxyFactory.sol";
 import "./TCR.sol";
+import  "../tokens/ERC721Factory.sol";
+import  "../tokens/ERC1155Factory.sol";
 
 
 contract TCRFactory {
@@ -103,11 +105,14 @@ contract TCRFactory {
     uint timestamp
   );
 
+
   function initialize(
     DistrictDesigner _districtDesigner,
     address _TCRContractBase,
     address _registryEntryContractBase,
-    address _paramChangeEntryContractBase
+    address _paramChangeEntryContractBase,
+    ERC721Factory _erc721Factory,
+    ERC1155Factory _erc1155Factory
   ) public {
   }
 
