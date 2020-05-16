@@ -4,6 +4,8 @@ import  "./Proxy.sol";
 
 contract ProxyFactory {
 
+  uint public constant version = 1;
+
   event ProxyCreatedEvent(
     address proxy,
     address target,

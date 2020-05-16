@@ -1,7 +1,10 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
+
 contract DistrictDesigner {
+  using EnumerableSet for EnumerableSet.AddressSet;
 
   uint public constant version = 1;
 
@@ -72,8 +75,8 @@ contract DistrictDesigner {
 
   function updatePermission(
     bytes16 _district,
-    bytes32[] memory _permissionIds,
-    bytes16[][] memory _userRoles
+    bytes32 _permissionId,
+    bytes16[] memory _userRoles
   ) public
   {}
 

@@ -16,6 +16,7 @@ contract ERC721Factory {
 
   function createToken(
     bytes16 _district,
+    bytes16 _token,
     string memory _tokenName,
     string memory _tokenSymbol
   ) public

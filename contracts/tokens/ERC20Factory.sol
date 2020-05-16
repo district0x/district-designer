@@ -17,6 +17,7 @@ contract ERC20Factory {
 
   function createToken(
     bytes16 _district,
+    bytes16 _token,
     string memory _tokenName,
     string memory _tokenSymbol,
     address[] memory _inintialDistributionAddresses,

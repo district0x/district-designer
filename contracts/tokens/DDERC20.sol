@@ -9,7 +9,9 @@ contract DDERC20 is ERC20Snapshot, Ownable {
 
   constructor(
     string memory _tokenName,
-    string memory _tokenSymbol
+    string memory _tokenSymbol,
+    address[] memory _initialDistributionAddresses,
+    uint[] memory _initialDistributionAmounts
   )
   ERC20(_tokenName, _tokenSymbol)
   public

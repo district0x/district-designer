@@ -8,12 +8,12 @@ contract TokenFactoryEvents {
 
   event TokenCreatedEvent(
     bytes16 district,
+    bytes16 token,
     address tokenAddress,
-    string implementation,
     string tokenName,
     string tokenSymbol,
     uint8 decimalUnits,
-    address controller
+    address owner
   );
 
 
@@ -26,12 +26,12 @@ contract TokenFactoryEvents {
 
   function fireTokenCreatedEvent(
     bytes16 _district,
+    bytes16 _token,
     address _tokenAddress,
-    string memory _implementation,
     string memory _tokenName,
     string memory _tokenSymbol,
     uint8 _decimalUnits,
-    address _controller
+    address _owner
   ) public
   {}
 
