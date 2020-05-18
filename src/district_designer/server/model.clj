@@ -1086,30 +1086,27 @@
 
 
 (def events
-  [{:module :events-batch
+  [{:event :events-batch
     :sender "<addr>"
-    :events [{:module "<str>"
+    :events [{:event "<str>"
               :action "<str>"}]}
 
 
-   {:module :district-designer
-    :action :genesis
+   {:event (or :district-designer/add-district-designer :district-designer/update-district-designer)
     :sender "<addr>"
-    :permissions [{:permission/id "dd_system_administration"
-                   :permission/name "District Designer System Administration"
-                   :permission/description "<str>"}]
-    :user-roles [{:user-role/uuid "<uuid>"
-                  :user-role/name "<str>"}]
     :district-designer/address "<addr>"
     :district-designer/version "<int>"
-    :district-designer/base-address "<addr>"
-    :district-designer/abi "<ipfs>"
-    :dd-proxy-factory/address "<addr>"
-    :dd-proxy-factory/abi "<ipfs>"
-    :dd-proxy-factory/version "<int>"}
+    :district-designer/abi "<ipfs>"}
 
-   {:module :district-designer
-    :action (or :add-module :update-module)
+
+   {:event (or :district-designer/add-dd-proxy-factory :district-designer/update-dd-proxy-factory)
+    :sender "<addr>"
+    :dd-proxy-factory/address "<addr>"
+    :dd-proxy-factory/version "<int>"
+    :dd-proxy-factory/abi "<ipfs>"}
+
+
+   {:event (or :district-designer/add-module :district-designer/update-module)
     :sender "<addr>"
     :module/id "<id>"
     :module/name "<str>"
@@ -1118,13 +1115,11 @@
     :module/description "<str>"
     :module/preview-images ["<ipfs>"]}
 
-   {:module :district-designer
-    :action :remove-module
+   {:event :district-designer/remove-module
     :sender "<addr>"
     :module/id "<id>"}
 
-   {:module :district-designer
-    :action (or :add-wizard :update-wizard)
+   {:event (or :district-designer/add-wizard :district-designer/update-wizard)
     :sender "<addr>"
     :wizard/id "<str>"
     :wizard/name "<str>"
@@ -1133,13 +1128,11 @@
     :wizard/description "<str>"
     :wizard/preview-images ["<ipfs>"]}
 
-   {:module :district-designer
-    :action :remove-wizard
+   {:event :district-designer/remove-wizard
     :sender "<addr>"
     :wizard/id "<id>"}
 
-   {:module :district-designer
-    :action (or :add-theme :update-theme)
+   {:event (or :district-designer/add-theme :district-designer/update-theme)
     :sender "<addr>"
     :theme/id "<str>"
     :theme/name "<str>"
@@ -1148,13 +1141,11 @@
     :theme/default-settings "<edn>"
     :theme/styles ["<ipfs>"]}
 
-   {:module :district-designer
-    :action :remove-theme
+   {:event :district-designer/remove-theme
     :sender "<addr>"
     :theme/id "tokens"}
 
-   {:module :district
-    :action (or :add-district :update-district)
+   {:event (or :district/add-district :district/update-district)
     :sender "<addr>"
     :district/uuid "<uuid>"
     :district/name "<str>"
@@ -1167,16 +1158,14 @@
     :district/ga-tracking-id "<str>"}
 
 
-   {:module :district
-    :action (or :add-user-roles :update-user-roles)
+   {:event (or :district/add-user-roles :district/update-user-roles)
     :sender "<addr>"
     :district "<uuid>"
     :user-roles [{:user-role/uuid "<uuid>"
                   :user-role/name "<str>"}]}
 
 
-   {:module :district
-    :action :add-files
+   {:event :district/add-files
     :sender "<addr>"
     :district "<uuid>"
     :files [{:file/ipfs-hash "<ipfs>"
@@ -1186,52 +1175,45 @@
              :file/decryptable-by "<addr>"}]}
 
 
-   {:module :district
-    :action :remove-files
+   {:event :district/remove-files
     :sender "<addr>"
     :district "<uuid>"
     :files ["<ipfs>"]}
 
 
-   {:module :district
-    :action :update-theme
+   {:event :district/update-theme
     :sender "<addr>"
     :district "<uuid>"
     :district/theme "<uuid>"
     :district/theme-settings "<edn>"}
 
 
-   {:module :district
-    :action :update-styles
+   {:event :district/update-styles
     :sender "<addr>"
     :district "<uuid>"
     :district/less-file "<ipfs>"
     :district/css-file "<ipfs>"}
 
 
-   {:module :district
-    :action :add-modules
+   {:event :district/add-modules
     :sender "<addr>"
     :district "<uuid>"
     :modules ["<uuid>"]}
 
 
-   {:module :district
-    :action :remove-modules
+   {:event :district/remove-modules
     :sender "<addr>"
     :district "<uuid>"
     :modules ["<uuid>"]}
 
 
-   {:module :district
-    :action (or :add-pages :remove-pages)
+   {:event (or :district/add-pages :district/remove-pages)
     :sender "<addr>"
     :district "<uuid>"
     :pages ["<uuid>"]}
 
 
-   {:module :district
-    :action :add-ui-components
+   {:event :district/add-ui-components
     :sender "<addr>"
     :district "<uuid>"
     :ui-components [{:ui-component/uuid "<uuid>"
@@ -1241,8 +1223,7 @@
                      :ui-component/settings "<edn>"}]}
 
 
-   {:module :district
-    :action :update-ui-component
+   {:event :district/update-ui-component
     :sender "<addr>"
     :ui-component/uuid "<uuid>"
     :ui-component/name "<str>"
@@ -1251,15 +1232,13 @@
     :ui-component/settings "<edn>"}
 
 
-   {:module :district
-    :action :remove-ui-components
+   {:event :district/remove-ui-components
     :sender "<addr>"
     :district "<uuid>"
     :ui-components ["<uuid>"]}
 
 
-   {:module :district
-    :action (or :add-database-views :add-statistics-views)
+   {:event (or :district/add-database-views :district/add-statistics-views)
     :sender "<addr>"
     :district "<uuid>"
     :data-views [{:data-view/uuid "<uuid>"
@@ -1267,23 +1246,20 @@
                   :data-view/settings "<edn>"}]}
 
 
-   {:module :district
-    :action (or :update-database-view :update-statistics-view)
+   {:event (or :district/update-database-view :district/update-statistics-view)
     :sender "<addr>"
     :data-view/uuid "<uuid>"
     :data-view/name "<str>"
     :data-view/settings "<edn>"}
 
 
-   {:module :district
-    :action (or :remove-database-views :remove-statistics-views)
+   {:event (or :district/remove-database-views :district/remove-statistics-views)
     :sender "<addr>"
     :district "<uuid>"
     :data-views ["<uuid>"]}
 
 
-   {:module :tokens
-    :action (or :add-token-factory :update-token-factory)
+   {:event (or :tokens/add-token-factory :token/update-token-factory)
     :sender "<addr>"
     :token-factory/address "<addr>"
     :token-factory/version "<int>"
@@ -1291,16 +1267,14 @@
     :token-factory/abi "<ipfs>"}
 
 
-   {:module :tokens
-    :action (or :add-token-factory-events-contract :update-token-factory-events-contract)
+   {:event (or :tokens/add-token-factory-events-contract :tokens/update-token-factory-events-contract)
     :sender "<addr>"
     :token-factory-events-contract/address "<addr>"
     :token-factory-events-contract/version "<int>"
     :token-factory-events-contract/abi "<ipfs>"}
 
 
-   {:module :tokens
-    :action (or :add-token-contract :update-token-contract)
+   {:event (or :tokens/add-token-contract :token/update-token-contract)
     :sender "<addr>"
     :district "<uuid>"
     :token-contract/uuid "<uuid>"
@@ -1310,36 +1284,39 @@
     :token-contract/abi "<ipfs>"}
 
 
-   {:module :tokens
-    :action :remove-token-contract
+   {:event :tokens/remove-token-contract
     :sender "<addr>"
     :district "<uuid>"
     :token-contract/uuid "<uuid>"}
 
 
-   {:module :tokens
-    :action (or :add-district-token-contracts :remove-district-token-contracts)
+   {:event (or :tokens/add-district-token-contracts :tokens/remove-district-token-contracts)
     :sender "<addr>"
     :district "<uuid>"
     :token-contracts ["<uuid>"]}
 
 
-   {:module :tokens
-    :action :add-token-contract-misconfig-report
+   {:event :tokens/add-token-contract-misconfig-report
     :sender "<addr>"
     :district "<uuid>"
     :token-contract/uuid "<uuid>"
     :token-contract/reported-misconfig-comment "<str>"}
 
 
-   {:module :tokens
-    :action :resolve-token-contract-misconfig-report
+   {:event :tokens/resolve-token-contract-misconfig-report
     :sender "<addr>"
     :token-contract/uuid "<uuid>"}
 
 
-   {:module :users
-    :action (or :add-user-profile :update-user-profile)
+   {:event :users/add-direct-message
+    :sender "<addr>"
+    :district "<uuid>"
+    :message/uuid "<uuid>"
+    :message/receiver "<address>"
+    :message/text "<str>"}
+
+
+   {:event (or :users/add-user-profile :users/update-user-profile)
     :sender "<addr>"
     :district "<uuid>"
     :user-profile/uuid "<uuid>"
@@ -1354,28 +1331,24 @@
     :user-profile/global-description "<str>"}
 
 
-   {:module :users
-    :action :remove-user-profile
+   {:event :users/remove-user-profile
     :sender "<addr>"
     :district "<uuid>"
     :user-profile "<uuid>"}
 
 
-   {:module :users
-    :action (or :add-district-user-profiles :remove-district-user-profiles)
+   {:event (or :users/add-district-user-profiles :users/remove-district-user-profiles)
     :sender "<addr>"
     :district "<uuid>"
     :user-profiles ["<uuid>"]}
 
 
-   {:module :users
-    :action :update-user
+   {:event :users/update-user
     :sender "<addr>"
-    :user/field-909659f5-560c-4640-9d67-7a1977da92b5 "<str>"}
+    :user/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
 
 
-   {:module :marketplace
-    :action (or :add-offer-group-factory :update-offer-group-factory)
+   {:event (or :marketplace/add-offer-group-factory :marketplace/update-offer-group-factory)
     :sender "<addr>"
     :offer-group-factory/address "<addr>"
     :offer-group-factory/version "<int>"
@@ -1384,8 +1357,7 @@
     :offer-group-factory/offer-abi "<ipfs>"}
 
 
-   {:module :marketplace
-    :action (or :add-offer-group :update-offer-group)
+   {:event :marketplace/update-offer-group
     :sender "<addr>"
     :district "<uuid>"
     :offer-group/uuid "<uuid>"
@@ -1407,60 +1379,49 @@
     :offer-group/global-description "<str>"}
 
 
-   {:module :marketplace
-    :action :remove-offer-group
+   {:event (or :marketplace/remove-offer-group)
     :sender "<addr>"
     :district "<uuid>"
     :offer-group "<uuid>"}
 
 
-   {:module :marketplace
-    :action (or :add-district-offer-groups :remove-district-offer-groups)
+   {:event (or :marketplace/add-district-offer-groups :marketplace/remove-district-offer-groups)
     :sender "<addr>"
     :district "<uuid>"
     :offer-groups ["<uuid>"]}
 
 
-   {:module :marketplace
-    :action (or :add-offer :update-offer)
+   {:event (or :marketplace/add-offer :marketplace/update-offer)
     :sender "<addr>"
     :offer-group "<uuid>"
     :offer/uuid "<uuid>"
-    :offer/field-909659f5-560c-4640-9d67-7a1977da92b5 "<str>"}
+    :offer/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
 
 
-   {:module :marketplace
-    :action :add-offer-response
+   {:event :marketplace/add-offer-response
     :sender "<addr>"
     :offer "<uuid>"
     :offer-response/uuid "<uuid>"
-    :offer-response/field-909659f5-560c-4640-9d67-7a1977da92b5 "<str>"}
+    :offer-response/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
 
 
-   {:module :marketplace
-    :action :add-message
+   {:event :marketplace/add-message
     :sender "<addr>"
     :offer-response "<uuid>"
     :message/uuid "<uuid>"
     :message/receiver "<address>"
-    :message/type "<str>"
-    :message/text "<str>"
-    :message/encrypted? "<bool>"}
+    :message/text "<str>"}
 
 
-   {:module :marketplace
-    :action :add-messages
+   {:event :marketplace/add-messages
     :sender "<addr>"
     :offer-response "<uuid>"
     :messages [{:message/uuid "<uuid>"
                 :message/receiver "<address>"
-                :message/type "<str>"
-                :message/text "<str>"
-                :message/encrypted? "<bool>"}]}
+                :message/text "<str>"}]}
 
 
-   {:module :marketplace
-    :action (or :add-feedback :update-feedback)
+   {:event (or :marketplace/add-feedback :marketplace/update-feedback)
     :sender "<addr>"
     :offer-response "<uuid>"
     :feedback/uuid "<uuid>"
@@ -1468,6 +1429,48 @@
     :feedback/text "<str>"}
 
 
+   {:event (or :tcr/add-tcr-factory :tcr/update-tcr-factory)
+    :sender "<addr>"
+    :tcr-factory/address "<addr>"
+    :tcr-factory/version "<int>"
+    :tcr-factory/abi "<ipfs>"
+    :tcr-factory/tcr-abi "<ipfs>"
+    :tcr-factory/reg-entry-abi "<ipfs>"
+    :tcr-factory/param-change-entry-abi "<ipfs>"}
 
 
+   {:event (or :tcr/add-tcr :tcr/update-tcr)
+    :sender "<addr>"
+    :tcr/uuid "<uuid>"
+    :tcr/reg-entry-field-configs [{:field-config/uuid "<uuid>"
+                                   :field-config/name "<str>"
+                                   :field-config/namespace "<str>"
+                                   :field-config/type "<str>"
+                                   :field-config/settings "<edn>"}]
+    :tcr/global-enabled? "<bool>"
+    :tcr/global-logo "<ipfs>"
+    :tcr/global-description "<str>"}
+
+
+   {:event :tcr/remove-tcr
+    :sender "<addr>"
+    :tcr/uuid "<uuid>"}
+
+
+   {:event :tcr/add-reg-entry
+    :sender "<addr>"
+    :reg-entry/uuid "<uuid>"
+    :reg-entry/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
+
+
+   {:event :tcr/add-param-change-reg-entry
+    :sender "<addr>"
+    :param-change-entry/uuid "<uuid>"
+    :param-change-entry/comment "<str>"}
+
+
+   {:event :tcr/add-challenge
+    :sender "<addr>"
+    :challenge/uuid "<uuid>"
+    :challenge/comment "<str>"}
    ])
