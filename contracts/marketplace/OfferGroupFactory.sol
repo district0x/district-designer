@@ -21,6 +21,7 @@ contract OfferGroupFactory {
     Offer.PermissionIds permissionIds,
     address[] disputeResolvers,
     Offer.OfferSettings offerSettings,
+    bytes ipfsData,
     uint timestamp
   );
 
@@ -30,6 +31,7 @@ contract OfferGroupFactory {
     Offer.TradeAsset[] addedAssetsToRequest,
     Offer.Fees fees,
     address[] disputeResolvers,
+    bytes ipfsData,
     uint timestamp
   );
 
@@ -39,6 +41,7 @@ contract OfferGroupFactory {
     Offer.TradeValue offeredValue,
     Offer.TradeValue[] requestedValues,
     Offer.TradeAuction requestedAuction,
+    bytes ipfsData,
     uint timestamp
   );
 
@@ -48,6 +51,7 @@ contract OfferGroupFactory {
     bytes16 offerResponse,
     Offer.TradeValue offererTradedValue,
     Offer.TradeValue respondentTradedValue,
+    bytes ipfsData,
     uint timestamp
   );
 
@@ -98,25 +102,27 @@ contract OfferGroupFactory {
     Offer.Fees memory _fees,
     Offer.PermissionIds memory _permissionIds,
     address[] memory _disputeResolvers,
-    Offer.OfferSettings memory _offerSettings
-  ) public
-  {}
+    Offer.OfferSettings memory _offerSettings,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function setBaseContracts(
     address _offerGroupBaseContract,
     address _offerBaseContract
-  ) public
-  {}
+  ) public {
+  }
 
 
   function fireOfferGroupUpdatedEvent(
     Offer.TradeAsset[] memory _addedAssetsToOffer,
     Offer.TradeAsset[] memory _addedAssetsToRequest,
     Offer.Fees memory _fees,
-    address[] memory disputeResolvers
-  ) public
-  {}
+    address[] memory disputeResolvers,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function fireOfferCreatedEvent(
@@ -124,9 +130,10 @@ contract OfferGroupFactory {
     address _offerer,
     Offer.TradeValue memory _offeredValue,
     Offer.TradeValue[] memory _requestedValues,
-    Offer.TradeAuction memory _requestedAuction
-  ) public
-  {}
+    Offer.TradeAuction memory _requestedAuction,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function fireOfferResponseCreatedEvent(
@@ -134,36 +141,37 @@ contract OfferGroupFactory {
     address _respondent,
     bytes16 _offerResponse,
     Offer.TradeValue memory _offererTradedValue,
-    Offer.TradeValue memory _respondentTradedValue
-  ) public
-  {}
+    Offer.TradeValue memory _respondentTradedValue,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function fireOfferResponseAcceptedEvent(
     bytes16 _offerResponse,
     Offer.TradeValue memory _offererTradedValue,
     Offer.TradeValue memory _respondentTradedValue
-  ) public
-  {}
+  ) public {
+  }
 
 
   function fireOfferClosedEvent(
     bytes16 _offer
-  ) public
-  {}
+  ) public {
+  }
 
 
   function fireOfferResponseCanceledEvent(
     bytes16 _offerResponse
-  ) public
-  {}
+  ) public {
+  }
 
 
   function fireDisputeRaisedEvent(
     bytes16 _offerResponse,
     address _raisedBy
-  ) public
-  {}
+  ) public {
+  }
 
 
   function fireDisputeResolvedEvent(
@@ -171,6 +179,7 @@ contract OfferGroupFactory {
     Offer.TradeValue memory _valueForOfferer,
     Offer.TradeValue memory _valueForRespondent,
     address _resolvedBy
-  ) public
-  {}
+  ) public {
+
+  }
 }

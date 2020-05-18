@@ -7,39 +7,62 @@
                '[^:graphviz/tag
                  default
 
-                 DistrictDesigner
+                 ^:enum
+                 ProxyType
+                 [OWNER_PROXY DISTRICT_ADMIN_PROXY]
+
+                 SmartContract
                  [^{:type String
                     :datomic/unique :db.unique/identity}
                   address
 
-                  ^{:type String}
-                  base-address
+                  ^{:type String
+                    :datomic/index true}
+                  name
 
-                  ^{:type Integer}
+                  ^{:type Integer
+                    :datomic/index true}
                   version
 
                   ^{:type File}
                   abi
 
-                  ^{:type UserRole
-                    :cardinality [1 n]}
-                  user-roles
+                  ^{:type Boolean}
+                  proxy?
 
-                  ^{:type UserRole}
-                  admin-user-role
+                  ^{:type ProxyType}
+                  proxy-type
 
-                  ^{:type PermissionUserRole
-                    :cardinality [1 n]}
-                  permissions-user-roles]
+                  ^{:type String}
+                  target
+
+                  ^{:type String}
+                  owner
+
+                  ^{:type ID}
+                  district]
 
 
-                 DDProxyFactory
+                 ContractEvents
                  [^{:type String
                     :datomic/unique :db.unique/identity}
-                  address
+                  contract-name
 
-                  ^{:type File}
-                  abi]
+                  ^{:type String
+                    :datomic/index true}
+                  event-key
+
+                  ^{:type Integer}
+                  last-log-index
+
+                  ^{:type Integer}
+                  last-block-number]
+
+
+                 IpfsEvents
+                 [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  last-hash]
 
 
                  District
@@ -680,9 +703,6 @@
                   ^{:type String}
                   text
 
-                  ^{:type Boolean}
-                  encrypted?
-
                   ^{:type DateTime}
                   created-on]
 
@@ -704,7 +724,10 @@
                   token-type
 
                   ^{:type File}
-                  abi]
+                  abi
+
+                  ^{:type File}
+                  token-abi]
 
 
                  TokenFactoryEventsContract
@@ -804,6 +827,27 @@
                  [ERC721 ERC1155 NO_TOKEN]
 
 
+                 TCRFactory
+                 [^{:type String
+                    :datomic/unique :db.unique/identity}
+                  address
+
+                  ^{:type Integer}
+                  version
+
+                  ^{:type File}
+                  abi
+
+                  ^{:type File}
+                  tcr-abi
+
+                  ^{:type File}
+                  reg-entry-abi
+
+                  ^{:type File}
+                  param-change-entry-abi]
+
+
                  TCR
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
@@ -815,6 +859,15 @@
 
                   ^{:type TCRType}
                   type
+
+                  ^{:type File}
+                  abi
+
+                  ^{:type File}
+                  reg-entry-abi
+
+                  ^{:type File}
+                  param-change-entry-abi
 
                   ^{:type TokenContract}
                   voting-token-contract
@@ -862,8 +915,7 @@
                   global-description
 
                   ^{:type Integer}
-                  global-imports-count
-                  ]
+                  global-imports-count]
 
 
                  TCRRegEntry
@@ -887,14 +939,14 @@
                     :datomic/unique :db.unique/identity}
                   uuid
 
-                  ^{:type UnknownType}
-                  field-uuid
-
                   ^{:type String}
                   db
 
                   ^{:type String}
                   key
+
+                  ^{:type String}
+                  comment
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
@@ -1034,7 +1086,13 @@
 
 
 (def events
-  [{:module :district-designer
+  [{:module :events-batch
+    :sender "<addr>"
+    :events [{:module "<str>"
+              :action "<str>"}]}
+
+
+   {:module :district-designer
     :action :genesis
     :sender "<addr>"
     :permissions [{:permission/id "dd_system_administration"
@@ -1380,6 +1438,17 @@
 
 
    {:module :marketplace
+    :action :add-message
+    :sender "<addr>"
+    :offer-response "<uuid>"
+    :message/uuid "<uuid>"
+    :message/receiver "<address>"
+    :message/type "<str>"
+    :message/text "<str>"
+    :message/encrypted? "<bool>"}
+
+
+   {:module :marketplace
     :action :add-messages
     :sender "<addr>"
     :offer-response "<uuid>"
@@ -1397,5 +1466,8 @@
     :feedback/uuid "<uuid>"
     :feedback/rating "<float>"
     :feedback/text "<str>"}
+
+
+
 
    ])

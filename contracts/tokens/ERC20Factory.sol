@@ -12,8 +12,8 @@ contract ERC20Factory {
   constructor(
     DistrictDesigner _districtDesigner,
     TokenFactoryEvents _tokensContractAddress
-  ) public
-  {}
+  ) public {
+  }
 
   function createToken(
     bytes16 _district,
@@ -21,9 +21,9 @@ contract ERC20Factory {
     string memory _tokenName,
     string memory _tokenSymbol,
     address[] memory _inintialDistributionAddresses,
-    uint[] memory _inintialDistributionAmounts
-  ) public
-  {
+    uint[] memory _inintialDistributionAmounts,
+    bytes memory _ipfsData
+  ) public {
     DDERC20 _;
   }
 }

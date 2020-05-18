@@ -10,11 +10,12 @@ contract RegistryEntry is Challengable {
     address _creator,
     bytes16 _regEntry,
     uint _tokenAmount,
-    bytes memory _tokenMetaHash
-  ) public
-  {}
+    bytes memory _tokenIpfsData,
+    bytes memory _ipfsData
+  ) public {
+  }
 
   function markAsMinted(
-  ) public
-  {}
+  ) public {
+  }
 }

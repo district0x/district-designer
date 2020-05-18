@@ -1,7 +1,7 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-import  "../_libs/proxy/ProxyFactory.sol";
+import "../district_designer/DDProxyFactory.sol";
 
 contract TCR {
 
@@ -67,16 +67,18 @@ contract TCR {
     TCR.RegistryEntryRepresentation memory _regEntryRepr,
     TCR.PermissionIds memory _permissionIds,
     TCR.Parameters memory _regParameters,
-    TCR.Parameters memory _paramChangeParameters
-  ) public {
-  }
+    TCR.Parameters memory _paramChangeParameters,
+    bytes memory _ipfsData
+  ) public
+  {}
 
 
   function createRegistryEntry(
     address _creator,
     bytes16 _regEntry,
     uint _tokenAmount,
-    bytes memory _tokenMetaHash
+    bytes memory _tokenIpfsData,
+    bytes memory _ipfsData
   ) public
   {}
 
@@ -86,7 +88,8 @@ contract TCR {
     bytes16 _paramChangeEntry,
     EntriesGroup _entriesGroup,
     string memory _key,
-    uint _value
+    uint _value,
+    bytes memory _ipfsData
   ) public
   {}
 

@@ -194,55 +194,56 @@ contract Challengable {
 
   function createChallenge(
     address _challenger,
-    bytes16 _challenge
-  ) public
-  {}
+    bytes16 _challenge,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function commitVote(
     address _voter,
     uint _amount,
     bytes32 _secretHash
-  ) public
-  {}
+  ) public {
+  }
 
 
   function revealVote(
     address _voter,
     TCR.VoteOption _voteOption,
     string memory _salt
-  ) public
-  {}
+  ) public {
+  }
 
 
   function reclaimVotes(
     address _voter
-  ) public
-  {}
+  ) public {
+  }
 
 
   function claimVoteReward(
     address _voter
-  ) public
-  {}
+  ) public {
+  }
 
 
   function claimChallengeReward(
     address _voter
-  ) public
-  {}
+  ) public {
+  }
 
 
   function claimCreatorReward(
     address _voter
-  ) public
-  {}
+  ) public {
+  }
 
 
   function claimRewards(
     address _voter
-  ) public
-  {}
+  ) public {
+  }
 
 
 }

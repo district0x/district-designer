@@ -11,8 +11,8 @@ contract DDERC721 is ERC721, ERC721Burnable, Ownable {
     string memory _tokenSymbol
   )
   ERC721(_tokenName, _tokenSymbol)
-  public
-  {}
+  public {
+  }
 
 
   function safeMint(

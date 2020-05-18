@@ -11,13 +11,14 @@ contract ParamChangeEntry is Challengable {
     bytes16 _paramChangeEntry,
     TCR.EntriesGroup _entriesGroup,
     string memory _key,
-    uint _value
+    uint _value,
+    bytes memory _ipfsData
   )
-  public
-  {}
+  public {
+  }
 
   function markAsApplied(
-  ) public
-  {}
+  ) public {
+  }
 
 }

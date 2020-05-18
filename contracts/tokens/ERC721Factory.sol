@@ -11,16 +11,16 @@ contract ERC721Factory {
   constructor(
     DistrictDesigner _districtDesigner,
     TokenFactoryEvents _tokensContractAddress
-  ) public
-  {}
+  ) public {
+  }
 
   function createToken(
     bytes16 _district,
     bytes16 _token,
     string memory _tokenName,
-    string memory _tokenSymbol
-  ) public
-  {
+    string memory _tokenSymbol,
+    bytes memory _ipfsData
+  ) public {
     DDERC721 _;
   }
 }

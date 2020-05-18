@@ -14,8 +14,8 @@ contract DDERC20 is ERC20Snapshot, Ownable {
     uint[] memory _initialDistributionAmounts
   )
   ERC20(_tokenName, _tokenSymbol)
-  public
-  {}
+  public {
+  }
 
 
   /**

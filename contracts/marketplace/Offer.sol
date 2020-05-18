@@ -62,7 +62,8 @@ contract Offer {
     bytes16 _offer,
     TradeValue memory _offeredValue,
     TradeValue[] memory _requestedValues,
-    TradeAuction memory _requestedAuction
+    TradeAuction memory _requestedAuction,
+    bytes memory _ipfsData
   ) public {}
 
 
@@ -71,39 +72,40 @@ contract Offer {
     bytes16 _offer,
     bytes16 _offerResponse,
     TradeAsset[] memory _chosenAsset,
-    TradeValue memory _counterOfferedValue
-  ) public
-  {}
+    TradeValue memory _counterOfferedValue,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function acceptOfferResponse(
     bytes16 _offerResponse
-  ) public
-  {}
+  ) public {
+  }
 
 
   function closeOffer(
-  ) public
-  {}
+  ) public {
+  }
 
 
   function cancelOfferResponse(
     bytes16 _offerResponse
-  ) public
-  {}
+  ) public {
+  }
 
 
   function raiseDispute(
     bytes16 _offerResponse
-  ) public
-  {}
+  ) public {
+  }
 
 
   function resolveDispute(
     bytes16 _offerResponse,
     TradeValue memory _valueForOfferer,
     TradeValue memory _valueForRespondent
-  ) public
-  {}
+  ) public {
+  }
 
 }

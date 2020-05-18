@@ -1,7 +1,7 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-import  "../_libs/proxy/ProxyFactory.sol";
+import "../district_designer/DDProxyFactory.sol";
 import "../district_designer/DistrictDesigner.sol";
 import "./OfferGroupFactory.sol";
 import "./Offer.sol";
@@ -20,8 +20,10 @@ contract OfferGroup {
     Offer.Fees memory _fees,
     Offer.PermissionIds memory _permissionIds,
     address[] memory _disputeResolvers,
-    Offer.OfferSettings memory _offerSettings
-  ) public {}
+    Offer.OfferSettings memory _offerSettings,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function createOffer(
@@ -29,18 +31,20 @@ contract OfferGroup {
     bytes16 _offer,
     Offer.TradeValue memory _offeredValue,
     Offer.TradeValue[] memory _requestedValues,
-    Offer.TradeAuction memory _requestedAuction
-  ) public
-  {}
+    Offer.TradeAuction memory _requestedAuction,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
   function updateOfferGroup(
     Offer.TradeAsset[] memory _addedAssetsToOffer,
     Offer.TradeAsset[] memory _addedAssetsToRequest,
     Offer.Fees memory _fees,
-    address[] memory _disputeResolvers
-  ) public
-  {}
+    address[] memory _disputeResolvers,
+    bytes memory _ipfsData
+  ) public {
+  }
 
 
 }

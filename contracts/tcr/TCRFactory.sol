@@ -23,6 +23,7 @@ contract TCRFactory {
     TCR.PermissionIds permissionIds,
     TCR.Parameters regParameters,
     TCR.Parameters paramChangeParameters,
+    bytes ipfsData,
     uint timestamp
   );
 
@@ -31,7 +32,8 @@ contract TCRFactory {
     address regEntryAddress,
     address creator,
     uint tokenAmount,
-    bytes tokenMetaHash,
+    bytes tokenMetaIpfsData,
+    bytes ipfsData,
     uint timestamp
   );
 
@@ -42,7 +44,9 @@ contract TCRFactory {
     TCR.EntriesGroup paramGroup,
     string key,
     uint value,
-    uint originalValue
+    uint originalValue,
+    bytes ipfsData,
+    uint timestamp
   );
 
   event ChallengeCreatedEvent(
@@ -53,6 +57,18 @@ contract TCRFactory {
     uint commitPeriodEnd,
     uint revealPeriodEnd,
     uint rewardPool,
+    bytes ipfsData,
+    uint timestamp
+  );
+
+  event RegistryEntryTokenMintedEvent(
+    bytes16 regEntry,
+    uint tokenId,
+    uint timestamp
+  );
+
+  event ParamChangeEntryAppliedEvent(
+    bytes16 paramChange,
     uint timestamp
   );
 
@@ -125,7 +141,8 @@ contract TCRFactory {
     TCR.RegistryEntryRepresentation memory _regEntryRepr,
     TCR.PermissionIds memory _permissionIds,
     TCR.Parameters memory _regParameters,
-    TCR.Parameters memory _paramChangeParameters
+    TCR.Parameters memory _paramChangeParameters,
+    bytes memory _ipfsData
   ) public
   {}
 
@@ -142,7 +159,8 @@ contract TCRFactory {
     bytes16 _regEntry,
     address _creator,
     uint _tokenAmount,
-    bytes memory _tokenMetaHash
+    bytes memory _tokenIpfsData,
+    bytes memory _ipfsData
   ) public
   {}
 
@@ -153,7 +171,21 @@ contract TCRFactory {
     TCR.EntriesGroup _paramGroup,
     string memory _key,
     uint _value,
-    uint _originalValue
+    uint _originalValue,
+    bytes memory _ipfsData
+  ) public
+  {}
+
+
+  function fireRegistryEntryTokenMintedEvent(
+    bytes16 _regEntry,
+    uint _tokenId
+  ) public
+  {}
+
+
+  function fireParamChangeEntryAppliedEvent(
+    bytes16 _paramChange
   ) public
   {}
 
@@ -165,7 +197,8 @@ contract TCRFactory {
     address _challenger,
     uint _commitPeriodEnd,
     uint _revealPeriodEnd,
-    uint _rewardPool
+    uint _rewardPool,
+    bytes memory _ipfsData
   ) public
   {}
 

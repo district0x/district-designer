@@ -1,46 +1,48 @@
 pragma solidity >=0.4.22 <0.7.0;
 
-import "./DistrictDesigner.sol";
+import "./../DDProxyFactory.sol";
 
-contract DDProxy {
+abstract contract BaseProxy {
 
-  DistrictDesigner public DDProxyDistrictDesigner;
-  bytes16 public DDProxyDistrict;
-  bytes32 public DDProxyPermissionId;
-  address public DDProxyTarget;
+  address public target;
+  bytes32 public contractName;
+  DDProxyFactory ddProxyFactory;
 
-  modifier DDisAllowed() {
-    require(DDProxyDistrictDesigner.isAllowed(DDProxyDistrict, DDProxyPermissionId, msg.sender));
+  modifier canChangeTarget() {
+    require(_canChangeTarget(msg.sender));
     _;
   }
 
-
   constructor(
-    DistrictDesigner _DDProxyDistrictDesigner,
-    bytes16 _DDProxyDistrict,
-    bytes32 _DDProxyPermissionId,
-    address _DDProxyTarget
+    bytes32 _contractName,
+    address _target
   ) public {
-    require(address(DDProxyDistrictDesigner) == address(0));
-    require(address(_DDProxyDistrictDesigner) != address(0));
-    require(_DDProxyTarget != address(0));
-    DDProxyDistrictDesigner = _DDProxyDistrictDesigner;
-    DDProxyDistrict = _DDProxyDistrict;
-    DDProxyPermissionId = _DDProxyPermissionId;
-    DDProxyTarget = _DDProxyTarget;
+    require(_target != address(0));
+    require(_contractName != bytes32(0));
+    ddProxyFactory = DDProxyFactory(msg.sender);
+    contractName = _contractName;
+    target = _target;
   }
 
   /**
    * @dev Replaces targer forwarder contract is pointing to
    * Only authenticated user can replace target
 
-   * @param _target New target to proxy into
+   * @param _newTarget New target to proxy into
   */
   function setTarget(
-    address _target
-  ) public DDisAllowed {
-    DDProxyTarget = _target;
+    address _newTarget,
+    bytes memory _ipfsData
+  ) public canChangeTarget {
+    require(_newTarget != address(0));
+    ddProxyFactory.fireProxyTargetChangedEvent(contractName, target, _newTarget, _ipfsData);
+    target = _newTarget;
   }
+
+
+  function _canChangeTarget(
+    address _sender
+  ) public view virtual returns(bool);
 
 
   /**
@@ -79,6 +81,6 @@ contract DDProxy {
 
 fallback(
 ) external payable {
-delegatedFwd(DDProxyTarget, msg.data);
+delegatedFwd(target, msg.data);
 }
 }
