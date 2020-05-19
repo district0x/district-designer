@@ -45,11 +45,6 @@ contract DistrictDesigner is Ownable {
   );
 
 
-  function initialize(
-  ) public {
-    transferOwnership(msg.sender);
-  }
-
 
   function isAllowed(
     bytes16 _district,

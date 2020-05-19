@@ -39,14 +39,13 @@
                   ^{:type String}
                   owner
 
-                  ^{:type ID}
+                  ^{:type District}
                   district]
 
 
-                 ContractEvents
-                 [^{:type String
-                    :datomic/unique :db.unique/identity}
-                  contract-name
+                 SmartContractEvents
+                 [^{:type SmartContract}
+                  smart-contract
 
                   ^{:type String
                     :datomic/index true}
@@ -95,9 +94,6 @@
                   ^{:type String}
                   ga-tracking-id
 
-                  ^{:type Boolean}
-                  emergency?
-
                   ^{:type DateTime}
                   created-on
 
@@ -118,9 +114,6 @@
                     :cardinality [1 n]}
                   permissions-user-roles
 
-                  ^{:type File
-                    :cardinality [0 n]}
-                  files
 
                   ^{:type Theme}
                   theme
@@ -203,13 +196,10 @@
                  File
                  [^{:type String
                     :datomic/unique :db.unique/identity}
-                  ipfs-hash
+                  hash
 
                   ^{:type String}
                   name
-
-                  ^{:type Boolean}
-                  directory?
 
                   ^{:type Boolean}
                   encrypted?
@@ -231,7 +221,7 @@
                   description
 
                   ^{:type String}
-                  admin
+                  owner
 
                   ^{:type String}
                   default-settings
@@ -242,7 +232,7 @@
 
                   ^{:type File
                     :cardinality [1 n]}
-                  styles
+                  files
 
                   ^{:type Integer}
                   installs-count]
@@ -261,7 +251,7 @@
                   logo
 
                   ^{:type String}
-                  admin
+                  owner
 
                   ^{:type String}
                   description
@@ -287,7 +277,7 @@
                   logo
 
                   ^{:type String}
-                  admin
+                  owner
 
                   ^{:type String}
                   description
@@ -406,23 +396,6 @@
                   category]
 
 
-                 OfferGroupFactory
-                 [^{:type String
-                    :datomic/unique :db.unique/identity}
-                  address
-
-                  ^{:type Integer}
-                  version
-
-                  ^{:type File}
-                  abi
-
-                  ^{:type File}
-                  offer-group-abi
-
-                  ^{:type File}
-                  offer-abi]
-
 
                  OfferGroup
                  [^{:type ID
@@ -432,17 +405,8 @@
                   ^{:type String}
                   name
 
-                  ^{:type String}
-                  address
-
-                  ^{:type Integer}
-                  version
-
-                  ^{:type File}
-                  abi
-
-                  ^{:type File}
-                  offer-abi
+                  ^{:type SmartContract}
+                  smart-contract
 
                   ^{:type TradeAsset
                     :cardinality [0 n]}
@@ -517,6 +481,9 @@
                     :datomic/unique :db.unique/identity}
                   uuid
 
+                  ^{:type SmartContract}
+                  smart-contract
+
                   ^{:type OfferGroup}
                   offers-group
 
@@ -578,9 +545,6 @@
 
                   ^{:type UnknownType}
                   field-uuid
-
-                  ^{:type DateTime}
-                  updated-on
 
                   ^{:type TradeValue}
                   offerer-traded-value
@@ -703,6 +667,10 @@
                   ^{:type String}
                   text
 
+                  ^{:type File
+                    :cardinality [0 n]}
+                  files
+
                   ^{:type DateTime}
                   created-on]
 
@@ -712,44 +680,13 @@
                  [ERC20 ERC721 ERC1155]
 
 
-                 TokenFactory
-                 [^{:type String
-                    :datomic/unique :db.unique/identity}
-                  address
-
-                  ^{:type Integer}
-                  version
-
-                  ^{:type TokenType}
-                  token-type
-
-                  ^{:type File}
-                  abi
-
-                  ^{:type File}
-                  token-abi]
-
-
-                 TokenFactoryEventsContract
-                 [^{:type String
-                    :datomic/unique :db.unique/identity}
-                  address
-
-                  ^{:type Integer}
-                  version
-
-                  ^{:type File}
-                  abi]
-
-
                  TokenContract
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
 
-                  ^{:type String
-                    :datomic/unique :db.unique/identity}
-                  address
+                  ^{:type SmartContract}
+                  smart-contract
 
                   ^{:type String}
                   name
@@ -778,9 +715,6 @@
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
                   total-supply
-
-                  ^{:type File}
-                  abi
 
                   ^{:type NFTToken
                     :cardinality [0 n]}
@@ -827,47 +761,16 @@
                  [ERC721 ERC1155 NO_TOKEN]
 
 
-                 TCRFactory
-                 [^{:type String
-                    :datomic/unique :db.unique/identity}
-                  address
-
-                  ^{:type Integer}
-                  version
-
-                  ^{:type File}
-                  abi
-
-                  ^{:type File}
-                  tcr-abi
-
-                  ^{:type File}
-                  reg-entry-abi
-
-                  ^{:type File}
-                  param-change-entry-abi]
-
-
                  TCR
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
 
-                  ^{:type String
-                    :datomic/unique :db.unique/identity}
-                  address
+                  ^{:type SmartContract}
+                  smart-contract
 
                   ^{:type TCRType}
                   type
-
-                  ^{:type File}
-                  abi
-
-                  ^{:type File}
-                  reg-entry-abi
-
-                  ^{:type File}
-                  param-change-entry-abi
 
                   ^{:type TokenContract}
                   voting-token-contract
@@ -923,6 +826,9 @@
                     :datomic/unique :db.unique/identity}
                   uuid
 
+                  ^{:type SmartContract}
+                  smart-contract
+
                   ^{:type UnknownType}
                   field-uuid
 
@@ -938,6 +844,9 @@
                  [^{:type ID
                     :datomic/unique :db.unique/identity}
                   uuid
+
+                  ^{:type SmartContract}
+                  smart-contract
 
                   ^{:type String}
                   db
@@ -1091,29 +1000,28 @@
     :events [{:event "<str>"
               :action "<str>"}]}
 
-
-   {:event (or :district-designer/add-district-designer :district-designer/update-district-designer)
+   {:event :district-designer/add-dd-proxy-factory
     :sender "<addr>"
-    :district-designer/address "<addr>"
-    :district-designer/version "<int>"
-    :district-designer/abi "<ipfs>"}
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
 
 
-   {:event (or :district-designer/add-dd-proxy-factory :district-designer/update-dd-proxy-factory)
+   {:event :district-designer/add-district-designer
     :sender "<addr>"
-    :dd-proxy-factory/address "<addr>"
-    :dd-proxy-factory/version "<int>"
-    :dd-proxy-factory/abi "<ipfs>"}
-
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
 
    {:event (or :district-designer/add-module :district-designer/update-module)
     :sender "<addr>"
     :module/id "<id>"
     :module/name "<str>"
     :module/logo "<ipfs>"
-    :module/admin "<addr>"
+    :module/owner "<addr>"
     :module/description "<str>"
-    :module/preview-images ["<ipfs>"]}
+    :module/preview-images [{:file/hash "<ipfs>"
+                             :file/name "<str>"}]}
 
    {:event :district-designer/remove-module
     :sender "<addr>"
@@ -1123,10 +1031,12 @@
     :sender "<addr>"
     :wizard/id "<str>"
     :wizard/name "<str>"
-    :wizard/logo "<ipfs>"
-    :wizard/admin "<addr>"
+    :wizard/logo {:file/hash "<ipfs>"
+                  :file/name "<str>"}
+    :wizard/owner "<addr>"
     :wizard/description "<str>"
-    :wizard/preview-images ["<ipfs>"]}
+    :wizard/preview-images [{:file/hash "<ipfs>"
+                             :file/name "<str>"}]}
 
    {:event :district-designer/remove-wizard
     :sender "<addr>"
@@ -1136,91 +1046,59 @@
     :sender "<addr>"
     :theme/id "<str>"
     :theme/name "<str>"
-    :theme/admin "<addr>"
+    :theme/owner "<addr>"
     :theme/description "<str>"
     :theme/default-settings "<edn>"
-    :theme/styles ["<ipfs>"]}
+    :theme/files [{:file/hash "<ipfs>"
+                   :file/name "<str>"}]}
 
    {:event :district-designer/remove-theme
     :sender "<addr>"
     :theme/id "tokens"}
 
-   {:event (or :district/add-district :district/update-district)
-    :sender "<addr>"
-    :district/uuid "<uuid>"
-    :district/name "<str>"
-    :district/subdomain "<str>"
-    :district/title "<str>"
-    :district/description "<str>"
-    :district/logo "<ipfs>"
-    :district/cover-image "<ipfs>"
-    :district/favicon "<ipfs>"
-    :district/ga-tracking-id "<str>"}
-
-
-   {:event (or :district/add-user-roles :district/update-user-roles)
-    :sender "<addr>"
-    :district "<uuid>"
-    :user-roles [{:user-role/uuid "<uuid>"
-                  :user-role/name "<str>"}]}
-
-
-   {:event :district/add-files
-    :sender "<addr>"
-    :district "<uuid>"
-    :files [{:file/ipfs-hash "<ipfs>"
-             :file/name "<str>"
-             :file/directory? "<bool>"
-             :file/encrypted? "<bool>"
-             :file/decryptable-by "<addr>"}]}
-
-
-   {:event :district/remove-files
-    :sender "<addr>"
-    :district "<uuid>"
-    :files ["<ipfs>"]}
-
 
    {:event :district/update-theme
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :district/theme "<uuid>"
     :district/theme-settings "<edn>"}
 
 
    {:event :district/update-styles
     :sender "<addr>"
-    :district "<uuid>"
-    :district/less-file "<ipfs>"
-    :district/css-file "<ipfs>"}
+    :district/uuid "<uuid>"
+    :district/less-file {:file/hash "<ipfs>"
+                         :file/name "<str>"}
+    :district/css-file {:file/hash "<ipfs>"
+                        :file/name "<str>"}}
 
 
    {:event :district/add-modules
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :modules ["<uuid>"]}
 
 
    {:event :district/remove-modules
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :modules ["<uuid>"]}
 
 
    {:event (or :district/add-pages :district/remove-pages)
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :pages ["<uuid>"]}
 
 
-   {:event :district/add-ui-components
+   {:event :district/add-ui-component
     :sender "<addr>"
-    :district "<uuid>"
-    :ui-components [{:ui-component/uuid "<uuid>"
-                     :ui-component/name "<str>"
-                     :ui-component/type "<str>"
-                     :ui-component/children ["<uuid>"]
-                     :ui-component/settings "<edn>"}]}
+    :district/uuid "<uuid>"
+    :ui-component/uuid "<uuid>"
+    :ui-component/name "<str>"
+    :ui-component/type "<str>"
+    :ui-component/children ["<uuid>"]
+    :ui-component/settings "<edn>"}
 
 
    {:event :district/update-ui-component
@@ -1234,16 +1112,16 @@
 
    {:event :district/remove-ui-components
     :sender "<addr>"
-    :district "<uuid>"
-    :ui-components ["<uuid>"]}
+    :district/uuid "<uuid>"
+    :ui-component/uuid "<uuid>"}
 
 
-   {:event (or :district/add-database-views :district/add-statistics-views)
+   {:event (or :district/add-database-view :district/add-statistics-view)
     :sender "<addr>"
-    :district "<uuid>"
-    :data-views [{:data-view/uuid "<uuid>"
-                  :data-view/name "<str>"
-                  :data-view/settings "<edn>"}]}
+    :district/uuid "<uuid>"
+    :data-view/uuid "<uuid>"
+    :data-view/name "<str>"
+    :data-view/settings "<edn>"}
 
 
    {:event (or :district/update-database-view :district/update-statistics-view)
@@ -1253,52 +1131,63 @@
     :data-view/settings "<edn>"}
 
 
-   {:event (or :district/remove-database-views :district/remove-statistics-views)
+   {:event (or :district/remove-database-view :district/remove-statistics-view)
     :sender "<addr>"
-    :district "<uuid>"
-    :data-views ["<uuid>"]}
+    :district/uuid "<uuid>"
+    :data-view/uuid "<uuid>"}
 
 
-   {:event (or :tokens/add-token-factory :token/update-token-factory)
+   {:event :tokens/add-erc20-token-factory
     :sender "<addr>"
-    :token-factory/address "<addr>"
-    :token-factory/version "<int>"
-    :token-factory/token-type "<token-type>"
-    :token-factory/abi "<ipfs>"}
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
 
 
-   {:event (or :tokens/add-token-factory-events-contract :tokens/update-token-factory-events-contract)
+   {:event :tokens/add-erc721-token-factory
     :sender "<addr>"
-    :token-factory-events-contract/address "<addr>"
-    :token-factory-events-contract/version "<int>"
-    :token-factory-events-contract/abi "<ipfs>"}
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
 
 
-   {:event (or :tokens/add-token-contract :token/update-token-contract)
+   {:event :tokens/add-erc1155-token-factory
     :sender "<addr>"
-    :district "<uuid>"
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
+
+
+   {:event :tokens/add-token-factory-events
+    :sender "<addr>"
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
+
+
+   {:event :token/update-token-contract
+    :sender "<addr>"
+    :district/uuid "<uuid>"
     :token-contract/uuid "<uuid>"
-    :token-contract/type "<token-type>"
     :token-contract/metadata-format "<str>"
-    :token-contract/metadata-format-settings "<edn>"
-    :token-contract/abi "<ipfs>"}
+    :token-contract/metadata-format-settings "<edn>"}
 
 
    {:event :tokens/remove-token-contract
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :token-contract/uuid "<uuid>"}
 
 
    {:event (or :tokens/add-district-token-contracts :tokens/remove-district-token-contracts)
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :token-contracts ["<uuid>"]}
 
 
    {:event :tokens/add-token-contract-misconfig-report
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :token-contract/uuid "<uuid>"
     :token-contract/reported-misconfig-comment "<str>"}
 
@@ -1310,15 +1199,17 @@
 
    {:event :users/add-direct-message
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :message/uuid "<uuid>"
     :message/receiver "<address>"
-    :message/text "<str>"}
+    :message/text "<str>"
+    :message/files [{:file/hash "<ipfs>"
+                     :file/name "<str>"}]}
 
 
    {:event (or :users/add-user-profile :users/update-user-profile)
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :user-profile/uuid "<uuid>"
     :user-profile/name "<str>"
     :user-profile/field-configs [{:field-config/uuid "<uuid>"
@@ -1327,19 +1218,20 @@
                                   :field-config/type "<str>"
                                   :field-config/settings "<edn>"}]
     :user-profile/global-enabled? "<bool>"
-    :user-profile/global-logo "<ipfs>"
+    :user-profile/global-logo {:file/hash "<ipfs>"
+                               :file/name "<str>"}
     :user-profile/global-description "<str>"}
 
 
    {:event :users/remove-user-profile
     :sender "<addr>"
-    :district "<uuid>"
-    :user-profile "<uuid>"}
+    :district/uuid "<uuid>"
+    :user-profile/uuid "<uuid>"}
 
 
    {:event (or :users/add-district-user-profiles :users/remove-district-user-profiles)
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :user-profiles ["<uuid>"]}
 
 
@@ -1348,18 +1240,16 @@
     :user/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
 
 
-   {:event (or :marketplace/add-offer-group-factory :marketplace/update-offer-group-factory)
+   {:event :marketplace/add-offer-group-factory
     :sender "<addr>"
-    :offer-group-factory/address "<addr>"
-    :offer-group-factory/version "<int>"
-    :offer-group-factory/abi "<ipfs>"
-    :offer-group-factory/offer-group-abi "<ipfs>"
-    :offer-group-factory/offer-abi "<ipfs>"}
+    :smart-contract/address "<addr>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
 
 
    {:event :marketplace/update-offer-group
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :offer-group/uuid "<uuid>"
     :offer-group/name "<str>"
     :offer-group/offer-field-configs [{:field-config/uuid "<uuid>"
@@ -1375,71 +1265,57 @@
                                           :field-config/settings "<edn>"}]
 
     :offer-group/global-enabled? "<bool>"
-    :offer-group/global-logo "<ipfs>"
+    :offer-group/global-logo {:file/hash "<ipfs>"
+                              :file/name "<str>"}
     :offer-group/global-description "<str>"}
 
 
-   {:event (or :marketplace/remove-offer-group)
+   {:event :marketplace/remove-offer-group
     :sender "<addr>"
-    :district "<uuid>"
-    :offer-group "<uuid>"}
+    :district/uuid "<uuid>"
+    :offer-group/uuid "<uuid>"}
 
 
    {:event (or :marketplace/add-district-offer-groups :marketplace/remove-district-offer-groups)
     :sender "<addr>"
-    :district "<uuid>"
+    :district/uuid "<uuid>"
     :offer-groups ["<uuid>"]}
 
 
-   {:event (or :marketplace/add-offer :marketplace/update-offer)
+   {:event :marketplace/update-offer
     :sender "<addr>"
-    :offer-group "<uuid>"
+    :offer-group/uuid "<uuid>"
     :offer/uuid "<uuid>"
     :offer/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
 
 
-   {:event :marketplace/add-offer-response
-    :sender "<addr>"
-    :offer "<uuid>"
-    :offer-response/uuid "<uuid>"
-    :offer-response/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
-
-
    {:event :marketplace/add-message
     :sender "<addr>"
-    :offer-response "<uuid>"
+    :offer-response/uuid "<uuid>"
     :message/uuid "<uuid>"
     :message/receiver "<address>"
-    :message/text "<str>"}
-
-
-   {:event :marketplace/add-messages
-    :sender "<addr>"
-    :offer-response "<uuid>"
-    :messages [{:message/uuid "<uuid>"
-                :message/receiver "<address>"
-                :message/text "<str>"}]}
+    :message/text "<str>"
+    :message/files [{:file/hash "<ipfs>"
+                     :file/name "<str>"}]}
 
 
    {:event (or :marketplace/add-feedback :marketplace/update-feedback)
     :sender "<addr>"
-    :offer-response "<uuid>"
+    :offer-response/uuid "<uuid>"
     :feedback/uuid "<uuid>"
     :feedback/rating "<float>"
     :feedback/text "<str>"}
 
 
-   {:event (or :tcr/add-tcr-factory :tcr/update-tcr-factory)
+   {:event :tcr/add-tcr-factory
     :sender "<addr>"
-    :tcr-factory/address "<addr>"
-    :tcr-factory/version "<int>"
-    :tcr-factory/abi "<ipfs>"
-    :tcr-factory/tcr-abi "<ipfs>"
-    :tcr-factory/reg-entry-abi "<ipfs>"
-    :tcr-factory/param-change-entry-abi "<ipfs>"}
+    :smart-contract/address "<addr>"
+    :smart-contract/version "<int>"
+    :smart-contract/abi {:file/hash "<ipfs>"
+                         :file/name "<str>"}}
 
 
-   {:event (or :tcr/add-tcr :tcr/update-tcr)
+   {:event :tcr/update-tcr
     :sender "<addr>"
     :tcr/uuid "<uuid>"
     :tcr/reg-entry-field-configs [{:field-config/uuid "<uuid>"
@@ -1448,7 +1324,8 @@
                                    :field-config/type "<str>"
                                    :field-config/settings "<edn>"}]
     :tcr/global-enabled? "<bool>"
-    :tcr/global-logo "<ipfs>"
+    :tcr/global-logo {:file/hash "<ipfs>"
+                      :file/name "<str>"}
     :tcr/global-description "<str>"}
 
 
@@ -1456,21 +1333,4 @@
     :sender "<addr>"
     :tcr/uuid "<uuid>"}
 
-
-   {:event :tcr/add-reg-entry
-    :sender "<addr>"
-    :reg-entry/uuid "<uuid>"
-    :reg-entry/field-909659f5-560c-4640-9d67-7a1977da92b5 "<any>"}
-
-
-   {:event :tcr/add-param-change-reg-entry
-    :sender "<addr>"
-    :param-change-entry/uuid "<uuid>"
-    :param-change-entry/comment "<str>"}
-
-
-   {:event :tcr/add-challenge
-    :sender "<addr>"
-    :challenge/uuid "<uuid>"
-    :challenge/comment "<str>"}
    ])

@@ -5,7 +5,6 @@ import "./../DDProxyFactory.sol";
 abstract contract BaseProxy {
 
   address public target;
-  bytes32 public contractName;
   DDProxyFactory ddProxyFactory;
 
   modifier canChangeTarget() {
@@ -14,13 +13,10 @@ abstract contract BaseProxy {
   }
 
   constructor(
-    bytes32 _contractName,
     address _target
   ) public {
     require(_target != address(0));
-    require(_contractName != bytes32(0));
     ddProxyFactory = DDProxyFactory(msg.sender);
-    contractName = _contractName;
     target = _target;
   }
 
@@ -35,7 +31,7 @@ abstract contract BaseProxy {
     bytes memory _ipfsData
   ) public canChangeTarget {
     require(_newTarget != address(0));
-    ddProxyFactory.fireProxyTargetChangedEvent(contractName, target, _newTarget, _ipfsData);
+    ddProxyFactory.fireProxyTargetChangedEvent(target, _newTarget, _ipfsData);
     target = _newTarget;
   }
 

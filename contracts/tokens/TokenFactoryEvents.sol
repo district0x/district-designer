@@ -1,8 +1,9 @@
 pragma solidity >=0.4.22 <0.7.0;
 
 import "../district_designer/DistrictDesigner.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TokenFactoryEvents {
+contract TokenFactoryEvents is Ownable {
 
   uint public constant version = 1;
 
@@ -28,7 +29,7 @@ contract TokenFactoryEvents {
   function setFactories(
     address[] memory factories,
     bool isActive
-  ) public {
+  ) public onlyOwner {
   }
 
 
