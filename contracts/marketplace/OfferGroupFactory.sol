@@ -13,7 +13,7 @@ contract OfferGroupFactory {
     bytes16 district,
     bytes16 offerGroup,
     address offerGroupAddress,
-    uint offerGroupVersion,
+    uint version,
     Offer.TradeAsset[] assetsToOffer,
     Offer.TradeAsset[] assetsToRequest,
     Offer.OfferType offerType,
@@ -37,6 +37,8 @@ contract OfferGroupFactory {
 
   event OfferCreatedEvent(
     bytes16 offer,
+    address offerAddress,
+    uint version,
     address offerer,
     Offer.TradeValue offeredValue,
     Offer.TradeValue[] requestedValues,
@@ -127,6 +129,8 @@ contract OfferGroupFactory {
 
   function fireOfferCreatedEvent(
     bytes16 _offer,
+    address _offerAddress,
+    uint _version,
     address _offerer,
     Offer.TradeValue memory _offeredValue,
     Offer.TradeValue[] memory _requestedValues,
