@@ -7,6 +7,8 @@ pragma solidity >=0.4.22 <0.7.0;
 // WIP
 contract DDERC1155 {
 
+  uint public constant version = 1;
+
   constructor(
   ) public {
   }

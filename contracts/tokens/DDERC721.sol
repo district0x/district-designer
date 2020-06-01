@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract DDERC721 is ERC721, ERC721Burnable, Ownable {
 
+  uint public constant version = 1;
+
   constructor(
     string memory _tokenName,
     string memory _tokenSymbol

@@ -6,9 +6,8 @@ import "./TCR.sol";
 
 contract ParamChangeEntry is Challengable {
 
-  constructor(
+  function initialize(
     address _creator,
-    bytes16 _paramChangeEntry,
     TCR.EntriesGroup _entriesGroup,
     string memory _key,
     uint _value,

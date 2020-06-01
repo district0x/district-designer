@@ -1,14 +1,15 @@
 pragma solidity >=0.4.22 <0.7.0;
 
 import "./../DDProxyFactory.sol";
+import "./UpdateTargetAndCallFallback.sol";
 
 abstract contract BaseProxy {
 
   address public target;
   DDProxyFactory ddProxyFactory;
 
-  modifier canChangeTarget() {
-    require(_canChangeTarget(msg.sender));
+  modifier canUpdateTarget() {
+    require(_canUpdateTarget(msg.sender));
     _;
   }
 
@@ -26,17 +27,28 @@ abstract contract BaseProxy {
 
    * @param _newTarget New target to proxy into
   */
-  function setTarget(
+  function updateTarget(
     address _newTarget,
     bytes memory _ipfsData
-  ) public canChangeTarget {
+  ) public canUpdateTarget {
     require(_newTarget != address(0));
-    ddProxyFactory.fireProxyTargetChangedEvent(target, _newTarget, _ipfsData);
+    ddProxyFactory.fireProxyTargetUpdatedEvent(target, _newTarget, _ipfsData);
     target = _newTarget;
   }
 
 
-  function _canChangeTarget(
+  function updateTargetAndCall(
+    address _newTarget,
+    bytes memory _ipfsData,
+    bytes memory _data
+  ) public canUpdateTarget {
+    updateTarget(_newTarget, _ipfsData);
+    UpdateTargetAndCallFallBack _this = UpdateTargetAndCallFallBack(address(this));
+    _this.targetUpdated(_newTarget, _ipfsData, _data);
+  }
+
+
+  function _canUpdateTarget(
     address _sender
   ) public view virtual returns(bool);
 

@@ -13,22 +13,26 @@ contract TokenFactoryEvents is Ownable {
     ERC1155
   }
 
-  event TokenCreatedEvent(
+  event TokenCreated(
     bytes16 district,
     bytes16 token,
     address tokenAddress,
     TokenType tokenType,
+    bytes tokenIpfsAbi,
+    uint tokenVersion,
     string tokenName,
     string tokenSymbol,
+    string baseMetadataUri,
     uint8 decimalUnits,
     address owner,
-    bytes ipfsData
+    bytes ipfsData,
+    uint timestamp
   );
 
 
   function setFactories(
     address[] memory factories,
-    bool isActive
+    bool[] memory isActive
   ) public onlyOwner {
   }
 
@@ -38,8 +42,11 @@ contract TokenFactoryEvents is Ownable {
     bytes16 _token,
     address _tokenAddress,
     TokenType _tokenType,
+    bytes memory _tokenIpfsAbi,
+    uint _tokenVersion,
     string memory _tokenName,
     string memory _tokenSymbol,
+    string memory baseMetadataUri,
     uint8 _decimalUnits,
     address _owner,
     bytes memory _ipfsData

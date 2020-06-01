@@ -1,0 +1,225 @@
+(ns server-tests.tcr.spec-tests
+  (:require
+    [cljs.spec.alpha :as s]
+    [cljs.test :refer-macros [deftest is testing run-tests use-fixtures async]]
+    [tcr.shared.spec.ipfs-events]
+    [tcr.shared.spec.smart-contract-events]))
+
+
+(deftest ipfs-events-spec-tests
+  (is (s/valid? :tcr/update-tcr
+                {:event :tcr/update-tcr
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :tcr/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :tcr/name "abc"
+                 :tcr/reg-entry-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                :field-config/name "abc"
+                                                :field-config/namespace "abc"
+                                                :field-config/type "abc"
+                                                :field-config/settings "{:a 1 :b 2}"}]
+                 :tcr/global-enabled? true
+                 :tcr/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                                   :file/name "abc"}
+                 :tcr/global-description "abc"}))
+
+  (is (s/valid? :tcr/add-district-tcr
+                {:event :tcr/add-district-tcr
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :tcr/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"})))
+
+
+(deftest smart-contract-events-spec-tests
+  (is (s/valid? :tcr/tcr-created
+                {:event :tcr/tcr-created
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :district #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :tcr #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :tcr-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :tcr-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :tcr-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :tcr-version 1
+                 :voting-token "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :tcr-type :tcr-type/challengeable-anytime
+                 :reg-entry-representation {:category :tcr-reg-entry-representation-category/erc-721
+                                            :token-name "Name"
+                                            :token-symbol "Symbol"
+                                            :base-metadata-uri "uri"}
+                 :permission-user-roles {:create-reg-entry-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
+                                         :create-param-change-entry-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}
+                 :reg-entry-parameters {:challenge-deposit-dispensation 1
+                                        :challenge-period-duration 1
+                                        :deposit 1
+                                        :vote-commit-period-duration 1
+                                        :vote-quorum 1
+                                        :vote-reveal-period-duration 1}
+                 :param-change-entry-parameters {:challenge-deposit-dispensation 1
+                                                 :challenge-period-duration 1
+                                                 :deposit 1
+                                                 :vote-commit-period-duration 1
+                                                 :vote-quorum 1
+                                                 :vote-reveal-period-duration 1}
+                 :ipfs-data {:event :tcr/tcr-created
+                             :tcr/name "Some Name"
+                             :tcr/reg-entry-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                            :field-config/name "Some Field"
+                                                            :field-config/namespace "Marketplace"
+                                                            :field-config/type "Text"
+                                                            :field-config/settings "{:a 1 :b 2}"}]
+
+                             :tcr/global-enabled? true
+                             :tcr/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
+                             :tcr/global-description "Some"}}))
+
+
+  (is (s/valid? :tcr/registry-entry-created
+                {:event :tcr/registry-entry-created
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :tcr #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :reg-entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :reg-entry-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :reg-entry-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :reg-entry-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :reg-entry-version 1
+                 :creator "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :token-amount 1
+                 :token-meta-ipfs-data "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :ipfs-data {:event :tcr/registry-entry-created
+                             :reg-entry/field-909659f5-560c-4640-9d67-7a1977da92b5 "Some"}}))
+
+
+  (is (s/valid? :tcr/param-change-entry-created
+                {:event :tcr/param-change-entry-created
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :tcr #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :param-change-entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :param-change-entry-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :param-change-entry-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :param-change-entry-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :param-change-entry-version 1
+                 :creator "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :entries-group :entries-group/registry-entries
+                 :key "deposit"
+                 :value 10
+                 :original-value 1
+                 :ipfs-data {:event :tcr/param-change-entry-created
+                             :param-change-entry/comment "some"}}))
+
+
+  (is (s/valid? :tcr/challenge-created
+                {:event :tcr/challenge-created
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/registry-entries
+                 :challenge #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :challenger "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :commit-period-end 1
+                 :reveal-period-end 1
+                 :reward-pool 1
+                 :ipfs-data {:event :tcr/challenge-created
+                             :challenge/comment "some"}}))
+
+
+  (is (s/valid? :tcr/registry-entry-token-minted
+                {:event :tcr/registry-entry-token-minted
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :reg-entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :token-id 1}))
+
+
+  (is (s/valid? :tcr/param-change-entry-applied
+                {:event :tcr/param-change-entry-applied
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :param-change-entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"}))
+
+
+  (is (s/valid? :tcr/challenger-reward-claimed
+                {:event :tcr/challenger-reward-claimed
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/param-change-entries
+                 :challenger "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :amount 1}))
+
+
+  (is (s/valid? :tcr/creator-reward-claimed
+                {:event :tcr/creator-reward-claimed
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/param-change-entries
+                 :creator "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :amount 1}))
+
+
+  (is (s/valid? :tcr/votes-reclaimed
+                {:event :tcr/votes-reclaimed
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/param-change-entries
+                 :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :amount 1}))
+
+
+  (is (s/valid? :tcr/vote-committed
+                {:event :tcr/vote-committed
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/param-change-entries
+                 :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :amount 1}))
+
+
+  (is (s/valid? :tcr/vote-revealed
+                {:event :tcr/vote-revealed
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/param-change-entries
+                 :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :vote-option :tcr-vote-option/include
+                 :amount 1}))
+
+
+  (is (s/valid? :tcr/vote-reward-claimed
+                {:event :tcr/vote-reward-claimed
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :entry #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :entries-group :entries-group/param-change-entries
+                 :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :amount 1}))
+
+
+  (is (s/valid? :tcr/base-contracts-updated
+                {:event :tcr/base-contracts-updated
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :tcr-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :tcr-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :reg-entry-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :reg-entry-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :param-change-entry-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :param-change-entry-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}))
+
+
+  (is (s/valid? :tcr/tcr-base-contracts-updated
+                {:event :tcr/tcr-base-contracts-updated
+                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :timestamp 1590913803
+                 :tcr #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :reg-entry-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :reg-entry-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
+                 :param-change-entry-base-contract "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :param-change-entry-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"})))

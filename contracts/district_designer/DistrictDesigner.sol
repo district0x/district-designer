@@ -9,46 +9,56 @@ contract DistrictDesigner is Ownable {
 
   uint public constant version = 1;
 
-  event DistrictInitializedEvent(
+  struct Permission {
+    bytes32 permissionId;
+    bytes16[] userRoleIds;
+  }
+
+  struct UserRole {
+    bytes16 userRoleId;
+    address[] addresses;
+    bool isRemoved;
+  }
+
+  event DistrictInitialized(
     bytes16 indexed district,
-    bytes32[] permissionIds,
-    bytes16[][] permissionUserRoles,
-    bytes16[] userRoles,
-    address[][] userRoleAddresses,
-    bytes16 adminUserRole,
+    Permission[] permissions,
+    UserRole[] userRoles,
+    bytes16 adminUserRoleId,
     address treasury,
-    bytes ipfsData
+    bytes ipfsData,
+    uint timestamp
   );
 
-  event PermissionsUpdatedEvent(
+  event PermissionsUpdated(
     bytes16 indexed district,
-    bytes32[] permissionIds,
-    bytes16[][] userRoles
+    Permission[] permissions,
+    uint timestamp
   );
 
-  event UserRolesUpdatedEvent(
+  event UserRolesUpdated(
     bytes16 indexed district,
-    bytes16[] userRoles,
-    address[][] addresses,
-    bytes16[] removeUserRoles,
-    bytes ipfsData
+    UserRole[] userRoles,
+    bytes ipfsData,
+    uint timestamp
   );
 
-  event DistrictTreasuryChangedEvent(
+  event DistrictTreasuryUpdated(
     bytes16 district,
-    address treasury
+    address treasury,
+    uint timestamp
   );
 
-  event EmergencyChangedEvent(
+  event EmergencyUpdated(
     bytes32 moduleId,
-    bool isEmergency
+    bool isEmergency,
+    uint timestamp
   );
-
 
 
   function isAllowed(
     bytes16 _district,
-    bytes32 _permissionId,
+    bytes32 _permission,
     address _address
   ) public view
     returns (bool) {
@@ -58,11 +68,9 @@ contract DistrictDesigner is Ownable {
 
   function initializeDistrict(
     bytes16 _district,
-    bytes32[] memory _permissionIds,
-    bytes16[][] memory _permissionUserRoles,
-    bytes16[] memory _userRoles,
-    address[][] memory _userRoleAddresses,
-    bytes16 _adminUserRole,
+    Permission[] memory _permissions,
+    UserRole[] memory _userRoles,
+    bytes16 _adminUserRoleId,
     address _treasury,
     bytes memory _ipfsData
   ) public {
@@ -71,17 +79,14 @@ contract DistrictDesigner is Ownable {
 
   function updatePermissions(
     bytes16 _district,
-    bytes32[] memory _permissionIds,
-    bytes16[][] memory _userRoles
+    Permission[] memory _permissions
   ) public {
   }
 
 
   function updateUserRoles(
     bytes16 _district,
-    bytes16[] memory _userRoles,
-    address[][] memory _addresses,
-    bytes16[] memory _removeUserRoles,
+    UserRole[] memory _userRoles,
     bytes memory _ipfsData
   ) public {
   }
@@ -90,13 +95,31 @@ contract DistrictDesigner is Ownable {
   function adminUserRole(
     bytes16 _district
   ) public view
-  returns (bytes16 _userRole) {
+  returns (UserRole memory _userRole) {
     return _userRole;
   }
 
 
   function adminUserRoleHasAddress(
     bytes16 _district,
+    address _address
+  ) public view
+  returns (bool) {
+    return true;
+  }
+
+
+  function userRoleHasAddress(
+    bytes16 _userRoleId,
+    address _address
+  ) public view
+  returns (bool) {
+    return true;
+  }
+
+
+  function userRolesHaveAddress(
+    bytes16[] memory _userRoleIds,
     address _address
   ) public view
   returns (bool) {
@@ -112,7 +135,7 @@ contract DistrictDesigner is Ownable {
   }
 
 
-  function setDistrictTreasury(
+  function updateDistrictTreasury(
     bytes16 _district,
     address _treasury
   ) public {
@@ -127,7 +150,7 @@ contract DistrictDesigner is Ownable {
   }
 
 
-  function setEmergency(
+  function updateEmergency(
     bytes32 _moduleId,
     address _isEmergency
   ) public onlyOwner {

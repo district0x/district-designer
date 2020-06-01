@@ -6,9 +6,8 @@ import "./TCR.sol";
 
 contract RegistryEntry is Challengable {
 
-  constructor(
+  function initialize(
     address _creator,
-    bytes16 _regEntry,
     uint _tokenAmount,
     bytes memory _tokenIpfsData,
     bytes memory _ipfsData

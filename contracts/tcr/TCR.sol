@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "../district_designer/DDProxyFactory.sol";
 
-contract TCR {
+contract TCR is UpdateTargetAndCallFallBack {
 
   uint public constant version = 1;
 
@@ -41,12 +41,12 @@ contract TCR {
     RegistryEntryRepresentationCategory category;
     string tokenName;
     string tokenSymbol;
-    string baseMetadataURI;
+    string baseMetadataUri;
   }
 
-  struct PermissionIds {
-    bytes32 createRegEntry;
-    bytes32 createParamChangeEntry;
+  struct PermissionUserRoles {
+    bytes16[] createRegEntryUserRoles;
+    bytes16[] createParamChangeEntryUserRoles;
   }
 
   struct Parameters {
@@ -58,51 +58,71 @@ contract TCR {
     uint voteQuorum;
   }
 
+  struct BaseContract {
+    address baseContractAddress;
+    bytes ipfsAbi;
+  }
 
-  constructor(
+  function initialize(
+    BaseContract memory regEntryBaseContract,
+    BaseContract memory paramChangeBaseContract,
     bytes16 _district,
-    bytes16 _tcr,
     address _votingToken,
     TCR.TCRType _tcrType,
     TCR.RegistryEntryRepresentation memory _regEntryRepr,
-    TCR.PermissionIds memory _permissionIds,
+    TCR.PermissionUserRoles memory _permissionUserRoles,
     TCR.Parameters memory _regParameters,
     TCR.Parameters memory _paramChangeParameters,
     bytes memory _ipfsData
-  ) public
-  {}
+  ) public {
+  }
 
 
   function createRegistryEntry(
     address _creator,
-    bytes16 _regEntry,
     uint _tokenAmount,
     bytes memory _tokenIpfsData,
     bytes memory _ipfsData
-  ) public
-  {}
+  ) public {
+  }
 
 
   function createParamChangeEntry(
     address _creator,
-    bytes16 _paramChangeEntry,
     EntriesGroup _entriesGroup,
     string memory _key,
     uint _value,
     bytes memory _ipfsData
-  ) public
-  {}
+  ) public {
+  }
 
 
   function mintRegistryEntryToken(
-    bytes16 _regEntry
-  ) public
-  {}
+    address _regEntry
+  ) public {
+  }
 
 
   function applyParamChangeEntry(
-    bytes16 _paramChangeEntry
-  ) public
-  {}
+    address _paramChangeEntry
+  ) public {
+  }
+
+
+  function updateBaseContracts(
+    address _regEntryBaseContract,
+    bytes memory _regEntryIpfsAbi,
+    address _paramChangeEntryBaseContract,
+    bytes memory _paramChangeEntryIpfsAbi
+  ) internal {
+  }
+
+
+  function targetUpdated(
+    address _newTarget,
+    bytes memory _ipfsData,
+    bytes memory _data
+  ) public override {
+  }
 
 }

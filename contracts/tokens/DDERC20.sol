@@ -7,6 +7,8 @@ import "./ApproveAndCallFallback.sol";
 
 contract DDERC20 is ERC20Snapshot, Ownable {
 
+  uint public constant version = 1;
+
   constructor(
     string memory _tokenName,
     string memory _tokenSymbol,

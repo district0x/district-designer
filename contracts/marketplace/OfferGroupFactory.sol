@@ -5,40 +5,41 @@ import "../district_designer/DistrictDesigner.sol";
 import "../district_designer/DDProxyFactory.sol";
 import "./Offer.sol";
 
-contract OfferGroupFactory {
+contract OfferGroupFactory is UpdateTargetAndCallFallBack {
 
   uint public constant version = 1;
 
-  event OfferGroupCreatedEvent(
+  event OfferGroupCreated(
     bytes16 district,
-    bytes16 offerGroup,
-    address offerGroupAddress,
-    uint version,
+    address offerGroup,
+    address offerGroupBaseContract,
+    bytes offerGroupIpfsAbi,
+    uint offerGroupversion,
     Offer.TradeAsset[] assetsToOffer,
     Offer.TradeAsset[] assetsToRequest,
     Offer.OfferType offerType,
     Offer.Fees fees,
-    Offer.PermissionIds permissionIds,
-    address[] disputeResolvers,
-    Offer.OfferSettings offerSettings,
+    Offer.PermissionUserRoles permissionUserRoles,
+    bool allowMultipleTrades,
     bytes ipfsData,
     uint timestamp
   );
 
-  event OfferGroupUpdatedEvent(
-    bytes16 offerGroup,
+  event OfferGroupUpdated(
+    address offerGroup,
     Offer.TradeAsset[] addedAssetsToOffer,
     Offer.TradeAsset[] addedAssetsToRequest,
     Offer.Fees fees,
-    address[] disputeResolvers,
+    Offer.PermissionUserRoles permissionUserRoles,
     bytes ipfsData,
     uint timestamp
   );
 
-  event OfferCreatedEvent(
-    bytes16 offer,
-    address offerAddress,
-    uint version,
+  event OfferCreated(
+    address offer,
+    address offerBaseContract,
+    bytes offerIpfsAbi,
+    uint offerVersion,
     address offerer,
     Offer.TradeValue offeredValue,
     Offer.TradeValue[] requestedValues,
@@ -47,8 +48,8 @@ contract OfferGroupFactory {
     uint timestamp
   );
 
-  event OfferResponseCreatedEvent(
-    bytes16 offer,
+  event OfferResponseCreated(
+    address offer,
     address respondent,
     bytes16 offerResponse,
     Offer.TradeValue offererTradedValue,
@@ -57,30 +58,30 @@ contract OfferGroupFactory {
     uint timestamp
   );
 
-  event OfferResponseAcceptedEvent(
+  event OfferResponseAccepted(
     bytes16 offerResponse,
     Offer.TradeValue offererTradedValue,
     Offer.TradeValue respondentTradedValue,
     uint timestamp
   );
 
-  event OfferClosedEvent(
-    bytes16 offer,
+  event OfferClosed(
+    address offer,
     uint timestamp
   );
 
-  event OfferResponseCanceledEvent(
+  event OfferResponseCanceled(
     bytes16 offerResponse,
     uint timestamp
   );
 
-  event DisputeRaisedEvent(
+  event DisputeRaised(
     bytes16 offerResponse,
     address raisedBy,
     uint timestamp
   );
 
-  event DisputeResolvedEvent(
+  event DisputeResolved(
     bytes16 offerResponse,
     Offer.TradeValue valueForOfferer,
     Offer.TradeValue valueForRespondent,
@@ -88,32 +89,57 @@ contract OfferGroupFactory {
     uint timestamp
   );
 
+  event BaseContractsUpdated(
+    address offerGroupBaseContract,
+    bytes offerGroupIpfsAbi,
+    address offerBaseContract,
+    bytes offerIpfsAbi,
+    uint timestamp
+  );
+
+  event OfferGroupBaseContractsUpdated(
+    address offerGroup,
+    address offerBaseContract,
+    bytes offerIpfsAbi,
+    uint timestamp
+  );
+
   function initialize(
     DistrictDesigner _districtDesigner,
     address _offerGroupBaseContract,
-    address _offerBaseContract
+    bytes memory _offerGroupIpfsAbi,
+    address _offerBaseContract,
+    bytes memory _offerIpfsAbi
   ) public {}
 
 
   function createOfferGroup(
     bytes16 _district,
-    bytes16 _offerGroup,
     Offer.TradeAsset[] memory _assetsToOffer,
     Offer.TradeAsset[] memory _assetsToRequest,
     Offer.OfferType _offerType,
     Offer.Fees memory _fees,
-    Offer.PermissionIds memory _permissionIds,
-    address[] memory _disputeResolvers,
-    Offer.OfferSettings memory _offerSettings,
+    Offer.PermissionUserRoles memory _permissionUserRoles,
+    bool _allowMultipleTrades,
     bytes memory _ipfsData
   ) public {
   }
 
 
-  function setBaseContracts(
+  function updateBaseContracts(
     address _offerGroupBaseContract,
-    address _offerBaseContract
-  ) public {
+    bytes memory _offerGroupIpfsAbi,
+    address _offerBaseContract,
+    bytes memory _offerIpfsAbi
+  ) internal {
+  }
+
+
+  function targetUpdated(
+    address _newTarget,
+    bytes memory _ipfsData,
+    bytes memory _data
+  ) public override {
   }
 
 
@@ -121,16 +147,17 @@ contract OfferGroupFactory {
     Offer.TradeAsset[] memory _addedAssetsToOffer,
     Offer.TradeAsset[] memory _addedAssetsToRequest,
     Offer.Fees memory _fees,
-    address[] memory disputeResolvers,
+    Offer.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
   ) public {
   }
 
 
   function fireOfferCreatedEvent(
-    bytes16 _offer,
-    address _offerAddress,
-    uint _version,
+    address _offer,
+    address _offerBaseContract,
+    bytes memory _offerIpfsAbi,
+    uint _offerVersion,
     address _offerer,
     Offer.TradeValue memory _offeredValue,
     Offer.TradeValue[] memory _requestedValues,
@@ -141,7 +168,7 @@ contract OfferGroupFactory {
 
 
   function fireOfferResponseCreatedEvent(
-    bytes16 _offer,
+    address _offer,
     address _respondent,
     bytes16 _offerResponse,
     Offer.TradeValue memory _offererTradedValue,
@@ -160,7 +187,7 @@ contract OfferGroupFactory {
 
 
   function fireOfferClosedEvent(
-    bytes16 _offer
+    address _offer
   ) public {
   }
 
@@ -184,6 +211,12 @@ contract OfferGroupFactory {
     Offer.TradeValue memory _valueForRespondent,
     address _resolvedBy
   ) public {
+  }
 
+
+  function fireOfferGroupBaseContractsUpdatedEvent(
+    address offerBaseContract,
+    bytes memory offerIpfsAbi
+  ) public {
   }
 }

@@ -1,10 +1,12 @@
 (ns district-designer.server.model
   (:require
     [hodur-engine.core :as hodur]
-    [hodur-graphviz-schema.core :as hodur-graphviz]))
+    [hodur-graphviz-schema.core :as hodur-graphviz]
+    [hodur-datomic-schema.core :as hodur-datomic]))
 
 (def meta-db (hodur/init-schema
-               '[^:graphviz/tag
+               '[^{:datomic/tag true
+                   :graphviz/tag true}
                  default
 
                  ^:enum
@@ -431,15 +433,11 @@
 
 
                  OfferGroup
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
+                 [^{:type SmartContract}
+                  smart-contract
 
                   ^{:type String}
                   name
-
-                  ^{:type SmartContract}
-                  smart-contract
 
                   ^{:type District}
                   created-by
@@ -466,18 +464,24 @@
                   ^{:type Integer
                     :datomic/type :db.type/bigint
                     :default 0}
-                  fee-create-offer
+                  create-offer-fee
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint
                     :default 0}
-                  fee-offer-response
+                  offer-response-fee
 
-                  ^{:type PermissionUserRoles}
-                  permission-create-offer
+                  ^{:type UserRole
+                    :cardinality [0 n]}
+                  create-offer-user-roles
 
-                  ^{:type PermissionUserRoles}
-                  permission-offer-response
+                  ^{:type UserRole
+                    :cardinality [0 n]}
+                  offer-response-user-roles
+
+                  ^{:type UserRole
+                    :cardinality [0 n]}
+                  resolve-dispute-user-roles
 
                   ^{:type Boolean}
                   global-enabled?
@@ -714,11 +718,7 @@
 
 
                  TokenContract
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type SmartContract}
+                 [^{:type SmartContract}
                   smart-contract
 
                   ^{:type District}
@@ -835,11 +835,13 @@
                     :cardinality [0 n]}
                   param-change-entries
 
-                  ^{:type PermissionUserRoles}
-                  permission-submit-reg-entry
+                  ^{:type UserRole
+                    :cardinality [0 n]}
+                  create-reg-entry-user-roles
 
-                  ^{:type PermissionUserRoles}
-                  permission-submit-param-change
+                  ^{:type UserRole
+                    :cardinality [0 n]}
+                  create-param-change-entry-user-roles
 
                   ^{:type TCRParameters}
                   reg-entry-parameters
@@ -1033,4 +1035,5 @@
 
 (comment
   graphviz-schema
-  (spit-diagram))
+  (spit-diagram)
+  (hodur-datomic/schema meta-db))

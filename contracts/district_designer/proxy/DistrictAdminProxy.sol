@@ -10,11 +10,10 @@ contract DistrictAdminProxy is BaseProxy {
   bytes16 public district;
 
   constructor(
-    bytes32 _contractName,
     address _target,
     DistrictDesigner _districtDesigner,
     bytes16 _district
-  ) public BaseProxy(_contractName, _target) {
+  ) public BaseProxy(_target) {
     require(address(_districtDesigner) != address(0));
     require(_district != bytes16(0));
     district = _district;
@@ -22,7 +21,7 @@ contract DistrictAdminProxy is BaseProxy {
   }
 
 
-  function _canChangeTarget(
+  function _canUpdateTarget(
     address _sender
   ) public view override returns(bool) {
     return districtDesigner.adminUserRoleHasAddress(district, _sender);

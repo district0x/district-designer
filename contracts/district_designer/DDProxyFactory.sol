@@ -9,12 +9,12 @@ contract DDProxyFactory {
   DistrictDesigner public districtDesigner;
   mapping(address => bool) public isProxy;
 
-  event ProxyTargetChangedEvent(
+  event ProxyTargetUpdated(
     address proxy,
     address oldTarget,
     address newTarget,
-    uint version,
-    bytes ipfsAbi
+    bytes ipfsAbi,
+    uint timestamp
   );
 
   modifier onlyProxy() {
@@ -31,11 +31,10 @@ contract DDProxyFactory {
 
 
   function createDistrictAdminProxy(
-    bytes32 _contractName,
     address _target,
     bytes16 _district
   ) public returns (address _proxy) {
-    DistrictAdminProxy proxy = new DistrictAdminProxy(_contractName, _target, districtDesigner, _district);
+    DistrictAdminProxy proxy = new DistrictAdminProxy(_target, districtDesigner, _district);
     _proxy = address(proxy);
     isProxy[_proxy] = true;
     return _proxy;
@@ -43,23 +42,21 @@ contract DDProxyFactory {
 
 
   function createOwnerProxy(
-    bytes32 _contractName,
     address _target,
     address _owner
   ) public returns (address _proxy) {
-    OwnerProxy proxy = new OwnerProxy(_contractName, _target, _owner);
+    OwnerProxy proxy = new OwnerProxy(_target, _owner);
     _proxy = address(proxy);
     isProxy[_proxy] = true;
     return _proxy;
   }
 
 
-  function fireProxyTargetChangedEvent(
+  function fireProxyTargetUpdatedEvent(
     address _oldTarget,
     address _newTarget,
-    uint _version,
     bytes memory _ipfsAbi
   ) public onlyProxy {
-    ProxyTargetChangedEvent(_contractName, msg.sender, _oldTarget, _newTarget, _version, _ipfsAbi);
+    ProxyTargetUpdated(msg.sender, _oldTarget, _newTarget, _ipfsAbi, now);
   }
 }

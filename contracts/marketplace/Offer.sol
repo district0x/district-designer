@@ -7,6 +7,8 @@ import "./OfferGroup.sol";
 
 contract Offer {
 
+  uint public constant version = 1;
+
   enum OfferType {
     FIXED_PRICE,
     DYNAMIC_PRICE,
@@ -23,33 +25,31 @@ contract Offer {
     DELIVERABLE
   }
 
-  struct PermissionIds {
-    bytes32 createOffer;
-    bytes32 offerResponse;
+  struct PermissionUserRoles {
+    bytes16[] createOfferUserRoles;
+    bytes16[] offerResponseUserRoles;
+    bytes16[] resolveDisputeUserRoles;
   }
 
   struct Fees {
-    uint createOffer;
-    uint offerResponse;
+    uint createOfferFee;
+    uint offerResponseFee;
   }
 
-  struct OfferSettings {
-    bool allowMultipleTrades;
-  }
 
   struct TradeAsset {
     address tokenAddress;
-    TradeAssetCategory category;
+    TradeAssetCategory tradeAssetCategory;
   }
 
   struct TradeValue {
-    TradeAsset asset;
+    TradeAsset tradeAsset;
     uint tokenAmount;
     uint tokenId;
   }
 
   struct TradeAuction {
-    TradeAsset asset;
+    TradeAsset tradeAsset;
     uint startAmount;
     uint endAmount;
     uint minAmount;
@@ -59,7 +59,6 @@ contract Offer {
 
   function initialize(
     address _offerer,
-    bytes16 _offer,
     TradeValue memory _offeredValue,
     TradeValue[] memory _requestedValues,
     TradeAuction memory _requestedAuction,
@@ -69,7 +68,6 @@ contract Offer {
 
   function createOfferResponse(
     address _respondent,
-    bytes16 _offer,
     bytes16 _offerResponse,
     TradeAsset[] memory _chosenAsset,
     TradeValue memory _counterOfferedValue,

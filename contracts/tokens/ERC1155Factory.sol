@@ -10,7 +10,8 @@ contract ERC1155Factory {
 
   constructor(
     DistrictDesigner _districtDesigner,
-    TokenFactoryEvents _tokensContractAddress
+    TokenFactoryEvents _tokenFactoryEvents,
+    bytes memory _tokenIpfsAbi
   ) public {
   }
 

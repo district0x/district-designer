@@ -7,20 +7,21 @@ import "./OfferGroupFactory.sol";
 import "./Offer.sol";
 
 
-contract OfferGroup {
+contract OfferGroup is UpdateTargetAndCallFallBack {
 
   uint public constant version = 1;
 
   function initialize(
+    address _offerBaseContract,
+    bytes memory _offerIpfsAbi,
     bytes16 _district,
     bytes16 _offerGroup,
     Offer.TradeAsset[] memory _assetsToOffer,
     Offer.TradeAsset[] memory _assetsToRequest,
     Offer.OfferType _offerType,
     Offer.Fees memory _fees,
-    Offer.PermissionIds memory _permissionIds,
-    address[] memory _disputeResolvers,
-    Offer.OfferSettings memory _offerSettings,
+    Offer.PermissionUserRoles memory _permissionUserRoles,
+    bool _allowMultipleTrades,
     bytes memory _ipfsData
   ) public {
   }
@@ -41,9 +42,24 @@ contract OfferGroup {
     Offer.TradeAsset[] memory _addedAssetsToOffer,
     Offer.TradeAsset[] memory _addedAssetsToRequest,
     Offer.Fees memory _fees,
-    address[] memory _disputeResolvers,
+    Offer.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
   ) public {
+  }
+
+
+  function updateBaseContracts(
+    address _offerBaseContract,
+    bytes memory _offerIpfsAbi
+  ) internal {
+  }
+
+
+  function targetUpdated(
+    address _newTarget,
+    bytes memory _ipfsData,
+    bytes memory _data
+  ) public override {
   }
 
 

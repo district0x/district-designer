@@ -15,7 +15,10 @@
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-figwheel "0.5.18"]
-            [lein-npm "0.6.2"]]
+            [lein-npm "0.6.2"]
+            [lein-doo "0.1.8"]]
+
+  :doo {:paths {:karma "./node_modules/karma/bin/karma"}}
 
   :figwheel {:css-dirs ["resources/public/css"]
              :repl-eval-timeout 120000}
@@ -49,4 +52,23 @@
                                    :static-fns true
                                    :fn-invoke-direct true
                                    :anon-fn-naming-policy :mapped
+                                   :source-map true}}
+                       {:id "server-tests"
+                        :source-paths ["src/district_registry/server"
+                                       "src/district_registry/shared"
+                                       "src/tokens/server"
+                                       "src/tokens/shared"
+                                       "src/users/server"
+                                       "src/users/shared"
+                                       "src/marketplace/server"
+                                       "src/marketplace/shared"
+                                       "src/tcr/server"
+                                       "src/tcr/shared"
+                                       "test/server_tests"]
+                        :compiler {:main "server-tests.runner"
+                                   :output-to "server-tests/server-tests.js"
+                                   :output-dir "server-tests"
+                                   :target :nodejs
+                                   :optimizations :none
+                                   :verbose false
                                    :source-map true}}]})

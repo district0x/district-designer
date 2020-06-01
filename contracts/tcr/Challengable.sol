@@ -5,10 +5,6 @@ import "./TCR.sol";
 
 contract Challengable {
 
-  constructor()
-  public {
-  }
-
   function isVoteRevealPeriodActive(
   ) public view
   returns (bool) {
