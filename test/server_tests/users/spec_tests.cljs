@@ -6,8 +6,8 @@
 
 
 (deftest ipfs-events-spec-tests
-  (is (s/valid? :users/add-direct-message
-                {:event :users/add-direct-message
+  (is (s/valid? :event/event
+                {:event/type :users/add-direct-message
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
@@ -17,8 +17,8 @@
                                   :file/name "abc"}]}))
 
 
-  (is (s/valid? :users/add-user-profile
-                {:event :users/add-user-profile
+  (is (s/valid? :event/event
+                {:event/type :users/add-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
@@ -35,8 +35,8 @@
                  :user-profile/global-description "abc"}))
 
 
-  (is (s/valid? :users/update-user-profile
-                {:event :users/update-user-profile
+  (is (s/valid? :event/event
+                {:event/type :users/update-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
@@ -52,24 +52,24 @@
                  :user-profile/global-description "abc"}))
 
 
-  (is (s/valid? :users/add-district-user-profile
-                {:event :users/add-district-user-profile
+  (is (s/valid? :event/event
+                {:event/type :users/add-district-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"}))
 
 
-  (is (s/valid? :users/remove-district-user-profile
-                {:event :users/remove-district-user-profile
+  (is (s/valid? :event/event
+                {:event/type :users/remove-district-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"}))
 
 
-  (is (s/valid? :users/update-user
-                {:event :users/remove-district-user-profile
+  (is (s/valid? :event/event
+                {:event/type :users/update-user
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :user/field-909659f5-560c-4640-9d67-7a1977da92b5 "abc"})))

@@ -1,7 +1,7 @@
 (ns tcr.shared.spec.ipfs-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]))
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
 (def ipfs-events
   #{:tcr/add-tcr-factory
@@ -16,9 +16,10 @@
 (s/def :tcr/global-logo :file/file)
 (s/def :tcr/global-description string?)
 
-(s/def :tcr/add-tcr-factory :district-designer/add-smart-contract)
+(defmethod event-type :tcr/add-tcr-factory [_]
+  :district-designer/add-smart-contract)
 
-(s/def :tcr/update-tcr
+(defmethod event-type :tcr/update-tcr [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:tcr/uuid]
@@ -29,10 +30,11 @@
                   :tcr/global-description])))
 
 
-(s/def :tcr/add-district-tcr
+(defmethod event-type :tcr/add-district-tcr [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:district/uuid
                   :tcr/uuid])))
 
-(s/def :tcr/remove-district-tcr :tcr/add-district-tcr)
+(defmethod event-type :tcr/remove-district-tcr [_]
+  :tcr/add-district-tcr)

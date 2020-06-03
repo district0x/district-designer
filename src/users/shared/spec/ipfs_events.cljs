@@ -1,7 +1,7 @@
 (ns users.shared.spec.ipfs-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]))
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
 (def ipfs-events
   #{:users/add-direct-message
@@ -24,7 +24,7 @@
 (s/def :user-profile/global-logo :global/logo)
 (s/def :user-profile/global-description :global/description)
 
-(s/def :users/add-direct-message
+(defmethod event-type :users/add-direct-message [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:message/uuid
@@ -33,7 +33,7 @@
             :opt [:message/files])))
 
 
-(s/def :users/add-user-profile
+(defmethod event-type :users/add-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:district/uuid
@@ -45,7 +45,7 @@
                   :user-profile/global-description])))
 
 
-(s/def :users/update-user-profile
+(defmethod event-type :users/update-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:user-profile/uuid]
@@ -56,22 +56,26 @@
                   :user-profile/global-description])))
 
 
-(s/def :users/remove-user-profile
+(defmethod event-type :users/remove-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:user-profile/uuid])))
 
 
-(s/def :users/add-district-user-profile
+(defmethod event-type :users/add-district-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:district/uuid
                   :user-profile/uuid])))
 
 
-(s/def :users/remove-district-user-profile :users/add-district-user-profile)
+(defmethod event-type :users/remove-district-user-profile [_]
+  (s/merge
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req [:district/uuid
+                  :user-profile/uuid])))
 
 
-(s/def :users/update-user
+(defmethod event-type :users/update-user [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base))

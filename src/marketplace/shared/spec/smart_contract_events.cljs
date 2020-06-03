@@ -1,7 +1,7 @@
 (ns marketplace.shared.spec.smart-contract-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]
     [marketplace.shared.spec.ipfs-events]))
 
 
@@ -62,17 +62,15 @@
 
 
 (s/def :offer-group-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base
-    (s/keys :req [:offer-group/name
-                  :offer-group/offer-field-configs]
-            :opt [:offer-group/response-field-configs
-                  :offer-group/global-enabled?
-                  :offer-group/global-logo
-                  :offer-group/global-description])))
+  (s/keys :req [:offer-group/name
+                :offer-group/offer-field-configs]
+          :opt [:offer-group/response-field-configs
+                :offer-group/global-enabled?
+                :offer-group/global-logo
+                :offer-group/global-description]))
 
 
-(s/def :marketplace/offer-group-created
+(defmethod event-type :marketplace/offer-group-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [:district-designer.shared.spec/district
@@ -90,20 +88,18 @@
 
 
 (s/def :offer-group-updated/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base
-    (s/keys :opt [:offer-group/name
-                  :offer-group/offer-field-configs
-                  :offer-group/response-field-configs
-                  :offer-group/global-enabled?
-                  :offer-group/global-logo
-                  :offer-group/global-description])))
+  (s/keys :opt [:offer-group/name
+                :offer-group/offer-field-configs
+                :offer-group/response-field-configs
+                :offer-group/global-enabled?
+                :offer-group/global-logo
+                :offer-group/global-description]))
 
 
 (s/def ::added-assets-to-offer ::assets-to-offer)
 (s/def ::added-assets-to-request ::assets-to-request)
 
-(s/def :marketplace/offer-group-updated
+(defmethod event-type :marketplace/offer-group-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-group
@@ -141,11 +137,10 @@
 (s/def ::requested-auction ::trade-auction)
 
 (s/def :offer-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base))
+  (s/keys))
 
 
-(s/def :marketplace/offer-created
+(defmethod event-type :marketplace/offer-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
@@ -166,11 +161,10 @@
 
 
 (s/def :offer-response-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base))
+  (s/keys))
 
 
-(s/def :marketplace/offer-response-created
+(defmethod event-type :marketplace/offer-response-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
@@ -181,7 +175,7 @@
                      :offer-response-created/ipfs-data])))
 
 
-(s/def :marketplace/offer-response-accepted
+(defmethod event-type :marketplace/offer-response-accepted [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response
@@ -189,20 +183,20 @@
                      ::respondent-traded-value])))
 
 
-(s/def :marketplace/offer-closed
+(defmethod event-type :marketplace/offer-closed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer])))
 
 
-(s/def :marketplace/offer-response-canceled
+(defmethod event-type :marketplace/offer-response-canceled [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response])))
 
 (s/def ::raised-by address?)
 
-(s/def :marketplace/dispute-raised
+(defmethod event-type :marketplace/dispute-raised [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response
@@ -212,7 +206,7 @@
 (s/def ::value-for-respondent ::trade-value)
 (s/def ::resolved-by address?)
 
-(s/def :marketplace/dispute-resolved
+(defmethod event-type :marketplace/dispute-resolved [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response
@@ -221,7 +215,7 @@
                      ::resolved-by])))
 
 
-(s/def :marketplace/base-contracts-updated
+(defmethod event-type :marketplace/base-contracts-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-group-base-contract
@@ -230,7 +224,7 @@
                      ::offer-ipfs-abi])))
 
 
-(s/def :marketplace/offer-group-base-contracts-updated
+(defmethod event-type :marketplace/offer-group-base-contracts-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-group

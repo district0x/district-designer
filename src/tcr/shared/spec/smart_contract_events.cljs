@@ -1,7 +1,7 @@
 (ns tcr.shared.spec.smart-contract-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]
     [tcr.shared.spec.ipfs-events]
     [tokens.shared.spec.smart-contract-events]))
 
@@ -72,16 +72,14 @@
 (s/def :tcr/global-description :global/description)
 
 (s/def :tcr-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base
-    (s/keys :req [:tcr/name
-                  :tcr/reg-entry-field-configs]
-            :opt [:tcr/global-enabled?
-                  :tcr/global-logo
-                  :tcr/global-description])))
+  (s/keys :req [:tcr/name
+                :tcr/reg-entry-field-configs]
+          :opt [:tcr/global-enabled?
+                :tcr/global-logo
+                :tcr/global-description]))
 
 
-(s/def :tcr/tcr-created
+(defmethod event-type :tcr/tcr-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [:district-designer.shared.spec/district
@@ -110,11 +108,10 @@
 
 
 (s/def :registry-entry-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base))
+  (s/keys))
 
 
-(s/def :tcr/registry-entry-created
+(defmethod event-type :tcr/registry-entry-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr
@@ -144,12 +141,10 @@
 
 
 (s/def :param-change-entry-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base
-    (s/keys :req [:param-change-entry/comment])))
+  (s/keys :req [:param-change-entry/comment]))
 
 
-(s/def :tcr/param-change-entry-created
+(defmethod event-type :tcr/param-change-entry-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr
@@ -174,12 +169,10 @@
 (s/def :challenge/comment string?)
 
 (s/def :challenge-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base
-    (s/keys :req [:challenge/comment])))
+  (s/keys :req [:challenge/comment]))
 
 
-(s/def :tcr/challenge-created
+(defmethod event-type :tcr/challenge-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -193,21 +186,21 @@
 
 (s/def ::token-id nat-int?)
 
-(s/def :tcr/registry-entry-token-minted
+(defmethod event-type :tcr/registry-entry-token-minted [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::reg-entry
                      ::token-id])))
 
 
-(s/def :tcr/param-change-entry-applied
+(defmethod event-type :tcr/param-change-entry-applied [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::param-change-entry])))
 
 (s/def ::amount nat-int?)
 
-(s/def :tcr/challenger-reward-claimed
+(defmethod event-type :tcr/challenger-reward-claimed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -216,7 +209,7 @@
                      ::amount])))
 
 
-(s/def :tcr/creator-reward-claimed
+(defmethod event-type :tcr/creator-reward-claimed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -226,7 +219,7 @@
 
 (s/def ::voter address?)
 
-(s/def :tcr/votes-reclaimed
+(defmethod event-type :tcr/votes-reclaimed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -235,7 +228,7 @@
                      ::amount])))
 
 
-(s/def :tcr/vote-committed
+(defmethod event-type :tcr/vote-committed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -247,7 +240,7 @@
                        :tcr-vote-option/exclude
                        :tcr-vote-option/no-vote})
 
-(s/def :tcr/vote-revealed
+(defmethod event-type :tcr/vote-revealed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -257,7 +250,7 @@
                      ::amount])))
 
 
-(s/def :tcr/vote-reward-claimed
+(defmethod event-type :tcr/vote-reward-claimed [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
@@ -265,7 +258,7 @@
                      ::voter
                      ::amount])))
 
-(s/def :tcr/base-contracts-updated
+(defmethod event-type :tcr/base-contracts-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr-base-contract
@@ -276,7 +269,7 @@
                      ::param-change-entry-ipfs-abi])))
 
 
-(s/def :tcr/tcr-base-contracts-updated
+(defmethod event-type :tcr/tcr-base-contracts-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr

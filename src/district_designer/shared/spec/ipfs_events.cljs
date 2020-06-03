@@ -46,13 +46,17 @@
 (defn edn? [x]
   (string? x))
 
-(s/def ::events (s/coll-of (s/keys :req-un [::event ::timestamp])))
-(s/def ::event keyword?)
+(s/def :event/type keyword?)
+(defmulti event-type :event/type)
+(s/def ::events (s/coll-of (s/keys :req-un [::timestamp]
+                                   :req [:event/type])))
 (s/def ::sender address?)
 (s/def ::timestamp pos-int?)
 (s/def ::version pos-int?)
 
-(s/def ::event-base (s/keys :req-un [::event ::sender ::timestamp]))
+
+(s/def ::event-base (s/keys :req-un [::sender ::timestamp]
+                            :req [:event/type]))
 
 (s/def :file/name string?)
 (s/def :file/hash ipfs-hash?)
@@ -125,18 +129,23 @@
 
 ;; IPFS Events
 
-(s/def :district-designer/events-batch
-  (s/keys :req-un [::event ::sender ::events]))
+(defmethod event-type :district-designer/events-batch [_]
+  (s/merge
+    ::event-base
+    (s/keys :req-un [::events])))
 
 (s/def :district-designer/add-smart-contract
   (s/merge
     ::event-base
     (s/keys :req [:smart-contract/address :smart-contract/abi])))
 
-(s/def :district-designer/add-dd-proxy-factory :district-designer/add-smart-contract)
-(s/def :district-designer/add-district-designer :district-designer/add-smart-contract)
+(defmethod event-type :district-designer/add-dd-proxy-factory [_]
+  :district-designer/add-smart-contract)
 
-(s/def :district-designer/add-module
+(defmethod event-type :district-designer/add-district-designer [_]
+  :district-designer/add-smart-contract)
+
+(defmethod event-type :district-designer/add-module [_]
   (s/merge
     ::event-base
     (s/keys :req [:module/id
@@ -147,7 +156,7 @@
                   :module/preview-images])))
 
 
-(s/def :district-designer/update-module
+(defmethod event-type :district-designer/update-module [_]
   (s/merge
     ::event-base
     (s/keys :req [:module/id]
@@ -157,13 +166,13 @@
                   :module/description
                   :module/preview-images])))
 
-(s/def :district-designer/remove-module
+(defmethod event-type :district-designer/remove-module [_]
   (s/merge
     ::event-base
     (s/keys :req [:module/id])))
 
 
-(s/def :district-designer/add-wizard
+(defmethod event-type :district-designer/add-wizard [_]
   (s/merge
     ::event-base
     (s/keys :req [:wizard/id
@@ -174,7 +183,7 @@
                   :wizard/preview-images])))
 
 
-(s/def :district-designer/update-wizard
+(defmethod event-type :district-designer/update-wizard [_]
   (s/merge
     ::event-base
     (s/keys :req [:wizard/id]
@@ -184,13 +193,13 @@
                   :wizard/description
                   :wizard/preview-images])))
 
-(s/def :district-designer/remove-wizard
+(defmethod event-type :district-designer/remove-wizard [_]
   (s/merge
     ::event-base
     (s/keys :req [:wizard/id])))
 
 
-(s/def :district-designer/add-theme
+(defmethod event-type :district-designer/add-theme [_]
   (s/merge
     ::event-base
     (s/keys :req [:theme/id
@@ -202,7 +211,7 @@
                   :theme/files])))
 
 
-(s/def :district-designer/update-theme
+(defmethod event-type :district-designer/update-theme [_]
   (s/merge
     ::event-base
     (s/keys :req [:theme/id]
@@ -213,7 +222,7 @@
                   :theme/preview-images
                   :theme/files])))
 
-(s/def :district-designer/remove-theme
+(defmethod event-type :district-designer/remove-theme [_]
   (s/merge
     ::event-base
     (s/keys :req [:theme/id])))
@@ -222,7 +231,7 @@
 (s/def :permission/name string?)
 (s/def :permission/description string?)
 
-(s/def :district-designer/add-permission
+(defmethod event-type :district-designer/add-permission [_]
   (s/merge
     ::event-base
     (s/keys :req [:permission/id
@@ -230,20 +239,20 @@
                   :permission/description])))
 
 
-(s/def :district-designer/update-permission
+(defmethod event-type :district-designer/update-permission [_]
   (s/merge
     ::event-base
     (s/keys :req [:permission/id]
             :opt [:permission/name
                   :permission/description])))
 
-(s/def :district-designer/remove-permission
+(defmethod event-type :district-designer/remove-permission [_]
   (s/merge
     ::event-base
     (s/keys :req [:permission/id])))
 
 
-(s/def :district-designer/add-tag-group
+(defmethod event-type :district-designer/add-tag-group [_]
   (s/merge
     ::event-base
     (s/keys :req [:tag-group/uuid
@@ -252,7 +261,7 @@
                   :tag-group/global-enabled?])))
 
 
-(s/def :district-designer/update-tag-group
+(defmethod event-type :district-designer/update-tag-group [_]
   (s/merge
     ::event-base
     (s/keys :req [:tag-group/uuid]
@@ -261,22 +270,23 @@
                   :tag-group/global-enabled?])))
 
 
-(s/def :district-designer/remove-tag-group
+(defmethod event-type :district-designer/remove-tag-group [_]
   (s/merge
     ::event-base
     (s/keys :req [:tag-group/uuid])))
 
 
-(s/def :district-designer/add-tags
+(defmethod event-type :district-designer/add-tags [_]
   (s/merge
     ::event-base
     (s/keys :req [:tag-group/uuid :tag-group/tags])))
 
 
-(s/def :district-designer/remove-tags :district-designer/add-tags)
+(defmethod event-type :district-designer/remove-tags [_]
+  :district-designer/add-tags)
 
 
-(s/def :district/update-theme
+(defmethod event-type :district/update-theme [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid]
@@ -284,7 +294,7 @@
                   :district/theme-settings])))
 
 
-(s/def :district/update-styles
+(defmethod event-type :district/update-styles [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid]
@@ -292,15 +302,18 @@
                   :district/css-file])))
 
 
-(s/def :district/add-module
+(defmethod event-type :district/add-module [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid :module/id])))
 
-(s/def :district/remove-module :district/add-module)
+(defmethod event-type :district/remove-module [_]
+  (s/merge
+    ::event-base
+    (s/keys :req [:district/uuid :module/id])))
 
 
-(s/def :district/add-ui-component
+(defmethod event-type :district/add-ui-component [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid
@@ -312,7 +325,7 @@
                   :ui-component/files])))
 
 
-(s/def :district/update-ui-component
+(defmethod event-type :district/update-ui-component [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid
@@ -324,14 +337,14 @@
                   :ui-component/files])))
 
 
-(s/def :district/remove-ui-component
+(defmethod event-type :district/remove-ui-component [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid
                   :ui-component/uuid])))
 
 
-(s/def :district/add-database-view
+(defmethod event-type :district/add-database-view [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid
@@ -340,7 +353,7 @@
                   :data-view/settings])))
 
 
-(s/def :district/update-datadatabase-view
+(defmethod event-type :district/update-datadatabase-view [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid
@@ -349,12 +362,17 @@
                   :data-view/settings])))
 
 
-(s/def :district/remove-datadatabase-view
+(defmethod event-type :district/remove-datadatabase-view [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/uuid
                   :data-view/uuid])))
 
-(s/def :district/add-statistics-view :district/add-database-view)
-(s/def :district/update-statistics-view :district/update-datadatabase-view)
-(s/def :district/remove-statistics-view :district/remove-datadatabase-view)
+(defmethod event-type :district/add-statistics-view [_]
+  :district/add-database-view)
+
+(defmethod event-type :district/update-statistics-view [_]
+  :district/update-datadatabase-view)
+
+(defmethod event-type :district/remove-statistics-view [_]
+  :district/remove-datadatabase-view)

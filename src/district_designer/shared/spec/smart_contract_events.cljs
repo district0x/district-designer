@@ -1,7 +1,7 @@
 (ns district-designer.shared.spec.smart-contract-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]))
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
 
 (def smart-contract-events
@@ -28,7 +28,6 @@
 (s/def ::admin-user-role-id ::user-role-id)
 
 (s/def :wizard/id string?)
-(s/def ::ipfs-data-base (s/keys :req-un [::event]))
 (s/def ::wizard-base (s/keys :req [:wizard/id]))
 
 (s/def :user-role/uuid uuid?)
@@ -38,12 +37,11 @@
 
 (s/def :district-initialized/ipfs-data
   (s/merge
-    ::ipfs-data-base
     ::wizard-base
     (s/keys :req-un [::user-role-names])))
 
 
-(s/def :district-designer/district-initialized
+(defmethod event-type :district-designer/district-initialized [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::district
@@ -54,7 +52,7 @@
                      :district-initialized/ipfs-data])))
 
 
-(s/def :district-designer/permissions-updated
+(defmethod event-type :district-designer/permissions-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::district
@@ -62,12 +60,10 @@
 
 
 (s/def :user-roles-updated/ipfs-data
-  (s/merge
-    ::ipfs-data-base
-    (s/keys :req-un [::user-role-names])))
+  (s/keys :req-un [::user-role-names]))
 
 
-(s/def :district-designer/user-roles-updated
+(defmethod event-type :district-designer/user-roles-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::district
@@ -75,7 +71,7 @@
                      :user-roles-updated/ipfs-data])))
 
 
-(s/def :district-designer/district-treasury-updated
+(defmethod event-type :district-designer/district-treasury-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::district
@@ -86,7 +82,7 @@
 (s/def ::is-emergency boolean?)
 
 
-(s/def :district-designer/emergency-updated
+(defmethod event-type :district-designer/emergency-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::module-id
@@ -97,7 +93,7 @@
 (s/def ::new-target ::address)
 (s/def ::ipfs-abi ipfs-hash?)
 
-(s/def :dd-proxy-factory/proxy-target-updated
+(defmethod event-type :dd-proxy-factory/proxy-target-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::proxy

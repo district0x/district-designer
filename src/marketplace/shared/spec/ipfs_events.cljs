@@ -1,7 +1,7 @@
 (ns marketplace.shared.spec.ipfs-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]
     [users.shared.spec.ipfs-events]))
 
 
@@ -33,9 +33,10 @@
 (s/def :feedback/rating rating?)
 (s/def :feedback/text string?)
 
-(s/def :marketplace/add-offer-group-factory :district-designer/add-smart-contract)
+(defmethod event-type :marketplace/add-offer-group-factory [_]
+  :district-designer/add-smart-contract)
 
-(s/def :marketplace/update-offer-group
+(defmethod event-type :marketplace/update-offer-group [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:offer-group/address]
@@ -47,23 +48,27 @@
                   :offer-group/global-description])))
 
 
-(s/def :marketplace/add-district-offer-group
+(defmethod event-type :marketplace/add-district-offer-group [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:district/uuid
                   :offer-group/address])))
 
 
-(s/def :marketplace/remove-district-offer-group :marketplace/add-district-offer-group)
+(defmethod event-type :marketplace/remove-district-offer-group [_]
+  (s/merge
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req [:district/uuid
+                  :offer-group/address])))
 
 
-(s/def :marketplace/update-offer
+(defmethod event-type :marketplace/update-offer [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:offer/address])))
 
 
-(s/def :marketplace/add-message
+(defmethod event-type :marketplace/add-message [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:offer-response/uuid
@@ -73,7 +78,7 @@
             :opt [:message/files])))
 
 
-(s/def :marketplace/add-feedback
+(defmethod event-type :marketplace/add-feedback [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:offer-response/uuid
@@ -82,4 +87,5 @@
                   :feedback/text])))
 
 
-(s/def :marketplace/update-feedback :marketplace/add-feedback)
+(defmethod event-type :marketplace/update-feedback [_]
+  :marketplace/add-feedback)

@@ -1,7 +1,7 @@
 (ns tokens.shared.spec.smart-contract-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]
     [district-designer.shared.spec.smart-contract-events]
     [tokens.shared.spec.ipfs-events]))
 
@@ -22,13 +22,11 @@
 
 
 (s/def :token-created/ipfs-data
-  (s/merge
-    :district-designer.shared.spec.smart-contract-events/ipfs-data-base
-    (s/keys :req [:token-contract/metadata-format
-                  :token-contract/metadata-format-settings])))
+  (s/keys :req [:token-contract/metadata-format
+                :token-contract/metadata-format-settings]))
 
 
-(s/def :tokens/token-created
+(defmethod event-type :tokens/token-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [:district-designer.shared.spec.smart-contract-events/district

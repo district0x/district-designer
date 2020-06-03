@@ -1,7 +1,7 @@
 (ns tokens.shared.spec.ipfs-events
   (:require
     [cljs.spec.alpha :as s]
-    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn?]]))
+    [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
 (def ipfs-events
   #{:tokens/update-token-contract
@@ -16,12 +16,19 @@
 (s/def :token-contract/metadata-format-settings edn?)
 (s/def :token-contract/reported-misconfig-comment string?)
 
-(s/def :tokens/add-erc20-token-factory :district-designer/add-smart-contract)
-(s/def :tokens/add-erc721-token-factory :district-designer/add-smart-contract)
-(s/def :tokens/add-erc1155-token-factory :district-designer/add-smart-contract)
-(s/def :tokens/add-token-factory-events :district-designer/add-smart-contract)
+(defmethod event-type :tokens/add-erc20-token-factory [_]
+  :district-designer/add-smart-contract)
 
-(s/def :tokens/update-token-contract
+(defmethod event-type :tokens/add-erc721-token-factory [_]
+  :district-designer/add-smart-contract)
+
+(defmethod event-type :tokens/add-erc1155-token-factory [_]
+  :district-designer/add-smart-contract)
+
+(defmethod event-type :tokens/add-token-factory-events [_]
+  :district-designer/add-smart-contract)
+
+(defmethod event-type :tokens/update-token-contract [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:token-contract/uuid]
@@ -29,30 +36,31 @@
                   :token-contract/metadata-format-settings])))
 
 
-(s/def :tokens/remove-token-contract
+(defmethod event-type :tokens/remove-token-contract [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:token-contract/uuid])))
 
 
-(s/def :tokens/add-district-token-contract
+(defmethod event-type :tokens/add-district-token-contract [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:district/uuid
                   :token-contract/uuid])))
 
 
-(s/def :tokens/remove-district-token-contract :tokens/add-district-token-contract)
+(defmethod event-type :tokens/remove-district-token-contract [_]
+  :tokens/add-district-token-contract)
 
 
-(s/def :tokens/add-token-contract-misconfig-report
+(defmethod event-type :tokens/add-token-contract-misconfig-report [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:token-contract/uuid
                   :token-contract/reported-misconfig-comment])))
 
 
-(s/def :tokens/resolve-token-contract-misconfig-report
+(defmethod event-type :tokens/resolve-token-contract-misconfig-report [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:token-contract/uuid])))
