@@ -365,7 +365,7 @@
 <polyline fill="none" stroke="#000000" points="6655.0308,-1066.9 6842.8962,-1066.9 "/>
 <text text-anchor="start" x="6663.0308" y="-1050.3" font-family="Times,serif" font-size="14.00" fill="#000000">FIXED_PRICE</text>
 <text text-anchor="start" x="6663.0308" y="-1033.5" font-family="Times,serif" font-size="14.00" fill="#000000">DYNAMIC_PRICE</text>
-<text text-anchor="start" x="6663.0308" y="-1016.7" font-family="Times,serif" font-size="14.00" fill="#000000">HIGEST_BID_WINS</text>
+<text text-anchor="start" x="6663.0308" y="-1016.7" font-family="Times,serif" font-size="14.00" fill="#000000">HIGHEST_BID_AUCTION</text>
 <text text-anchor="start" x="6663.0308" y="-999.9" font-family="Times,serif" font-size="14.00" fill="#000000">OFFERER_PICKS_WINNER</text>
 <text text-anchor="start" x="6663.0308" y="-983.1" font-family="Times,serif" font-size="14.00" fill="#000000">MULTIPLE_FIXED_PRICES</text>
 </g>

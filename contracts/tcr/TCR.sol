@@ -1,7 +1,8 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "../district_designer/DDProxyFactory.sol";
+import "../district_designer/proxy/ProxyFactory.sol";
 
 contract TCR is UpdateTargetAndCallFallBack {
 
@@ -64,65 +65,65 @@ contract TCR is UpdateTargetAndCallFallBack {
   }
 
   function initialize(
-    BaseContract memory regEntryBaseContract,
-    BaseContract memory paramChangeBaseContract,
-    bytes16 _district,
+    BaseContract calldata regEntryBaseContract,
+    BaseContract calldata paramChangeBaseContract,
+    address _district,
     address _votingToken,
     TCR.TCRType _tcrType,
-    TCR.RegistryEntryRepresentation memory _regEntryRepr,
-    TCR.PermissionUserRoles memory _permissionUserRoles,
-    TCR.Parameters memory _regParameters,
-    TCR.Parameters memory _paramChangeParameters,
-    bytes memory _ipfsData
-  ) public {
+    TCR.RegistryEntryRepresentation calldata _regEntryRepr,
+    TCR.PermissionUserRoles calldata _permissionUserRoles,
+    TCR.Parameters calldata _regParameters,
+    TCR.Parameters calldata _paramChangeParameters,
+    bytes calldata _ipfsData
+  ) external {
   }
 
 
   function createRegistryEntry(
     address _creator,
     uint _tokenAmount,
-    bytes memory _tokenIpfsData,
-    bytes memory _ipfsData
-  ) public {
+    bytes calldata _tokenIpfsData,
+    bytes calldata _ipfsData
+  ) external {
   }
 
 
   function createParamChangeEntry(
     address _creator,
     EntriesGroup _entriesGroup,
-    string memory _key,
+    string calldata _key,
     uint _value,
-    bytes memory _ipfsData
-  ) public {
+    bytes calldata _ipfsData
+  ) external {
   }
 
 
   function mintRegistryEntryToken(
     address _regEntry
-  ) public {
+  ) external {
   }
 
 
   function applyParamChangeEntry(
     address _paramChangeEntry
-  ) public {
+  ) external {
   }
 
 
-  function updateBaseContracts(
+  function _updateBaseContracts(
     address _regEntryBaseContract,
-    bytes memory _regEntryIpfsAbi,
+    bytes calldata _regEntryIpfsAbi,
     address _paramChangeEntryBaseContract,
-    bytes memory _paramChangeEntryIpfsAbi
+    bytes calldata _paramChangeEntryIpfsAbi
   ) internal {
   }
 
 
   function targetUpdated(
     address _newTarget,
-    bytes memory _ipfsData,
-    bytes memory _data
-  ) public override {
+    bytes calldata _ipfsAbi,
+    bytes calldata _data
+  ) external override onlySelf {
   }
 
 }

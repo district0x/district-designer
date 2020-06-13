@@ -66,8 +66,7 @@
 (defmethod event-type :district-designer/user-roles-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req-un [::district
-                     ::user-roles
+    (s/keys :req-un [::user-roles
                      :user-roles-updated/ipfs-data])))
 
 

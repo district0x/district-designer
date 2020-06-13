@@ -1,64 +1,108 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
+pragma experimental ABIEncoderV2;
 
-import "./../DDProxyFactory.sol";
+import "./ProxyFactory.sol";
 import "./UpdateTargetAndCallFallback.sol";
+import  "../../_libs/validIPFSHash/validIPFSHash.sol";
+
+/**
+ * @dev Base contract for {DistrictAdminProxy} and {OwnerProxy}
+ *
+ * Implements full proxy functionality, extending contracts are only responsible for
+ * defining permissions to update the `target`
+ *
+ */
 
 abstract contract BaseProxy {
+  using validIPFSHash for bytes;
 
   address public target;
-  DDProxyFactory ddProxyFactory;
+  ProxyFactory proxyFactory;
 
   modifier canUpdateTarget() {
     require(_canUpdateTarget(msg.sender));
     _;
   }
 
+  /**
+   * @dev Constructs a proxy
+   *
+   * Caller of this function is considered to be {ProxyFactory}
+   *
+   * @param _target Address proxy will forward to
+   *
+   * Requirements:
+   *
+   * - `_target` cannot be zero address
+   *
+   */
   constructor(
     address _target
   ) public {
     require(_target != address(0));
-    ddProxyFactory = DDProxyFactory(msg.sender);
+    proxyFactory = ProxyFactory(msg.sender);
     target = _target;
   }
 
-  /**
-   * @dev Replaces targer forwarder contract is pointing to
-   * Only authenticated user can replace target
 
-   * @param _newTarget New target to proxy into
-  */
+  /**
+   * @dev Updates target the proxy forwards to
+   *
+   * Only authenticated address can update the target
+   *
+   * @param _newTarget New target proxy will forward to
+   * @param _ipfsAbi IPFS hash of new target's ABI
+   *
+   * Requirements:
+   *
+   * - `_newTarget` cannot be zero address
+   * - `_ipfsAbi` must be valid ipfs hash
+   *
+   */
   function updateTarget(
     address _newTarget,
-    bytes memory _ipfsData
+    bytes calldata _ipfsAbi
   ) public canUpdateTarget {
     require(_newTarget != address(0));
-    ddProxyFactory.fireProxyTargetUpdatedEvent(target, _newTarget, _ipfsData);
+    require(_ipfsAbi.isValidIPFSHash());
+    proxyFactory.fireProxyTargetUpdated(target, _newTarget, _ipfsAbi);
     target = _newTarget;
   }
 
-
+  /**
+   * @dev Same as {updateTarget} but additionally calls a contract function with passed `data`
+   * A contract, which this proxy forwards to, must implement {targetUpdated} function
+   *
+   * @param _newTarget New target proxy will forward to
+   * @param _ipfsAbi IPFS hash of new target's ABI
+   *
+   */
   function updateTargetAndCall(
     address _newTarget,
-    bytes memory _ipfsData,
-    bytes memory _data
-  ) public canUpdateTarget {
-    updateTarget(_newTarget, _ipfsData);
+    bytes calldata _ipfsAbi,
+    bytes calldata _data
+  ) external canUpdateTarget {
+    updateTarget(_newTarget, _ipfsAbi);
     UpdateTargetAndCallFallBack _this = UpdateTargetAndCallFallBack(address(this));
-    _this.targetUpdated(_newTarget, _ipfsData, _data);
+    _this.targetUpdated(_newTarget, _ipfsAbi, _data);
   }
 
-
+  /**
+   * @dev Checks whether sender can update proxy target
+   * Implementation must be done by extending contracts
+   */
   function _canUpdateTarget(
     address _sender
-  ) public view virtual returns(bool);
+  ) internal view virtual returns(bool);
 
 
   /**
-  * @dev Performs a delegatecall and returns whatever the delegatecall returned (entire context execution will return!)
-  * @param _dst Destination address to perform the delegatecall
-  * @param _calldata Calldata for the delegatecall
-  */
-  function delegatedFwd(
+   * @dev Performs a delegatecall and returns whatever the delegatecall returned (entire context execution will return!)
+   * @param _dst Destination address to perform the delegatecall
+   * @param _calldata Calldata for the delegatecall
+   */
+  function _delegatedFwd(
     address _dst,
     bytes memory _calldata
   ) internal {
@@ -78,6 +122,9 @@ abstract contract BaseProxy {
   }
 
 
+  /**
+   * @dev Returns true if given address is a smart-contract
+   */
   function isContract(
     address _target
   ) internal view returns (bool) {
@@ -87,8 +134,19 @@ abstract contract BaseProxy {
   }
 
 
-fallback(
-) external payable {
-delegatedFwd(target, msg.data);
-}
+  /**
+   * @dev All calls landing here will be forwarded
+   */
+  receive(
+  ) external payable {
+    _delegatedFwd(target, msg.data);
+  }
+
+  /**
+   * @dev All calls landing here will be forwarded
+   */
+  fallback(
+  ) external payable {
+    _delegatedFwd(target, msg.data);
+  }
 }

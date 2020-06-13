@@ -422,7 +422,7 @@
 
                  ^:enum
                  OfferType
-                 [FIXED_PRICE DYNAMIC_PRICE HIGEST_BID_WINS OFFERER_PICKS_WINNER MULTIPLE_FIXED_PRICES]
+                 [FIXED_PRICE DYNAMIC_PRICE HIGHEST_BID_AUCTION OFFERER_PICKS_WINNER MULTIPLE_FIXED_PRICES]
 
                  TradeAsset
                  [^{:type TokenContract}

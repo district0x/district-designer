@@ -1,27 +1,23 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
+pragma experimental ABIEncoderV2;
 
-import "./TokenFactoryEvents.sol";
-import "../district_designer/DistrictDesigner.sol";
-import "./DDERC1155.sol";
+import "./ERC1155Token.sol";
+import "./BaseTokenFactory.sol";
 
-contract ERC1155Factory {
+contract ERC1155Factory is BaseTokenFactory {
 
   uint public constant version = 1;
 
   constructor(
-    DistrictDesigner _districtDesigner,
-    TokenFactoryEvents _tokenFactoryEvents,
     bytes memory _tokenIpfsAbi
-  ) public {
+  ) public BaseTokenFactory(_tokenIpfsAbi) {
   }
 
   function createToken(
-    bytes16 _district,
-    bytes16 _token,
-    string memory _tokenName,
-    string memory _tokenSymbol,
-    bytes memory _ipfsData
+    address _district,
+    string calldata _baseURI,
+    bytes calldata _ipfsData
   ) public {
-    DDERC1155 _;
   }
 }

@@ -11,7 +11,7 @@
     :marketplace/offer-created
     :marketplace/offer-response-created
     :marketplace/offer-response-accepted
-    :marketplace/offer-closed
+    :marketplace/offer-canceled
     :marketplace/offer-response-canceled
     :marketplace/dispute-raised
     :marketplace/dispute-resolved
@@ -55,7 +55,6 @@
 (s/def ::permission-user-roles (s/keys :req-un [::create-offer-user-roles
                                                 ::offer-response-user-roles
                                                 ::resolve-dispute-user-roles]))
-(s/def ::allow-multiple-trades boolean?)
 (s/def :offer-group/name string?)
 (s/def :offer-group/offer-field-configs (s/coll-of :field-config/field-config))
 (s/def :offer-group/response-field-configs (s/coll-of :field-config/field-config))
@@ -83,7 +82,6 @@
                      ::offer-type
                      ::fees
                      ::permission-user-roles
-                     ::allow-multiple-trades
                      :offer-group-created/ipfs-data])))
 
 
@@ -136,6 +134,8 @@
                                         :trade-auction/duration]))
 (s/def ::requested-auction ::trade-auction)
 
+(s/def ::allowed-respondents (s/coll-of address?))
+
 (s/def :offer-created/ipfs-data
   (s/keys))
 
@@ -151,6 +151,7 @@
                      ::offered-value
                      ::requested-values
                      ::requested-auction
+                     ::allowed-respondents
                      :offer-created/ipfs-data])))
 
 
@@ -176,6 +177,7 @@
 
 
 (defmethod event-type :marketplace/offer-response-accepted [_]
+  ; TODO: Add IPFS data
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response
@@ -183,7 +185,7 @@
                      ::respondent-traded-value])))
 
 
-(defmethod event-type :marketplace/offer-closed [_]
+(defmethod event-type :marketplace/offer-canceled [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer])))
@@ -194,9 +196,15 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response])))
 
+
+; TODO: OfferDeliverableReceived
+; TODO: OfferAvailableValueUpdated
+; TODO: OfferRequestUpdated
+
 (s/def ::raised-by address?)
 
 (defmethod event-type :marketplace/dispute-raised [_]
+  ; TODO: Add ipfs-data
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response
@@ -207,6 +215,7 @@
 (s/def ::resolved-by address?)
 
 (defmethod event-type :marketplace/dispute-resolved [_]
+  ; TODO: Add ipfs-data
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-response

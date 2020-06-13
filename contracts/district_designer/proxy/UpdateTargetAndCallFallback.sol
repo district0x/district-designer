@@ -1,9 +1,25 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
+pragma experimental ABIEncoderV2;
+
+/**
+ * @dev Abstract contract meant for every contract that's used through a proxy, which
+ * needs to have some logic executed right after target of the proxy is updated
+ */
 
 abstract contract UpdateTargetAndCallFallBack {
+
+  modifier onlySelf() {
+    require(msg.sender == address(this));
+    _;
+  }
+
+  /**
+   * @dev This function is called when proxy contract had its target updated
+   */
   function targetUpdated(
     address _newTarget,
-    bytes memory _ipfsData,
+    bytes memory _ipfsAbi,
     bytes memory _data
-  ) public virtual;
+  ) external virtual;
 }

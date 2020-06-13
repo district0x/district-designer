@@ -1,9 +1,13 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
+pragma experimental ABIEncoderV2;
 
-import "./../DistrictDesigner.sol";
-import "./../DDProxyFactory.sol";
 import "./BaseProxy.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+
+/**
+ * @dev Extending {BaseProxy} with {Ownable} permissions
+ */
 
 contract OwnerProxy is BaseProxy, Ownable {
 
@@ -15,10 +19,12 @@ contract OwnerProxy is BaseProxy, Ownable {
     transferOwnership(_owner);
   }
 
-
+  /**
+   * @dev Restricts target updating only to contract owner
+   */
   function _canUpdateTarget(
     address _sender
-  ) public view override returns(bool) {
+  ) internal view override returns(bool) {
     return owner() == _sender;
   }
 

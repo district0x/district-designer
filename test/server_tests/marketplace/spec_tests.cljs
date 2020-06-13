@@ -89,7 +89,6 @@
                  :permission-user-roles {:create-offer-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :offer-response-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :resolve-dispute-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}
-                 :allow-multiple-trades true
                  :ipfs-data {:offer-group/name "Some Name"
                              :offer-group/offer-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                                                                 :field-config/name "Some Field"
@@ -180,7 +179,7 @@
 
 
   (is (s/valid? :event/event
-                {:event/type :marketplace/offer-closed
+                {:event/type :marketplace/offer-canceled
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}))

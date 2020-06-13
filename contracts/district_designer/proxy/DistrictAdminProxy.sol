@@ -1,30 +1,37 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
+pragma experimental ABIEncoderV2;
 
-import "./../DistrictDesigner.sol";
-import "./../DDProxyFactory.sol";
+import "./../District.sol";
 import "./BaseProxy.sol";
+
+/**
+ * @dev Extending {BaseProxy} with {DistrictDesigner} permissions
+ */
 
 contract DistrictAdminProxy is BaseProxy {
 
-  DistrictDesigner public districtDesigner;
-  bytes16 public district;
+  District public district;
 
   constructor(
     address _target,
-    DistrictDesigner _districtDesigner,
-    bytes16 _district
+    address _district
   ) public BaseProxy(_target) {
-    require(address(_districtDesigner) != address(0));
-    require(_district != bytes16(0));
-    district = _district;
+    if (_district == address(0)) {
+      _district = address(this);
+    }
+    district = District(_district);
     target = _target;
   }
 
 
+  /**
+   * @dev Restricts target updating only to district's admin user role
+   */
   function _canUpdateTarget(
     address _sender
-  ) public view override returns(bool) {
-    return districtDesigner.adminUserRoleHasAddress(district, _sender);
+  ) internal view override returns(bool) {
+    return district.adminUserRoleHasAddress(_sender);
   }
 
 }

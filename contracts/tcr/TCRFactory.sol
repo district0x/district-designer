@@ -1,11 +1,11 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "../district_designer/DistrictDesigner.sol";
-import "../district_designer/DDProxyFactory.sol";
+import "../district_designer/DistrictFactory.sol";
+import "../district_designer/proxy/ProxyFactory.sol";
 import "./TCR.sol";
-import "../tokens/ERC721Factory.sol";
-import "../tokens/ERC1155Factory.sol";
+import "../tokens/TokenFactory.sol";
 
 
 contract TCRFactory is UpdateTargetAndCallFallBack {
@@ -13,7 +13,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   uint public constant version = 1;
 
   event TCRCreated(
-    bytes16 district,
+    address indexed district,
     address tcr,
     address tcrBaseContract,
     bytes tcrIpfsAbi,
@@ -60,7 +60,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   event ChallengeCreated(
     address entry,
     TCR.EntriesGroup entriesGroup,
-    bytes16 challenge,
+    uint challengeIndex,
     address challenger,
     uint commitPeriodEnd,
     uint revealPeriodEnd,
@@ -151,66 +151,65 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
 
 
   function initialize(
-    DistrictDesigner _districtDesigner,
+    DistrictFactory _districtFactory,
     address _tcrBaseContract,
-    bytes memory _tcrIpfsAbi,
+    bytes calldata _tcrIpfsAbi,
     address _regEntryBaseContract,
-    bytes memory _regEntryIpfsAbi,
+    bytes calldata _regEntryIpfsAbi,
     address _paramChangeEntryBaseContract,
-    bytes memory _paramChangeEntryIpfsAbi,
-    ERC721Factory _erc721Factory,
-    ERC1155Factory _erc1155Factory
+    bytes calldata _paramChangeEntryIpfsAbi,
+    TokenFactory _tokenFactory
   ) public {
   }
 
 
   function createTCR(
-    bytes16 _district,
+    address _district,
     address _tcr,
     address _votingToken,
     TCR.TCRType _tcrType,
-    TCR.RegistryEntryRepresentation memory _regEntryRepr,
-    TCR.PermissionUserRoles memory _permissionUserRoles,
-    TCR.Parameters memory _regParameters,
-    TCR.Parameters memory _paramChangeParameters,
-    bytes memory _ipfsData
-  ) public
-  {}
+    TCR.RegistryEntryRepresentation calldata _regEntryRepr,
+    TCR.PermissionUserRoles calldata _permissionUserRoles,
+    TCR.Parameters calldata _regParameters,
+    TCR.Parameters calldata _paramChangeParameters,
+    bytes calldata _ipfsData
+  ) external {
+  }
 
 
-  function updateBaseContracts(
+  function _updateBaseContracts(
     address _tcrBaseContract,
-    bytes memory _tcrIpfsAbi,
+    bytes calldata _tcrIpfsAbi,
     address _regEntryBaseContract,
-    bytes memory _regEntryIpfsAbi,
+    bytes calldata _regEntryIpfsAbi,
     address _paramChangeEntryBaseContract,
-    bytes memory _paramChangeEntryIpfsAbi
+    bytes calldata _paramChangeEntryIpfsAbi
   ) internal {
   }
 
 
   function targetUpdated(
     address _newTarget,
-    bytes memory _ipfsData,
-    bytes memory _data
-  ) public override {
+    bytes calldata _ipfsAbi,
+    bytes calldata _data
+  ) external override onlySelf {
   }
 
 
-  function fireRegistryEntryCreatedEvent(
-    bytes16 _regEntry,
+  function fireRegistryEntryCreated(
+    address _regEntry,
     address _regEntryBaseContract,
-    bytes memory _regEntryIpfsAbi,
+    bytes calldata _regEntryIpfsAbi,
     uint _regEntryVersion,
     address _creator,
     uint _tokenAmount,
-    bytes memory _tokenIpfsData,
-    bytes memory _ipfsData
-  ) public
-  {}
+    bytes calldata _tokenIpfsData,
+    bytes calldata _ipfsData
+  ) external {
+  }
 
 
-  function fireParamChangeEntryCreatedEvent(
+  function fireParamChangeEntryCreated(
     address _paramChangeEntry,
     address _paramChangeEntryBaseContract,
     bytes memory _paramChangeEntryIpfsAbi,
@@ -221,97 +220,97 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     uint _value,
     uint _originalValue,
     bytes memory _ipfsData
-  ) public
+  ) external
   {}
 
 
-  function fireRegistryEntryTokenMintedEvent(
+  function fireRegistryEntryTokenMinted(
     address _regEntry,
     uint _tokenId
-  ) public
+  ) external
   {}
 
 
-  function fireParamChangeEntryAppliedEvent(
+  function fireParamChangeEntryApplied(
     address _paramChange
-  ) public
+  ) external
   {}
 
 
-  function fireChallengeCreatedEvent(
+  function fireChallengeCreated(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
-    bytes16 _challenge,
+    uint _challengeIndex,
     address _challenger,
     uint _commitPeriodEnd,
     uint _revealPeriodEnd,
     uint _rewardPool,
-    bytes memory _ipfsData
-  ) public
+    bytes calldata _ipfsData
+  ) external
   {}
 
 
-  function fireChallengerRewardClaimedEvent(
+  function fireChallengerRewardClaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
     address _challenger,
     uint _amount
-  ) public
+  ) external
   {}
 
 
-  function fireCreatorRewardClaimedEvent(
+  function fireCreatorRewardClaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
     address _creator,
     uint _amount
-  ) public
+  ) external
   {}
 
 
-  function fireVotesReclaimedEvent(
+  function fireVotesReclaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
     address _voter,
     uint _amount
-  ) public
+  ) external
   {}
 
 
-  function fireVoteCommittedEvent(
+  function fireVoteCommitted(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
     address _voter,
     uint _amount
-  ) public
+  ) external
   {}
 
 
-  function fireVoteRevealedEvent(
+  function fireVoteRevealed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
     address _voter,
     TCR.VoteOption _voteOption,
     uint _amount
-  ) public
+  ) external
   {}
 
 
-  function fireVoteRewardClaimedEvent(
+  function fireVoteRewardClaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
     address _voter,
     uint _amount
-  ) public
+  ) external
   {}
 
 
   function fireTcrBaseContractsUpdated(
     address _tcr,
     address _regEntryBaseContract,
-    bytes memory _regEntryIpfsAbi,
+    bytes calldata _regEntryIpfsAbi,
     address paramChangeEntryBaseContract,
-    bytes memory _paramChangeEntryIpfsAbi
-  ) public
+    bytes calldata _paramChangeEntryIpfsAbi
+  ) external
   {}
 }

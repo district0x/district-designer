@@ -27,8 +27,7 @@
                        [ws "4.0.0"]
                        [dotenv "8.0.0"]
                        ["@openzeppelin/contracts" "3.0.1"]
-                       ["@aragon/apps-shared-minime" "1.0.2"]
-                       ["multi-token-standard" "0.8.13"]]}
+                       ["@aragon/apps-shared-minime" "1.0.2"]]}
 
   :profiles {:dev {:dependencies [[org.clojure/clojure "1.9.0"]
                                   [binaryage/devtools "0.9.10"]

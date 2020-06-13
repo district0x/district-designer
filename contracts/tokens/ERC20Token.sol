@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
+pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20Snapshot.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ApproveAndCallFallback.sol";
 
 
-contract DDERC20 is ERC20Snapshot, Ownable {
+contract ERC20Token is ERC20Snapshot, Ownable {
 
   uint public constant version = 1;
 
@@ -81,8 +83,8 @@ contract DDERC20 is ERC20Snapshot, Ownable {
    * @return True if the function call was successful
    */
   function approveAndCall(
-    ApproveAndCallFallBack _spender, 
-    uint256 _amount, 
+    ApproveAndCallFallBack _spender,
+    uint256 _amount,
     bytes memory _extraData
   ) public returns (bool) {
     require(approve(address(_spender), _amount));

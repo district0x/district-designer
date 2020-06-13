@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
@@ -190,8 +191,8 @@ contract Challengable {
 
   function createChallenge(
     address _challenger,
-    bytes16 _challenge,
-    bytes memory _ipfsData
+    uint _challengeIndex,
+    bytes calldata _ipfsData
   ) public {
   }
 
@@ -207,7 +208,7 @@ contract Challengable {
   function revealVote(
     address _voter,
     TCR.VoteOption _voteOption,
-    string memory _salt
+    string calldata _salt
   ) public {
   }
 
