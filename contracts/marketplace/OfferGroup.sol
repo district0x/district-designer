@@ -3,12 +3,13 @@ pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../district_designer/proxy/ProxyFactory.sol";
-import "./OfferGroupFactory.sol";
+import "./MrktTypes.sol";
 import "./MultiTokenAuctionOffer.sol";
 import "./HighestBidAuctionOffer.sol";
 import "./FixedPricesOffer.sol";
 import "./DynamicPriceOffer.sol";
 import "./DeliverableAuctionOffer.sol";
+import "./OfferGroupFactory.sol";
 import "../district_designer/District.sol";
 import "../tokens/ApproveAndCallFallback.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
@@ -25,17 +26,6 @@ import "@openzeppelin/contracts/introspection/ERC165.sol";
 contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC721Receiver, IERC1155Receiver, ERC165 {
 
   uint public constant version = 1;
-
-  struct PermissionUserRoles {
-    bytes16[] createOfferUserRoles; // Only user roles that can create an offer
-    bytes16[] offerResponseUserRoles; // Only user roles that can respond to an offer
-    bytes16[] resolveDisputeUserRoles; // Only user roles that can resolve disputes
-  }
-
-  struct Fees {
-    uint createOfferFee; // Fee transferred to district treasury when offer is created
-    uint offerResponseFee; // Fee transferred to district treasury when offer response is created
-  }
 
   /**
    * @dev Contract initialization
@@ -68,11 +58,11 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
     address _offerBaseContract,
     bytes memory _offerIpfsAbi,
     District _district,
-    BaseOffer.TradeAsset[] memory _offerableAssets,
-    BaseOffer.TradeAsset[] memory _requestableAssets,
-    BaseOffer.OfferType[] memory _allowedOfferTypes,
-    Fees memory _fees,
-    PermissionUserRoles memory _permissionUserRoles,
+    MrktTypes.TradeAsset[] memory _offerableAssets,
+    MrktTypes.TradeAsset[] memory _requestableAssets,
+    MrktTypes.OfferType[] memory _allowedOfferTypes,
+    MrktTypes.Fees memory _fees,
+    MrktTypes.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
   ) external {
   }
@@ -97,7 +87,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    */
   function createOffer(
     address _offerer,
-    BaseOffer.TradeValue calldata _offeredValue,
+    MrktTypes.TradeValue calldata _offeredValue,
     address[] calldata _allowedRespondents,
     bytes calldata _ipfsData
   ) external {
@@ -116,11 +106,11 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * TODO: Needs implementation
    */
   function updateOfferGroup(
-    BaseOffer.TradeAsset[] calldata _offerableAssets,
-    BaseOffer.TradeAsset[] calldata _requestableAssets,
-    BaseOffer.OfferType[] calldata _allowedOfferTypes,
-    Fees calldata _fees,
-    PermissionUserRoles calldata _permissionUserRoles,
+    MrktTypes.TradeAsset[] calldata _offerableAssets,
+    MrktTypes.TradeAsset[] calldata _requestableAssets,
+    MrktTypes.OfferType[] calldata _allowedOfferTypes,
+    MrktTypes.Fees calldata _fees,
+    MrktTypes.PermissionUserRoles calldata _permissionUserRoles,
     bytes calldata _ipfsData
   ) external {
   }
@@ -209,7 +199,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
     uint256[] calldata ids,
     uint256[] calldata values,
     bytes calldata data
-  ) external override returns(bytes4) {
+  ) external override returns (bytes4) {
     return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
   }
 

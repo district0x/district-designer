@@ -4,14 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../district_designer/DistrictFactory.sol";
 import "../district_designer/proxy/ProxyFactory.sol";
-import "../district_designer/DistrictFactory.sol";
-import "./BaseOffer.sol";
-import "./MultiTokenAuctionOffer.sol";
-import "./HighestBidAuctionOffer.sol";
-import "./FixedPricesOffer.sol";
-import "./DynamicPriceOffer.sol";
-import "./DeliverableAuctionOffer.sol";
-import "./OfferGroup.sol";
+import "./MrktTypes.sol";
 
 /**
  * @dev Factory contract for creating {OfferGroup}
@@ -31,69 +24,55 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address offerGroupBaseContract,
     bytes offerGroupIpfsAbi,
     uint offerGroupVersion,
-    BaseOffer.TradeAsset[] offerableAssets,
-    BaseOffer.TradeAsset[] requestableAssets,
-    BaseOffer.OfferType[] allowedOfferTypes,
-    OfferGroup.Fees fees,
-    OfferGroup.PermissionUserRoles permissionUserRoles,
+    MrktTypes.TradeAsset[] offerableAssets,
+    MrktTypes.TradeAsset[] requestableAssets,
+    MrktTypes.OfferType[] allowedOfferTypes,
+    MrktTypes.Fees fees,
+    MrktTypes.PermissionUserRoles permissionUserRoles,
     bytes ipfsData,
     uint timestamp
   );
 
   event OfferGroupUpdated(
     address offerGroup,
-    BaseOffer.TradeAsset[] offerableAssets,
-    BaseOffer.TradeAsset[] requestableAssets,
-    BaseOffer.OfferType[] allowedOfferTypes,
-    OfferGroup.Fees fees,
-    OfferGroup.PermissionUserRoles permissionUserRoles,
+    MrktTypes.TradeAsset[] offerableAssets,
+    MrktTypes.TradeAsset[] requestableAssets,
+    MrktTypes.OfferType[] allowedOfferTypes,
+    MrktTypes.Fees fees,
+    MrktTypes.PermissionUserRoles permissionUserRoles,
     bytes ipfsData,
     uint timestamp
   );
-
-  struct Request {
-    DynamicPriceOffer.Request dynamicPriceOffer;
-    FixedPricesOffer.Request fixedPriceOffer;
-    HighestBidAuctionOffer.Request highestBidAuctionOffer;
-    MultiTokenAuctionOffer.Request multiTokenAuction;
-  }
 
   event OfferCreated(
     address offer,
     address offerBaseContract,
     bytes offerIpfsAbi,
     uint offerVersion,
-    BaseOffer.OfferType offerType,
+    MrktTypes.OfferType offerType,
     address offerer,
-    BaseOffer.TradeValue offeredValue,
-    Request request,
-    BaseOffer.TradeValue availableSupply,
+    MrktTypes.TradeValue offeredValue,
+    MrktTypes.OfferRequest request,
+    MrktTypes.TradeValue availableSupply,
     bytes ipfsData,
     uint timestamp
   );
-
-  struct Response {
-    FixedPricesOffer.Response fixedPriceOffer;
-    HighestBidAuctionOffer.Response highestBidAuctionOffer;
-    BaseOffer.TradeValue multiTokenAuction;
-    DeliverableAuctionOffer.Response deliverableAuction;
-  }
 
   event OfferResponseCreated(
     address offer,
     address respondent,
     uint offerResponseIndex,
-    Response response,
-    BaseOffer.TradeValue offererReceivedValue,
-    BaseOffer.TradeValue respondentReceivedValue,
-    BaseOffer.TradeValue availableSupply,
+    MrktTypes.OfferResponse response,
+    MrktTypes.TradeValue offererReceivedValue,
+    MrktTypes.TradeValue respondentReceivedValue,
+    MrktTypes.TradeValue availableSupply,
     bytes ipfsData,
     uint timestamp
   );
 
   event OfferRequestUpdated(
     address offer,
-    Request request,
+    MrktTypes.OfferRequest request,
     bytes ipfsData,
     uint timestamp
   );
@@ -101,16 +80,16 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
   event OfferResponseAccepted(
     address offer,
     uint offerResponseIndex,
-    BaseOffer.TradeValue offererReceivedValue,
-    BaseOffer.TradeValue respondentReceivedValue,
-    BaseOffer.TradeValue availableSupply,
+    MrktTypes.TradeValue offererReceivedValue,
+    MrktTypes.TradeValue respondentReceivedValue,
+    MrktTypes.TradeValue availableSupply,
     bytes ipfsData,
     uint timestamp
   );
 
   event OfferAvailableSupplyUpdated(
     address offer,
-    BaseOffer.TradeValue availableSupply,
+    MrktTypes.TradeValue availableSupply,
     uint timestamp
   );
 
@@ -118,9 +97,9 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address offer,
     uint offerResponseIndex,
     address receiver,
-    BaseOffer.TradeValue offererReceivedValue,
-    BaseOffer.TradeValue respondentReceivedValue,
-    BaseOffer.TradeValue availableSupply,
+    MrktTypes.TradeValue offererReceivedValue,
+    MrktTypes.TradeValue respondentReceivedValue,
+    MrktTypes.TradeValue availableSupply,
     bytes ipfsData,
     uint timestamp
   );
@@ -144,9 +123,9 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
 
   event DisputeResolved(
     uint offerResponseIndex,
-    BaseOffer.TradeValue offererReceivedValue,
-    BaseOffer.TradeValue respondentReceivedValue,
-    BaseOffer.TradeValue availableSupply,
+    MrktTypes.TradeValue offererReceivedValue,
+    MrktTypes.TradeValue respondentReceivedValue,
+    MrktTypes.TradeValue availableSupply,
     address resolvedBy,
     bytes ipfsData,
     uint timestamp
@@ -206,11 +185,11 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function createOfferGroup(
     address _district,
-    BaseOffer.TradeAsset[] calldata _offerableAssets,
-    BaseOffer.TradeAsset[] calldata _requestableAssets,
-    BaseOffer.OfferType[] calldata _allowedOfferTypes,
-    OfferGroup.Fees calldata _fees,
-    OfferGroup.PermissionUserRoles calldata _permissionUserRoles,
+    MrktTypes.TradeAsset[] calldata _offerableAssets,
+    MrktTypes.TradeAsset[] calldata _requestableAssets,
+    MrktTypes.OfferType[] calldata _allowedOfferTypes,
+    MrktTypes.Fees calldata _fees,
+    MrktTypes.PermissionUserRoles calldata _permissionUserRoles,
     bytes calldata _ipfsData
   ) external {
   }
@@ -254,11 +233,11 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    * TODO: Needs implementation
    */
   function fireOfferGroupUpdated(
-    BaseOffer.TradeAsset[] calldata _offerableAssets,
-    BaseOffer.TradeAsset[] calldata _requestableAssets,
-    BaseOffer.OfferType[] calldata _allowedOfferTypes,
-    OfferGroup.Fees calldata _fees,
-    OfferGroup.PermissionUserRoles calldata _permissionUserRoles,
+    MrktTypes.TradeAsset[] calldata _offerableAssets,
+    MrktTypes.TradeAsset[] calldata _requestableAssets,
+    MrktTypes.OfferType[] calldata _allowedOfferTypes,
+    MrktTypes.Fees calldata _fees,
+    MrktTypes.PermissionUserRoles calldata _permissionUserRoles,
     bytes calldata _ipfsData
   ) external {
   }
@@ -273,9 +252,9 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     bytes calldata _offerIpfsAbi,
     uint _offerVersion,
     address _offerer,
-    BaseOffer.TradeValue calldata _offeredValue,
-    Request calldata request,
-    BaseOffer.TradeValue calldata _availableSupply,
+    MrktTypes.TradeValue calldata _offeredValue,
+    MrktTypes.OfferRequest calldata request,
+    MrktTypes.TradeValue calldata _availableSupply,
     bytes calldata _ipfsData
   ) external {
   }
@@ -288,10 +267,10 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address _offer,
     address _respondent,
     uint _offerResponseIndex,
-    Response calldata _response,
-    BaseOffer.TradeValue calldata _offererReceivedValue,
-    BaseOffer.TradeValue calldata _respondentReceivedValue,
-    BaseOffer.TradeValue calldata _availableSupply,
+    MrktTypes.OfferResponse calldata _response,
+    MrktTypes.TradeValue calldata _offererReceivedValue,
+    MrktTypes.TradeValue calldata _respondentReceivedValue,
+    MrktTypes.TradeValue calldata _availableSupply,
     bytes calldata _ipfsData
   ) external {
   }
@@ -302,7 +281,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function fireOfferRequestUpdated(
     address _offer,
-    Request calldata request,
+    MrktTypes.OfferRequest calldata request,
     bytes calldata _ipfsData
   ) external {
   }
@@ -314,9 +293,9 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
   function fireOfferResponseAccepted(
     address _offer,
     uint _offerResponseIndex,
-    BaseOffer.TradeValue calldata _offererReceivedValue,
-    BaseOffer.TradeValue calldata _respondentReceivedValue,
-    BaseOffer.TradeValue calldata _availableSupply,
+    MrktTypes.TradeValue calldata _offererReceivedValue,
+    MrktTypes.TradeValue calldata _respondentReceivedValue,
+    MrktTypes.TradeValue calldata _availableSupply,
     bytes calldata _ipfsData
   ) external {
   }
@@ -327,10 +306,10 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function fireOfferAvailableSupplyUpdated(
     address _offer,
-    BaseOffer.TradeValue calldata _availableSupply
+    MrktTypes.TradeValue calldata _availableSupply
   ) external {
   }
-  
+
 
   /**
    * TODO: Needs implementation
@@ -339,9 +318,9 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address _offer,
     uint _offerResponseIndex,
     address _receiver,
-    BaseOffer.TradeValue calldata _offererReceivedValue,
-    BaseOffer.TradeValue calldata _respondentReceivedValue,
-    BaseOffer.TradeValue calldata _availableSupply,
+    MrktTypes.TradeValue calldata _offererReceivedValue,
+    MrktTypes.TradeValue calldata _respondentReceivedValue,
+    MrktTypes.TradeValue calldata _availableSupply,
     bytes calldata _ipfsData
   ) external {
   }
@@ -376,9 +355,9 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function fireDisputeResolved(
     uint _offerResponseIndex,
-    BaseOffer.TradeValue calldata _offererReceivedValue,
-    BaseOffer.TradeValue calldata _respondentReceivedValue,
-    BaseOffer.TradeValue calldata _availableSupply,
+    MrktTypes.TradeValue calldata _offererReceivedValue,
+    MrktTypes.TradeValue calldata _respondentReceivedValue,
+    MrktTypes.TradeValue calldata _availableSupply,
     address _resolvedBy
   ) external {
   }

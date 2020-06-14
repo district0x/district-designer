@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "./BaseOffer.sol";
+import "./MrktTypes.sol";
 import "../tokens/ApproveAndCallFallback.sol";
 import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm dependency once published
 
@@ -14,17 +15,7 @@ import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm
 contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver {
 
   uint public constant version = 1;
-  BaseOffer.OfferType public constant offerType = BaseOffer.OfferType.DYNAMIC_PRICE;
-
-  struct Request {
-    BaseOffer.TokenType tokenType;
-    address tokenAddress;
-    uint tokenId; // `tokenId` is used only for ERC1155
-    uint startPrice;
-    uint endPrice;
-    uint duration;
-  }
-
+  MrktTypes.OfferType public constant offerType = MrktTypes.OfferType.DYNAMIC_PRICE;
 
   /**
    * @dev Contract initialization
@@ -42,8 +33,8 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
   function initialize(
     address _offerer,
     address[] calldata _allowedRespondents,
-    BaseOffer.TradeValue calldata _offeredValue,
-    Request calldata _request,
+    MrktTypes.TradeValue calldata _offeredValue,
+    MrktTypes.DynamicPriceOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
     super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
@@ -61,7 +52,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * TODO: Needs implementation
    */
   function updateRequest(
-    Request calldata _request,
+    MrktTypes.DynamicPriceOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
   }
@@ -105,7 +96,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * TODO: Needs implementation
    */
   function markDeliverableReceived(
-  ) external override {
+  ) external {
   }
 
 

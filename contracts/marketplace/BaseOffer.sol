@@ -2,6 +2,9 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "./MrktTypes.sol";
+import  "./OfferGroupFactory.sol";
+
 /**
  * @dev Base abstraction for offer contracts
  * Offer is a contract between single offerer and multiple respondents.
@@ -10,72 +13,7 @@ pragma experimental ABIEncoderV2;
  * Each extension provides different pricing mechanism.
  */
 
-
 abstract contract BaseOffer {
-
-  enum OfferType {
-    FIXED_PRICES,
-    DYNAMIC_PRICE,
-    HIGEST_BID_AUCTION,
-    MULTI_TOKEN_AUCTION,
-    DELIVERABLE_AUCTION
-  }
-
-  enum AssetCategory {
-    ETH,
-    ERC20,
-    ERC721,
-    ERC1155,
-    /**
-     * Deliverable is anything that is not a standardized token on Ethereum blockchain.
-     * Can be a service, physical product, file, token outside Ethereum, etc.
-     * Deliverable on any side of a trade automatically implies possibility of disputes.
-     */
-    DELIVERABLE
-  }
-
-  enum TokenType {
-    ETH,
-    ERC20,
-    ERC721,
-    ERC1155
-  }
-
-  struct Token {
-    TokenType tokenType;
-    address tokenAddress;
-  }
-
-
-  struct TradeAsset {
-    AssetCategory assetCategory;
-    address tokenAddress;
-  }
-
-  struct ETHValue {
-    uint value;
-  }
-
-  struct ERC20Value {
-    uint value;
-  }
-
-  struct ERC721Value {
-    uint tokenId;
-  }
-
-  struct ERC1155Value {
-    uint[] ids;
-    uint[] values;
-  }
-
-  struct TradeValue {
-    TradeAsset tradeAsset;
-    ETHValue eth;
-    ERC20Value erc20;
-    ERC721Value erc721;
-    ERC1155Value erc1155;
-  }
 
   /**
    * @dev Modifier that allows only when `msg.sender` is the offerer
@@ -97,6 +35,7 @@ abstract contract BaseOffer {
    * Requirements:
    *
    * - `_offerer` cannot be zero address
+   * - `_offerer` must be within `PermissionUserRoles.createOfferUserRoles` if it's not empty
    * - `_ipfsData` must be valid ipfs hash
    *
    * See spec :marketplace/offer-created for format of _ipfsData file
@@ -105,7 +44,7 @@ abstract contract BaseOffer {
   function _initialize(
     address _offerer,
     address[] calldata _allowedRespondents,
-    TradeValue calldata _offeredValue,
+    MrktTypes.TradeValue calldata _offeredValue,
     bytes calldata _ipfsData
   ) internal {
   }
@@ -122,6 +61,7 @@ abstract contract BaseOffer {
    * - `_respondent` cannot be zero address
    * - `_respondent` cannot be offerer
    * - `_respondent` must be within `allowedRespondents` if it's not empty
+   * - `_respondent` must be within `PermissionUserRoles.offerResponseUserRoles` if it's not empty
    *
    * TODO: Needs implementation
    */
@@ -197,8 +137,8 @@ abstract contract BaseOffer {
    */
   function resolveDispute(
     uint _offerResponseIndex,
-    TradeValue calldata _valueForOfferer,
-    TradeValue calldata _valueForRespondent,
+    MrktTypes.TradeValue calldata _valueForOfferer,
+    MrktTypes.TradeValue calldata _valueForRespondent,
     bytes calldata _ipfsData
   ) external {
   }

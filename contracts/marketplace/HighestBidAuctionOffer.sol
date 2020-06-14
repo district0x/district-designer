@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "./BaseOffer.sol";
+import "./MrktTypes.sol";
 import "../tokens/ApproveAndCallFallback.sol";
 import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm dependency once published
 
@@ -16,26 +17,7 @@ import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm
 contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver {
 
   uint public constant version = 1;
-  BaseOffer.OfferType public constant offerType = BaseOffer.OfferType.HIGEST_BID_AUCTION;
-
-  struct Request {
-    BaseOffer.TokenType tokenType;
-    address tokenAddress;
-    uint tokenId; // `tokenId` is used only for ERC1155
-    uint minPrice;
-    uint minBidStep;
-    uint duration;
-    /**
-     * `extensionTriggerDuration` is amount of seconds before the end of auction,
-     *  which, when received bid, will extend the auction by `extensionDuration`
-     */
-    uint extensionTriggerDuration;
-    uint extensionDuration;
-  }
-
-  struct Response {
-    uint bid;
-  }
+  MrktTypes.OfferType public constant offerType = MrktTypes.OfferType.HIGEST_BID_AUCTION;
 
   /**
    * @dev Contract initialization
@@ -53,8 +35,8 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
   function initialize(
     address _offerer,
     address[] calldata _allowedRespondents,
-    BaseOffer.TradeValue calldata _offeredValue,
-    Request calldata _request,
+    MrktTypes.TradeValue calldata _offeredValue,
+    MrktTypes.HighestBidAuctionOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
     super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
@@ -72,7 +54,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    * TODO: Needs implementation
    */
   function updateRequest(
-    Request calldata _request,
+    MrktTypes.HighestBidAuctionOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
   }
@@ -98,7 +80,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    */
   function createOfferResponse(
     address _respondent,
-    Response calldata _response,
+    MrktTypes.HighestBidAuctionOfferResponse calldata _response,
     bytes calldata _ipfsData
   ) external {
     super._createOfferResponse(_respondent);
@@ -168,7 +150,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    */
   function _canRaiseDispute(
     uint _offerResponseIndex
-  ) internal override returns(bool) {
+  ) internal override returns (bool) {
     return true;
   }
 

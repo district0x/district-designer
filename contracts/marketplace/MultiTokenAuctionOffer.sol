@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "./BaseOffer.sol";
+import "./MrktTypes.sol";
 import "../tokens/ApproveAndCallFallback.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm dependency once published
@@ -16,19 +17,7 @@ import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm
 contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver, ERC1155Receiver {
 
   uint public constant version = 1;
-  BaseOffer.OfferType public constant offerType = BaseOffer.OfferType.MULTI_TOKEN_AUCTION;
-
-  struct Request {
-    BaseOffer.Token[] acceptedTokens;
-    uint duration;
-    /**
-     * `extensionTriggerDuration` is amount of seconds before the end of auction,
-     *  which, when received bid, will extend the auction by `extensionDuration`
-     */
-    uint extensionTriggerDuration;
-    uint extensionDuration;
-  }
-
+  MrktTypes.OfferType public constant offerType = MrktTypes.OfferType.MULTI_TOKEN_AUCTION;
 
   /**
    * @dev Contract initialization
@@ -46,8 +35,8 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
   function initialize(
     address _offerer,
     address[] calldata _allowedRespondents,
-    BaseOffer.TradeValue calldata _offeredValue,
-    Request calldata _request,
+    MrktTypes.TradeValue calldata _offeredValue,
+    MrktTypes.MultiTokenAuctionOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
     super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
@@ -65,7 +54,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
    * TODO: Needs implementation
    */
   function updateRequest(
-    Request calldata _request,
+    MrktTypes.MultiTokenAuctionOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
   }
@@ -88,7 +77,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
    */
   function createOfferResponse(
     address _respondent,
-    BaseOffer.TradeValue calldata _response,
+    MrktTypes.TradeValue calldata _response,
     bytes calldata _ipfsData
   ) external {
     super._createOfferResponse(_respondent);
@@ -149,7 +138,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
    */
   function markDeliverableReceived(
     uint _offerResponseIndex
-  ) external override {
+  ) external {
     super._markDeliverableReceived(_offerResponseIndex);
   }
 

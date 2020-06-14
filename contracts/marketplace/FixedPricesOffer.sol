@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "./BaseOffer.sol";
+import "./MrktTypes.sol";
 import "../tokens/ApproveAndCallFallback.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm dependency once published
@@ -16,15 +17,8 @@ import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm
 contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver, ERC1155Receiver {
 
   uint public constant version = 1;
-  BaseOffer.OfferType public constant offerType = BaseOffer.OfferType.FIXED_PRICES;
+  MrktTypes.OfferType public constant offerType = MrktTypes.OfferType.FIXED_PRICES;
 
-  struct Request {
-    BaseOffer.TradeValue[] prices; // Definitions of several fixed prices
-  }
-
-  struct Response {
-    uint8 priceIndex; // Refers to one of the fixed prices defined by offerer
-  }
 
   /**
    * @dev Contract initialization
@@ -42,8 +36,8 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
   function initialize(
     address _offerer,
     address[] calldata _allowedRespondents,
-    BaseOffer.TradeValue calldata _offeredValue,
-    Request calldata _request,
+    MrktTypes.TradeValue calldata _offeredValue,
+    MrktTypes.FixedPricesOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
     super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
@@ -66,7 +60,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
    * TODO: Needs implementation
    */
   function updateRequest(
-    Request calldata _request,
+    MrktTypes.FixedPricesOfferRequest calldata _request,
     bytes calldata _ipfsData
   ) external {
   }
@@ -89,7 +83,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
    */
   function createOfferResponse(
     address _respondent,
-    Response calldata _response,
+    MrktTypes.FixedPricesOfferResponse calldata _response,
     bytes calldata _ipfsData
   ) public {
     super._createOfferResponse(_respondent);
