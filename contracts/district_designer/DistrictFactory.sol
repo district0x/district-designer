@@ -10,9 +10,9 @@ import "./District.sol";
  * @dev Factory contract for creating {District}
  * It also emits all events related to District Designer core module
  * This contract is used through a proxy, therefore its address will never change.
- * No breaking changes will be introduced for events,
- * so they all stay accessible from a single contract
+ * No breaking changes will be introduced for events, so they all stay accessible from a single contract.
  * Also provides emergency state for modules, based on which code execution can be temporarily restricted
+ * in other modules.
  */
 
 contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {

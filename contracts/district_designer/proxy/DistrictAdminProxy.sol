@@ -13,6 +13,13 @@ contract DistrictAdminProxy is BaseProxy {
 
   District public district;
 
+  /**
+   * @dev Constructor
+   * If zero address is passed as `_district` it'll use address of `this`
+   *
+   * Emits an {DistrictCreated} event
+   * TODO: Needs implementation
+   */
   constructor(
     address _target,
     address _district

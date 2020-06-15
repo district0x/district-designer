@@ -73,7 +73,7 @@ contract District {
    * @dev Updates district's permissions with new user roles
    *
    * It updates only passed permissions, the ones that are not passed
-   * are left unchanged, in given district.
+   * are left unchanged in given district.
    *
    * Only admin user role is allowed to update permissions for a district
    *
