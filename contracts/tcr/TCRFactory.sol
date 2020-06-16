@@ -15,8 +15,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   event TCRCreated(
     address indexed district,
     address tcr,
-    address tcrBaseContract,
-    bytes tcrIpfsAbi,
+    ProxyFactory.ProxyTarget tcrTarget,
     uint tcrVersion,
     address votingToken,
     TCR.TCRType tcrType,
@@ -31,8 +30,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   event RegistryEntryCreated(
     address tcr,
     address regEntry,
-    address regEntryBaseContract,
-    bytes regEntryIpfsAbi,
+    ProxyFactory.ProxyTarget regEntryTarget,
     uint regEntryVersion,
     address creator,
     uint tokenAmount,
@@ -44,9 +42,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   event ParamChangeEntryCreated(
     address tcr,
     address paramChangeEntry,
-    address paramChangeEntryAddress,
-    address paramChangeEntryBaseContract,
-    bytes paramChangeEntryIpfsAbi,
+    ProxyFactory.ProxyTarget paramChangeEntryTarget,
     uint paramChangeEntryVersion,
     address creator,
     TCR.EntriesGroup entriesGroup,
@@ -129,18 +125,15 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     uint timestamp
   );
 
-  event BaseContractsUpdated(
-    address tcrBaseContract,
-    bytes tcrIpfsAbi,
-    address regEntryBaseContract,
-    bytes regEntryIpfsAbi,
-    address paramChangeEntryBaseContract,
-    bytes paramChangeEntryIpfsAbi,
+  event ProxyTargetsUpdated(
+    ProxyFactory.ProxyTarget tcrTarget,
+    ProxyFactory.ProxyTarget regEntryTarget,
+    ProxyFactory.ProxyTarget paramChangeEntryTarget,
     uint timestamp
   );
 
 
-  event TCRBaseContractsUpdated(
+  event TCRProxyTargetsUpdated(
     address tcr,
     address regEntryBaseContract,
     bytes regEntryIpfsAbi,
@@ -152,12 +145,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
 
   function initialize(
     DistrictFactory _districtFactory,
-    address _tcrBaseContract,
-    bytes calldata _tcrIpfsAbi,
-    address _regEntryBaseContract,
-    bytes calldata _regEntryIpfsAbi,
-    address _paramChangeEntryBaseContract,
-    bytes calldata _paramChangeEntryIpfsAbi,
+    ProxyFactory.ProxyTarget memory _tcrTarget,
+    ProxyFactory.ProxyTarget memory _regEntryTarget,
+    ProxyFactory.ProxyTarget memory _paramChangeEntryTarget,
     TokenFactory _tokenFactory
   ) public {
   }
@@ -168,51 +158,45 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     address _tcr,
     address _votingToken,
     TCR.TCRType _tcrType,
-    TCR.RegistryEntryRepresentation calldata _regEntryRepr,
-    TCR.PermissionUserRoles calldata _permissionUserRoles,
-    TCR.Parameters calldata _regParameters,
-    TCR.Parameters calldata _paramChangeParameters,
-    bytes calldata _ipfsData
+    TCR.RegistryEntryRepresentation memory _regEntryRepr,
+    TCR.PermissionUserRoles memory _permissionUserRoles,
+    TCR.Parameters memory _regParameters,
+    TCR.Parameters memory _paramChangeParameters,
+    bytes memory _ipfsData
   ) external {
   }
 
 
-  function _updateBaseContracts(
-    address _tcrBaseContract,
-    bytes calldata _tcrIpfsAbi,
-    address _regEntryBaseContract,
-    bytes calldata _regEntryIpfsAbi,
-    address _paramChangeEntryBaseContract,
-    bytes calldata _paramChangeEntryIpfsAbi
+  function _updateProxyTargets(
+    ProxyFactory.ProxyTarget memory _tcrTarget,
+    ProxyFactory.ProxyTarget memory _regEntryTarget,
+    ProxyFactory.ProxyTarget memory _paramChangeEntryTarget
   ) internal {
   }
 
 
   function targetUpdated(
-    address _newTarget,
-    bytes calldata _ipfsAbi,
-    bytes calldata _data
+    ProxyFactory.ProxyTarget memory _newTcrFactory,
+    bytes memory _data
   ) external override onlySelf {
   }
 
 
   function fireRegistryEntryCreated(
     address _regEntry,
-    address _regEntryBaseContract,
-    bytes calldata _regEntryIpfsAbi,
+    ProxyFactory.ProxyTarget memory _regEntryTarget,
     uint _regEntryVersion,
     address _creator,
     uint _tokenAmount,
-    bytes calldata _tokenIpfsData,
-    bytes calldata _ipfsData
+    bytes memory _tokenIpfsData,
+    bytes memory _ipfsData
   ) external {
   }
 
 
   function fireParamChangeEntryCreated(
     address _paramChangeEntry,
-    address _paramChangeEntryBaseContract,
-    bytes memory _paramChangeEntryIpfsAbi,
+    ProxyFactory.ProxyTarget memory _paramChangeEntryTarget,
     uint _paramChangeEntryVersion,
     address _creator,
     TCR.EntriesGroup _paramGroup,
@@ -245,7 +229,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     uint _commitPeriodEnd,
     uint _revealPeriodEnd,
     uint _rewardPool,
-    bytes calldata _ipfsData
+    bytes memory _ipfsData
   ) external
   {}
 
@@ -305,12 +289,10 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
-  function fireTcrBaseContractsUpdated(
+  function fireTcrProxyTargetsUpdated(
     address _tcr,
-    address _regEntryBaseContract,
-    bytes calldata _regEntryIpfsAbi,
-    address paramChangeEntryBaseContract,
-    bytes calldata _paramChangeEntryIpfsAbi
+    ProxyFactory.ProxyTarget memory _regEntryTarget,
+    ProxyFactory.ProxyTarget memory _paramChangeEntryTarget
   ) external
   {}
 }

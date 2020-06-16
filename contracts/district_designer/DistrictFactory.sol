@@ -15,7 +15,8 @@ import "./District.sol";
  * in other modules.
  */
 
-contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
+contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack
+{
 
   uint public constant version = 1;
 
@@ -55,7 +56,7 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
     uint timestamp
   );
 
-  event BaseContractsUpdated(
+  event ProxyTargetsUpdated(
     address districtBaseContract,
     bytes districtIpfsAbi,
     uint timestamp
@@ -77,14 +78,12 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
    * Requirements:
    *
    * - `_proxyFactory` cannot be zero address
-   * - `_districtBaseContract` cannot be zero address
-   * - `_districtIpfsAbi` must be valid ipfs hash
+   * - `_districtTarget` Contract for {District} proxies
    * TODO: Needs implementation
    */
   function initialize(
     ProxyFactory _proxyFactory,
-    address _districtBaseContract,
-    bytes calldata _districtIpfsAbi
+    ProxyFactory.ProxyTarget memory _districtTarget
   ) external {
     // Making sure owner of proxy is the same as the caller of `initialize`
     transferOwnership(msg.sender);
@@ -100,11 +99,11 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
    * TODO: Needs implementation
    */
   function createDistrict(
-    District.Permission[] calldata _permissions,
-    District.UserRole[] calldata _userRoles,
+    District.Permission[] memory _permissions,
+    District.UserRole[] memory _userRoles,
     bytes16 _adminUserRoleId,
     address _treasury,
-    bytes calldata _ipfsData
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -144,49 +143,45 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
    * @dev Updates contract address and ABI of {District} contract that new proxies will forward to
    * It's meant to be called only by {targetUpdated}
    *
-   * Requirements:
-   *
-   * - `_districtBaseContract` cannot be zero address
-   * - `_districtIpfsAbi` must be valid ipfs hash
-   *
-   * Emits an {BaseContractsUpdated} event
+   * Emits an {ProxyTargetsUpdated} event
    * TODO: Needs implementation
    */
-  function _updateBaseContracts(
-    address _districtBaseContract,
-    bytes calldata _districtIpfsAbi
+  function _updateProxyTargets(
+    ProxyFactory.ProxyTarget memory _districtTarget
   ) internal {
   }
 
 
   /**
    * @dev This function is called automatically when proxy updates its target
-   * It should decode `_data` into arguments of {_updateBaseContracts} and call it
+   * It should decode `_data` into arguments of {_updateProxyTargets} and call it
    * TODO: Needs implementation
    */
   function targetUpdated(
-    address _newTarget,
-    bytes calldata _ipfsAbi,
-    bytes calldata _data
+    ProxyFactory.ProxyTarget memory _newDistrictFactoryTarget,
+    bytes memory _data
   ) external override onlySelf {
   }
+
 
   /**
    * TODO: Needs implementation
    */
   function firePermissionsUpdated(
-    District.Permission[] calldata _permissions
+    District.Permission[] memory _permissions
   ) external onlyDistrict {
   }
+
 
   /**
    * TODO: Needs implementation
    */
   function fireUserRolesUpdated(
-    District.UserRole[] calldata _userRoles,
-    bytes calldata _ipfsData
+    District.UserRole[] memory _userRoles,
+    bytes memory _ipfsData
   ) external onlyDistrict {
   }
+
 
   /**
    * TODO: Needs implementation

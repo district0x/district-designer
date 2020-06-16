@@ -17,32 +17,35 @@ import  "../../_libs/validIPFSHash/validIPFSHash.sol";
 abstract contract BaseProxy {
   using validIPFSHash for bytes;
 
-  address public target;
-  ProxyFactory proxyFactory;
+  ProxyFactory.ProxyTarget public proxyTarget;
+  ProxyFactory public proxyFactory;
 
   modifier canUpdateTarget() {
     require(_canUpdateTarget(msg.sender));
     _;
   }
 
+
   /**
    * @dev Constructs a proxy
    *
    * Caller of this function is considered to be {ProxyFactory}
    *
-   * @param _target Address proxy will forward to
+   * @param _proxyTarget Proxy target the proxy will forward to
    *
    * Requirements:
    *
-   * - `_target` cannot be zero address
+   * - `_proxyTarget.contractAddress` cannot be zero address
+   * - `_proxyTarget.ipfsAbi` must be valid ipfs hash
    *
    */
   constructor(
-    address _target
+    ProxyFactory.ProxyTarget memory _proxyTarget
   ) public {
-    require(_target != address(0));
+    require(_proxyTarget.contractAddress != address(0));
+    require(_proxyTarget.ipfsAbi.isValidIPFSHash());
     proxyFactory = ProxyFactory(msg.sender);
-    target = _target;
+    proxyTarget = _proxyTarget;
   }
 
 
@@ -51,42 +54,40 @@ abstract contract BaseProxy {
    *
    * Only authenticated address can update the target
    *
-   * @param _newTarget New target proxy will forward to
-   * @param _ipfsAbi IPFS hash of new target's ABI
+   * @param _newTarget New proxy target proxy will forward to
    *
    * Requirements:
    *
-   * - `_newTarget` cannot be zero address
-   * - `_ipfsAbi` must be valid ipfs hash
+   * - `_newTarget.contractAddress` cannot be zero address
+   * - `_newTarget.ipfsAbi` must be valid ipfs hash
    *
    */
   function updateTarget(
-    address _newTarget,
-    bytes calldata _ipfsAbi
+    ProxyFactory.ProxyTarget memory _newTarget
   ) public canUpdateTarget {
-    require(_newTarget != address(0));
-    require(_ipfsAbi.isValidIPFSHash());
-    proxyFactory.fireProxyTargetUpdated(target, _newTarget, _ipfsAbi);
-    target = _newTarget;
+    require(_newTarget.contractAddress != address(0));
+    require(_newTarget.ipfsAbi.isValidIPFSHash());
+    proxyFactory.fireProxyTargetUpdated(proxyTarget, _newTarget);
+    proxyTarget = _newTarget;
   }
+
 
   /**
    * @dev Same as {updateTarget} but additionally calls a contract function with passed `data`
    * A contract, which this proxy forwards to, must implement {targetUpdated} function
    *
    * @param _newTarget New target proxy will forward to
-   * @param _ipfsAbi IPFS hash of new target's ABI
    *
    */
   function updateTargetAndCall(
-    address _newTarget,
-    bytes calldata _ipfsAbi,
-    bytes calldata _data
+    ProxyFactory.ProxyTarget memory _newTarget,
+    bytes memory _data
   ) external canUpdateTarget {
-    updateTarget(_newTarget, _ipfsAbi);
+    updateTarget(_newTarget);
     UpdateTargetAndCallFallBack _this = UpdateTargetAndCallFallBack(address(this));
-    _this.targetUpdated(_newTarget, _ipfsAbi, _data);
+    _this.targetUpdated(_newTarget, _data);
   }
+
 
   /**
    * @dev Checks whether sender can update proxy target
@@ -139,14 +140,15 @@ abstract contract BaseProxy {
    */
   receive(
   ) external payable {
-    _delegatedFwd(target, msg.data);
+    _delegatedFwd(proxyTarget.contractAddress, msg.data);
   }
+
 
   /**
    * @dev All calls landing here will be forwarded
    */
   fallback(
   ) external payable {
-    _delegatedFwd(target, msg.data);
+    _delegatedFwd(proxyTarget.contractAddress, msg.data);
   }
 }

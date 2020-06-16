@@ -20,11 +20,15 @@ contract ProxyFactory {
 
   mapping(address => bool) public isProxy;
 
+  struct ProxyTarget {
+    address contractAddress;
+    bytes ipfsAbi;
+  }
+
   event ProxyTargetUpdated(
     address proxy,
-    address oldTarget,
-    address newTarget,
-    bytes ipfsAbi,
+    ProxyTarget oldTarget,
+    ProxyTarget newTarget,
     uint timestamp
   );
 
@@ -42,12 +46,13 @@ contract ProxyFactory {
    *
    * Requirements:
    *
-   * - `_target` cannot be zero address
+   * - `_target.contractAddress` cannot be zero address
+   * - `_target.ipfsAbi` must be valid IPFS hash
    * - `_district` must be already initialized district
    *
    */
   function createDistrictAdminProxy(
-    address _target,
+    ProxyTarget memory _target,
     address _district
   ) external returns (address _proxy) {
     DistrictAdminProxy proxy = new DistrictAdminProxy(_target, _district);
@@ -68,7 +73,7 @@ contract ProxyFactory {
    *
    */
   function createOwnerProxy(
-    address _target,
+    ProxyTarget memory _target,
     address _owner
   ) external returns (address _proxy) {
     OwnerProxy proxy = new OwnerProxy(_target, _owner);
@@ -84,10 +89,9 @@ contract ProxyFactory {
    *
    */
   function fireProxyTargetUpdated(
-    address _oldTarget,
-    address _newTarget,
-    bytes calldata _ipfsAbi
+    ProxyTarget memory _oldTarget,
+    ProxyTarget memory _newTarget
   ) external onlyProxy {
-    ProxyTargetUpdated(msg.sender, _oldTarget, _newTarget, _ipfsAbi, now);
+    emit ProxyTargetUpdated(msg.sender, _oldTarget, _newTarget, now);
   }
 }

@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract OwnerProxy is BaseProxy, Ownable {
 
   constructor(
-    address _target,
+    ProxyFactory.ProxyTarget memory _target,
     address _owner
   ) public BaseProxy(_target) {
     require(_owner != address(0));

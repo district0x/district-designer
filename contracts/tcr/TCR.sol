@@ -59,22 +59,18 @@ contract TCR is UpdateTargetAndCallFallBack {
     uint voteQuorum;
   }
 
-  struct BaseContract {
-    address baseContractAddress;
-    bytes ipfsAbi;
-  }
 
   function initialize(
-    BaseContract calldata regEntryBaseContract,
-    BaseContract calldata paramChangeBaseContract,
+    ProxyFactory.ProxyTarget memory _regEntryTarget,
+    ProxyFactory.ProxyTarget memory _paramChangeEntryTarget,
     address _district,
     address _votingToken,
     TCR.TCRType _tcrType,
-    TCR.RegistryEntryRepresentation calldata _regEntryRepr,
-    TCR.PermissionUserRoles calldata _permissionUserRoles,
-    TCR.Parameters calldata _regParameters,
-    TCR.Parameters calldata _paramChangeParameters,
-    bytes calldata _ipfsData
+    TCR.RegistryEntryRepresentation memory _regEntryRepr,
+    TCR.PermissionUserRoles memory _permissionUserRoles,
+    TCR.Parameters memory _regParameters,
+    TCR.Parameters memory _paramChangeParameters,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -82,8 +78,8 @@ contract TCR is UpdateTargetAndCallFallBack {
   function createRegistryEntry(
     address _creator,
     uint _tokenAmount,
-    bytes calldata _tokenIpfsData,
-    bytes calldata _ipfsData
+    bytes memory _tokenIpfsData,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -91,9 +87,9 @@ contract TCR is UpdateTargetAndCallFallBack {
   function createParamChangeEntry(
     address _creator,
     EntriesGroup _entriesGroup,
-    string calldata _key,
+    string memory _key,
     uint _value,
-    bytes calldata _ipfsData
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -110,19 +106,16 @@ contract TCR is UpdateTargetAndCallFallBack {
   }
 
 
-  function _updateBaseContracts(
-    address _regEntryBaseContract,
-    bytes calldata _regEntryIpfsAbi,
-    address _paramChangeEntryBaseContract,
-    bytes calldata _paramChangeEntryIpfsAbi
+  function _updateProxyTargets(
+    ProxyFactory.ProxyTarget memory _regEntryTarget,
+    ProxyFactory.ProxyTarget memory _paramChangeEntryTarget
   ) internal {
   }
 
 
   function targetUpdated(
-    address _newTarget,
-    bytes calldata _ipfsAbi,
-    bytes calldata _data
+    ProxyFactory.ProxyTarget memory _newTcrFactoryTarget,
+    bytes memory _data
   ) external override onlySelf {
   }
 

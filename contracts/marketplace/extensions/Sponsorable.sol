@@ -17,7 +17,7 @@ abstract contract Sponsorable {
    * @dev Adds a new sponsorship
    * It associates `_sponsorship` with `_sponsor`.
    * If the sponsor added sponsorship before, it adds values up.
-   * Only single TradeValue is allowed as sponsorship. If the sponsor tries to add different token
+   * Only single token is allowed as sponsorship. If the sponsor tries to add different token
    * than he added before, it reverts.
    *
    * Emits {SponsorshipAdded} event
@@ -26,7 +26,7 @@ abstract contract Sponsorable {
   function _addSponsorship(
     OfferGroupFactory _offerGroupFactory,
     address _sponsor,
-    MrktTypes.TradeValue calldata _sponsorship
+    MrktTypes.TradeValue memory _sponsorship
   ) internal {
   }
 
@@ -43,7 +43,7 @@ abstract contract Sponsorable {
   function _withdrawSponsorship(
     OfferGroupFactory _offerGroupFactory,
     address _sponsor,
-    MrktTypes.TradeValue calldata _availableSupply
+    MrktTypes.TradeValue memory _availableSupply
   ) internal returns (MrktTypes.TradeValue memory _withdrawal){
     return _withdrawal;
   }

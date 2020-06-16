@@ -192,7 +192,7 @@ contract Challengable {
   function createChallenge(
     address _challenger,
     uint _challengeIndex,
-    bytes calldata _ipfsData
+    bytes memory _ipfsData
   ) public {
   }
 
@@ -208,7 +208,7 @@ contract Challengable {
   function revealVote(
     address _voter,
     TCR.VoteOption _voteOption,
-    string calldata _salt
+    string memory _salt
   ) public {
   }
 

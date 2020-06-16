@@ -76,7 +76,6 @@ abstract contract MrktTypes {
 
   struct Fees {
     uint createOfferFee; // Fee transferred to district treasury when offer is created
-    uint offerResponseFee; // Fee transferred to district treasury when offer response is created
   }
 
   struct DeliverableAuctionOfferResponse {
@@ -96,10 +95,6 @@ abstract contract MrktTypes {
     TradeValue[] prices; // Definitions of several fixed prices
   }
 
-  struct FixedPricesOfferResponse {
-    uint8 priceIndex; // Refers to one of the fixed prices defined by offerer
-  }
-
   struct HighestBidAuctionOfferRequest {
     TokenType tokenType;
     address tokenAddress;
@@ -113,10 +108,6 @@ abstract contract MrktTypes {
      */
     uint extensionTriggerDuration;
     uint extensionDuration;
-  }
-
-  struct HighestBidAuctionOfferResponse {
-    uint bid;
   }
 
   struct MultiTokenAuctionOfferRequest {
@@ -136,12 +127,4 @@ abstract contract MrktTypes {
     HighestBidAuctionOfferRequest highestBidAuctionOffer;
     MultiTokenAuctionOfferRequest multiTokenAuction;
   }
-
-  struct OfferResponse {
-    FixedPricesOfferResponse fixedPriceOffer;
-    HighestBidAuctionOfferResponse highestBidAuctionOffer;
-    TradeValue multiTokenAuction;
-    DeliverableAuctionOfferResponse deliverableAuction;
-  }
-
 }

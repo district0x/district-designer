@@ -21,8 +21,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
   event OfferGroupCreated(
     bytes16 district,
     address offerGroup,
-    address offerGroupBaseContract,
-    bytes offerGroupIpfsAbi,
+    ProxyFactory.ProxyTarget offerGroupTarget,
     uint offerGroupVersion,
     MrktTypes.TradeAsset[] offerableAssets,
     MrktTypes.TradeAsset[] requestableAssets,
@@ -46,8 +45,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
 
   event OfferCreated(
     address offer,
-    address offerBaseContract,
-    bytes offerIpfsAbi,
+    ProxyFactory.ProxyTarget offerTarget,
     uint offerVersion,
     MrktTypes.OfferType offerType,
     address offerer,
@@ -62,7 +60,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address offer,
     address respondent,
     uint offerResponseIndex,
-    MrktTypes.OfferResponse response,
+    MrktTypes.TradeValue responseValue,
     MrktTypes.TradeValue offererReceivedValue,
     MrktTypes.TradeValue respondentReceivedValue,
     MrktTypes.TradeValue availableSupply,
@@ -87,13 +85,13 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     uint timestamp
   );
 
-  event OfferAvailableSupplyUpdated(
+  event AvailableSupplyUpdated(
     address offer,
     MrktTypes.TradeValue availableSupply,
     uint timestamp
   );
 
-  event OfferDeliverableReceived(
+  event DeliverableReceived(
     address offer,
     uint offerResponseIndex,
     address receiver,
@@ -101,11 +99,6 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     MrktTypes.TradeValue respondentReceivedValue,
     MrktTypes.TradeValue availableSupply,
     bytes ipfsData,
-    uint timestamp
-  );
-
-  event OfferCanceled(
-    address offer,
     uint timestamp
   );
 
@@ -131,20 +124,26 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     uint timestamp
   );
 
-  event BaseContractsUpdated(
-    address offerGroupBaseContract,
-    bytes offerGroupIpfsAbi,
-    address offerBaseContract,
-    bytes offerIpfsAbi,
+  event ProxyTargetsUpdated(
+    ProxyFactory.ProxyTarget offerGroupTarget,
+    ProxyFactory.ProxyTarget fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget deliverableAuctionOfferTarget,
     uint timestamp
   );
 
-  event OfferGroupBaseContractsUpdated(
+  event OfferGroupProxyTargetsUpdated(
     address offerGroup,
-    address offerBaseContract,
-    bytes offerIpfsAbi,
+    ProxyFactory.ProxyTarget fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget deliverableAuctionOfferTarget,
     uint timestamp
   );
+
 
   /**
    * @dev Contract initialization
@@ -152,19 +151,16 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    * because this contract is used through a proxy.
    * This function cannot be called twice.
    *
-   * @param _districtFactory Address of {DistrictFactory}
-   * @param _offerGroupBaseContract Address of base contract for {OfferGroup} proxies
-   * @param _offerGroupIpfsAbi IPFS hash of ABI for {OfferGroup} contract
-   * @param _offerBaseContract Address of base contract for {Offer} proxies
-   * @param _offerIpfsAbi IPFS hash of ABI for {Offer} contract
    * TODO: Needs implementation
    */
   function initialize(
     DistrictFactory _districtFactory,
-    address _offerGroupBaseContract,
-    bytes calldata _offerGroupIpfsAbi,
-    address _offerBaseContract,
-    bytes calldata _offerIpfsAbi
+    ProxyFactory.ProxyTarget memory _offerGroupTarget,
+    ProxyFactory.ProxyTarget memory _fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget memory _dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget memory _highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _deliverableAuctionOfferTarget
   ) external {
   }
 
@@ -185,46 +181,44 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function createOfferGroup(
     address _district,
-    MrktTypes.TradeAsset[] calldata _offerableAssets,
-    MrktTypes.TradeAsset[] calldata _requestableAssets,
-    MrktTypes.OfferType[] calldata _allowedOfferTypes,
-    MrktTypes.Fees calldata _fees,
-    MrktTypes.PermissionUserRoles calldata _permissionUserRoles,
-    bytes calldata _ipfsData
+    MrktTypes.TradeAsset[] memory _offerableAssets,
+    MrktTypes.TradeAsset[] memory _requestableAssets,
+    MrktTypes.OfferType[] memory _allowedOfferTypes,
+    MrktTypes.Fees memory _fees,
+    MrktTypes.PermissionUserRoles memory _permissionUserRoles,
+    bytes memory _ipfsData
   ) external {
   }
+
 
   /**
    * @dev Updates contract addresses and ABIs which serve as base contracts for created proxies
    * It's meant to be called only by {targetUpdated}
    *
-   * Requirements:
+   * Contracts with zero addresses will not be updated.
    *
-   * - `_offerGroupBaseContract` cannot be zero address
-   * - `_offerGroupIpfsAbi` must be valid ipfs hash
-   * - `_offerBaseContract` cannot be zero address
-   * - `_offerIpfsAbi` must be valid ipfs hash
-   *
-   * Emits an {BaseContractsUpdated} event
+   * Emits an {ProxyTargetsUpdated} event
    * TODO: Needs implementation
    */
-  function _updateBaseContracts(
-    address _offerGroupBaseContract,
-    bytes calldata _offerGroupIpfsAbi,
-    address _offerBaseContract,
-    bytes calldata _offerIpfsAbi
+  function _updateProxyTargets(
+    ProxyFactory.ProxyTarget memory _offerGroupTarget,
+    ProxyFactory.ProxyTarget memory _fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget memory _dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget memory _highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _deliverableAuctionOfferTarget
   ) internal {
   }
 
+
   /**
    * @dev This function is called automatically when proxy updates its target
-   * It should decode `_data` into arguments of {_updateBaseContracts} and call it
+   * It should decode `_data` into arguments of {_updateProxyTargets} and call it
    * TODO: Needs implementation
    */
   function targetUpdated(
-    address _newTarget,
-    bytes calldata _ipfsAbi,
-    bytes calldata _data
+    ProxyFactory.ProxyTarget memory _newOfferGroupFactoryTarget,
+    bytes memory _data
   ) external override onlySelf {
   }
 
@@ -233,12 +227,12 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    * TODO: Needs implementation
    */
   function fireOfferGroupUpdated(
-    MrktTypes.TradeAsset[] calldata _offerableAssets,
-    MrktTypes.TradeAsset[] calldata _requestableAssets,
-    MrktTypes.OfferType[] calldata _allowedOfferTypes,
-    MrktTypes.Fees calldata _fees,
-    MrktTypes.PermissionUserRoles calldata _permissionUserRoles,
-    bytes calldata _ipfsData
+    MrktTypes.TradeAsset[] memory _offerableAssets,
+    MrktTypes.TradeAsset[] memory _requestableAssets,
+    MrktTypes.OfferType[] memory _allowedOfferTypes,
+    MrktTypes.Fees memory _fees,
+    MrktTypes.PermissionUserRoles memory _permissionUserRoles,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -248,14 +242,13 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function fireOfferCreated(
     address _offer,
-    address _offerBaseContract,
-    bytes calldata _offerIpfsAbi,
+    ProxyFactory.ProxyTarget memory _offerTarget,
     uint _offerVersion,
     address _offerer,
-    MrktTypes.TradeValue calldata _offeredValue,
-    MrktTypes.OfferRequest calldata request,
-    MrktTypes.TradeValue calldata _availableSupply,
-    bytes calldata _ipfsData
+    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.OfferRequest memory request,
+    MrktTypes.TradeValue memory _availableSupply,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -267,11 +260,11 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address _offer,
     address _respondent,
     uint _offerResponseIndex,
-    MrktTypes.OfferResponse calldata _response,
-    MrktTypes.TradeValue calldata _offererReceivedValue,
-    MrktTypes.TradeValue calldata _respondentReceivedValue,
-    MrktTypes.TradeValue calldata _availableSupply,
-    bytes calldata _ipfsData
+    MrktTypes.TradeValue memory _responseValue,
+    MrktTypes.TradeValue memory _offererReceivedValue,
+    MrktTypes.TradeValue memory _respondentReceivedValue,
+    MrktTypes.TradeValue memory _availableSupply,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -281,8 +274,8 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function fireOfferRequestUpdated(
     address _offer,
-    MrktTypes.OfferRequest calldata request,
-    bytes calldata _ipfsData
+    MrktTypes.OfferRequest memory request,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -293,10 +286,10 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
   function fireOfferResponseAccepted(
     address _offer,
     uint _offerResponseIndex,
-    MrktTypes.TradeValue calldata _offererReceivedValue,
-    MrktTypes.TradeValue calldata _respondentReceivedValue,
-    MrktTypes.TradeValue calldata _availableSupply,
-    bytes calldata _ipfsData
+    MrktTypes.TradeValue memory _offererReceivedValue,
+    MrktTypes.TradeValue memory _respondentReceivedValue,
+    MrktTypes.TradeValue memory _availableSupply,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -306,7 +299,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    */
   function fireOfferAvailableSupplyUpdated(
     address _offer,
-    MrktTypes.TradeValue calldata _availableSupply
+    MrktTypes.TradeValue memory _availableSupply
   ) external {
   }
 
@@ -318,20 +311,13 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     address _offer,
     uint _offerResponseIndex,
     address _receiver,
-    MrktTypes.TradeValue calldata _offererReceivedValue,
-    MrktTypes.TradeValue calldata _respondentReceivedValue,
-    MrktTypes.TradeValue calldata _availableSupply,
-    bytes calldata _ipfsData
+    MrktTypes.TradeValue memory _offererReceivedValue,
+    MrktTypes.TradeValue memory _respondentReceivedValue,
+    MrktTypes.TradeValue memory _availableSupply,
+    bytes memory _ipfsData
   ) external {
   }
 
-  /**
-   * TODO: Needs implementation
-   */
-  function fireOfferCanceled(
-    address _offer
-  ) external {
-  }
 
   /**
    * TODO: Needs implementation
@@ -340,6 +326,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
     uint _offerResponseIndex
   ) external {
   }
+
 
   /**
    * TODO: Needs implementation
@@ -350,24 +337,29 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
   ) external {
   }
 
+
   /**
    * TODO: Needs implementation
    */
   function fireDisputeResolved(
     uint _offerResponseIndex,
-    MrktTypes.TradeValue calldata _offererReceivedValue,
-    MrktTypes.TradeValue calldata _respondentReceivedValue,
-    MrktTypes.TradeValue calldata _availableSupply,
+    MrktTypes.TradeValue memory _offererReceivedValue,
+    MrktTypes.TradeValue memory _respondentReceivedValue,
+    MrktTypes.TradeValue memory _availableSupply,
     address _resolvedBy
   ) external {
   }
 
+
   /**
    * TODO: Needs implementation
    */
-  function fireOfferGroupBaseContractsUpdated(
-    address offerBaseContract,
-    bytes calldata offerIpfsAbi
+  function fireOfferGroupProxyTargetsUpdated(
+    ProxyFactory.ProxyTarget memory _fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget memory _dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget memory _highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _deliverableAuctionOfferTarget
   ) external {
   }
 }

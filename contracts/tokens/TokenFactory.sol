@@ -89,8 +89,7 @@ contract TokenFactory is Ownable {
 
   function fireTokenCreatedEvent(
     address _district,
-    bytes16 _token,
-    address _tokenAddress,
+    address _token,
     TokenType _tokenType,
     bytes memory _tokenIpfsAbi,
     uint _tokenVersion,

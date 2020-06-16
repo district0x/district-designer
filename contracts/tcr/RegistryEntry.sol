@@ -10,8 +10,8 @@ contract RegistryEntry is Challengable {
   function initialize(
     address _creator,
     uint _tokenAmount,
-    bytes calldata _tokenIpfsData,
-    bytes calldata _ipfsData
+    bytes memory _tokenIpfsData,
+    bytes memory _ipfsData
   ) external {
   }
 

@@ -43,9 +43,9 @@ abstract contract BaseOffer {
    */
   function _initialize(
     address _offerer,
-    address[] calldata _allowedRespondents,
-    MrktTypes.TradeValue calldata _offeredValue,
-    bytes calldata _ipfsData
+    address[] memory _allowedRespondents,
+    MrktTypes.TradeValue memory _offeredValue,
+    bytes memory _ipfsData
   ) internal {
   }
 
@@ -53,7 +53,7 @@ abstract contract BaseOffer {
   /**
    * @dev Creates an offer response
    * Associates respondent with a new offerResponseIndex
-   * Same address can create multiple responses
+   * Same address can create multiple responses.
    * Extending contracts should add indivitual logic
    *
    * Requirements:
@@ -69,16 +69,6 @@ abstract contract BaseOffer {
     address _respondent
   ) internal {
   }
-
-
-  /**
-   * @dev Determines if offer response is in the state that
-   * allows raising a dispute.
-   * Extending contracts must implement this function individually.
-   */
-  function _canRaiseDispute(
-    uint _offerResponseIndex
-  ) internal virtual returns (bool);
 
 
   /**
@@ -100,30 +90,33 @@ abstract contract BaseOffer {
 
   /**
    * @dev Raises a dispute
-   * It calls {_canRaiseDispute} to check if a dispute can be raised
+   * Dispute can be raised only by the offerer or the respondent
+   * Dispute cannot be raised twice for the same offer response.
    *
    * Emits {DisputeRaised} event
    *
    * Requirements:
    *
-   * - `msg.sender` must be creator of the offer response `_offerResponseIndex` refers to
    * - `_ipfsData` must be valid ipfs hash
    *
    * See spec :marketplace/dispute-raised for format of _ipfsData file
    * TODO: Needs implementation
    */
-  function raiseDispute(
+  function _raiseDispute(
     uint _offerResponseIndex,
-    bytes calldata _ipfsData
-  ) external {
-    require(_canRaiseDispute(_offerResponseIndex));
+    MrktTypes.TradeValue memory _disputedValue,
+    bytes memory _ipfsData
+  ) internal {
   }
 
 
   /**
    * @dev Resolves a dispute
-   * It transfers `_valueForOfferer` to the offerer and
-   * and `_valueForRespondent` to the respondent
+   * Transfers `_valueForOfferer` to the offerer.
+   * Transfers `_valueForRespondent` to the respondent.
+   *
+   * Adding up `_valueForOfferer` and `_valueForRespondent` must be exactly `_disputedValue`,
+   * which was specified when the dispute was raised.
    *
    * Emits {DisputeResolved} event
    *
@@ -137,63 +130,27 @@ abstract contract BaseOffer {
    */
   function resolveDispute(
     uint _offerResponseIndex,
-    MrktTypes.TradeValue calldata _valueForOfferer,
-    MrktTypes.TradeValue calldata _valueForRespondent,
-    bytes calldata _ipfsData
+    MrktTypes.TradeValue memory _valueForOfferer,
+    MrktTypes.TradeValue memory _valueForRespondent,
+    bytes memory _ipfsData
   ) external {
   }
 
 
   /**
-   * @dev Deposits supply into offered value
-   * It adds supply into offered value that is either ETH, ERC20 or ERC1155 with single id
-   * Supply can be deposited only by offerer
-   * Meant to be called by extending contracts
-   *
-   * Emits {OfferAvailableSupplyUpdated} event
-   *
-   * Requirements:
-   *
-   * - `_sender` must be the offerer
-   * - `_value` must be larger than zero
-   * TODO: Needs implementation
-   */
-  function _depositSupply(
-    address _sender,
-    uint _value
-  ) internal {
-  }
-
-  /**
-   * @dev Same as {depositSupply} above, but for the case when offered value
-   * is ERC1155 with multiple ids
-   *
-   * Emits {OfferAvailableSupplyUpdated} event
-   *
-   * Requirements:
-   *
-   * - `_sender` must be the offerer
-   * - `_values` must have the same length as offered value's ERC1155 ids
-   * TODO: Needs implementation
-   */
-  function _depositSupply(
-    address _sender,
-    uint[] calldata _values
-  ) internal {
-  }
-
-
-  /**
-   * @dev Allows offerer to fully withdraw his supply.
+   * @dev Allows the offerer to fully his supply.
    * Can be called only by the offerer and makes transfer only to the offerer.
+   *
    * Supply cannot be withdrawn if one or more disputes is raised, but not resolved.
-   * It reverts if offered value is a deliverable.
+   * It reverts if the offered value is a deliverable.
+   *
    * It is meant to be called by extending contracts.
    *
    * Emits {OfferAvailableSupplyUpdated} event
    * TODO: Needs implementation
    */
   function _withdrawSupply(
+    MrktTypes.TradeValue memory _withdrawableValue
   ) internal onlyOfferer {
   }
 

@@ -10,9 +10,9 @@ contract ParamChangeEntry is Challengable {
   function initialize(
     address _creator,
     TCR.EntriesGroup _entriesGroup,
-    string calldata _key,
+    string memory _key,
     uint _value,
-    bytes calldata _ipfsData
+    bytes memory _ipfsData
   ) external {
   }
 

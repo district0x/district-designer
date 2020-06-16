@@ -2,6 +2,8 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "./ProxyFactory.sol";
+
 /**
  * @dev Abstract contract meant for every contract that's used through a proxy, which
  * needs to have some logic executed right after target of the proxy is updated
@@ -18,8 +20,7 @@ abstract contract UpdateTargetAndCallFallBack {
    * @dev This function is called when proxy contract had its target updated
    */
   function targetUpdated(
-    address _newTarget,
-    bytes memory _ipfsAbi,
+    ProxyFactory.ProxyTarget memory _newTarget,
     bytes memory _data
   ) external virtual;
 }

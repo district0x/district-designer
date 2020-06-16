@@ -27,18 +27,18 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
    *
    * Requirements:
    *
-   * - `Request.prices` cannot be empty
-   * - `Request.prices` cannot contain deliverable
+   * - `_request.prices` cannot be empty
+   * - `_request.prices` cannot contain deliverable
    *
    * See spec :marketplace/offer-created for format of _ipfsData file
    * TODO: Needs implementation
    */
   function initialize(
     address _offerer,
-    address[] calldata _allowedRespondents,
-    MrktTypes.TradeValue calldata _offeredValue,
-    MrktTypes.FixedPricesOfferRequest calldata _request,
-    bytes calldata _ipfsData
+    address[] memory _allowedRespondents,
+    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.FixedPricesOfferRequest memory _request,
+    bytes memory _ipfsData
   ) external {
     super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
   }
@@ -53,50 +53,73 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
    *
    * Requirements:
    *
-   * - `Request.prices` cannot be empty
-   * - `Request.prices` cannot contain deliverable
+   * - `_request.prices` cannot be empty
+   * - `_request.prices` cannot contain deliverable
    *
    * See spec :marketplace/offer-request-updated for format of _ipfsData file
    * TODO: Needs implementation
    */
   function updateRequest(
-    MrktTypes.FixedPricesOfferRequest calldata _request,
-    bytes calldata _ipfsData
+    MrktTypes.FixedPricesOfferRequest memory _request,
+    bytes memory _ipfsData
   ) external {
   }
 
 
   /**
-   * @dev If offered value is non-deliverable, it'll transfer respective values to both
+   * @dev Buys the offered value at fixed price.
+   * Checks if `_transferredValue` is one of fixed prices.
+   *
+   * If the offered value is non-deliverable, it'll transfer respective values to both
    * offerer and respondent and the trade is completed.
-   * If offered value is deliverable, the contract will transfer value from respondent
-   * into this contract and hold it until respondent calls {markDeliverableReceived}
+   *
+   * If the offered value is a deliverable, the contract will hold the value until the offerer
+   * calls {acceptOfferResponse} and subsequently the respondent calls {markDeliverableReceived}
+   *
+   * `ipfsData` can be empty if the offered value is not deliverable.
    *
    * Emits {OfferResponseCreated} event
-   *
-   * Requirements:
-   *
-   * - `priceIndex` must be valid indes inside prices
    *
    * See spec :marketplace/offer-response-created for format of _ipfsData file
    * TODO: Needs implementation
    */
-  function createOfferResponse(
+  function _createOfferResponse(
     address _respondent,
-    MrktTypes.FixedPricesOfferResponse calldata _response,
+    MrktTypes.TradeValue memory _transferredValue,
     bytes calldata _ipfsData
-  ) public {
+  ) internal {
     super._createOfferResponse(_respondent);
   }
 
 
   /**
+   * @dev Offerer calls this function to accept a response.
+   * This function is supposed to be called only when the offered value is deliverable, otherwise it reverts.
+   *
+   * It sets given `_offerResponseIndex` as accepted,
+   * but it doesn't make any transfer yet. Respondent will have to call {markDeliverableReceived}.
+   *
+   * Any number of responses can be accepted.
+   *
+   * Emits {OfferResponseAccepted} event
+   * TODO: Needs implementation
+   */
+  function acceptOfferResponse(
+    uint _offerResponseIndex
+  ) external {
+  }
+
+
+  /**
    * @dev Marks deliverable as received
-   * This function is called by respondent after he receives deliverable from the offerer
+   * This function is called by respondent after he receives deliverable from the offerer.
+   *
    * Prior to this, respondent already transferred price into this contract when
    * creating the response.
-   * It'll transfer value to the offerer and complete the trade.
-   * Can be called only when offered value is a deliverable
+   *
+   * It'll transfer value to the offerer and the trade is completed.
+   * Can be called only when the response was accepted by the offerer.
+   *
    * It calls BaseOffer._markDeliverableReceived
    *
    * Emits {OfferDeliverableReceived} event
@@ -104,7 +127,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
    * Requirements:
    *
    * - `msg.sender` must be creator of the offer response with `_offerResponseIndex`
-   * - `_offerResponseIndex` must refer to valid offer response
+   * - `_offerResponseIndex` must refer to an accepted offer response
    * TODO: Needs implementation
    */
   function markDeliverableReceived(
@@ -115,34 +138,26 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
 
   /**
-   * @dev Returns true if a dispute can be raised
-   * Dipsute can be raised either by offerer or respondent, in case when
-   * respondent hasn't yet called {markDeliverableReceived}
+   * @dev Dipsute can be raised either by offerer or respondent, in case when
+   * the response was already accepted, but the respondent hasn't yet called {markDeliverableReceived}
    *
-   * Requirements:
+   * It calls {BaseOffer._raiseDispute} with `_disputedValue` being price at which the respondent
+   * paid for the offered value.
    *
-   * - `_offerResponseIndex` must refer to valid offer response
    * TODO: Needs implementation
    */
-  function _canRaiseDispute(
-    uint _offerResponseIndex
-  ) internal override returns(bool) {
-    return true;
+  function raiseDispute(
+    uint _offerResponseIndex,
+    bytes calldata _ipfsData
+  ) external {
   }
 
 
-  /**
-   * @dev Supply can be withdrawn at any point
-   */
-  function withdrawSupply(
-  ) external onlyOfferer {
-    super._withdrawSupply();
-  }
-
 
   /**
-   * @dev This function is called automatically when this contract receives ERC20 token
-   * If `_from` is the offerer, it calls {_depositSupply}
+   * @dev This function is called automatically when this contract receives approval for ERC20 token
+   * It transfers approved tokens into this contract.
+   * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
    * If `_from` is not the offerer, it decodes `_data` and calls {createOfferResponse}
    * TODO: Needs implementation
    */
@@ -157,8 +172,8 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev This function is called automatically when this contract receives ERC721 token
-   * If `_from` is the offerer, it reverts (ERC721 cannot be resupplied)
-   * If `_from` is not the offerer, it decodes `_data` and calls {createOfferResponse}
+   * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
+   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
    */
   function onERC721Received(
@@ -173,8 +188,8 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev This function is called automatically when this contract receives ERC1155 token
-   * If `_from` is the offerer, it calls {_depositSupply}
-   * If `_from` is not the offerer, it decodes `_data` and calls {createOfferResponse}
+   * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
+   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
    */
   function onERC1155Received(
@@ -190,8 +205,8 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
-   * If `_from` is the offerer, it calls {_depositSupply}
-   * If `_from` is not the offerer, it decodes `_data` and calls {createOfferResponse}
+   * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
+   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
    */
   function onERC1155BatchReceived(
@@ -202,5 +217,16 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
     bytes calldata _data
   ) external override returns (bytes4) {
     return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
+  }
+
+
+  /**
+  * @dev This function is called automatically when this contract receives ETH
+  * If `msg.sender` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
+  * If `msg.sender` is not the offerer, it decodes `msg.data` and calls {_createOfferResponse}
+  * TODO: Needs implementation
+  */
+  receive(
+  ) external payable {
   }
 }

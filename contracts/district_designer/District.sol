@@ -33,7 +33,7 @@ contract District {
    * TODO: Needs implementation
    */
   function isAllowed(
-    bytes32 _permission,
+    bytes32 _permissionId,
     address _address
   ) public view
     returns (bool) {

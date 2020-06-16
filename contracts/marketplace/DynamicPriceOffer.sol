@@ -8,7 +8,7 @@ import "../tokens/ApproveAndCallFallback.sol";
 import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm dependency once published
 
 /**
- * @dev Offer contract where offerer defines dynamic price of requested asset.
+ * @dev Offer contract where offerer defines dynamic price for requested asset.
  * Dynamic price is the price that linearly goes from `startPrice` to the `endPrice` over `duration` seconds.
  */
 
@@ -25,17 +25,17 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    *
    * Requirements:
    *
-   * - `Request.tokenId` must be defined if `tokenType` is ERC1155
+   * - `_request.tokenId` must be defined if `tokenType` is ERC1155
    *
    * See spec :marketplace/offer-created for format of _ipfsData file
    * TODO: Needs implementation
    */
   function initialize(
     address _offerer,
-    address[] calldata _allowedRespondents,
-    MrktTypes.TradeValue calldata _offeredValue,
-    MrktTypes.DynamicPriceOfferRequest calldata _request,
-    bytes calldata _ipfsData
+    address[] memory _allowedRespondents,
+    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.DynamicPriceOfferRequest memory _request,
+    bytes memory _ipfsData
   ) external {
     super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
   }
@@ -43,7 +43,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
   /**
    * @dev Updates offerer's request
-   * It cannot be called after an offer response has been created.
+   * It cannot be called after any offer response has been created.
    * It will restart dynamic price duration.
    *
    * Emits {OfferRequestUpdated} event
@@ -52,29 +52,32 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * TODO: Needs implementation
    */
   function updateRequest(
-    MrktTypes.DynamicPriceOfferRequest calldata _request,
-    bytes calldata _ipfsData
+    MrktTypes.DynamicPriceOfferRequest memory _request,
+    bytes memory _ipfsData
   ) external {
   }
 
 
   /**
-   * @dev If offered value is non-deliverable, it'll transfer respective values to both
-   * offerer and respondent and the trade is completed.
-   * If offered value is deliverable, the contract will transfer value from respondent
-   * into this contract and hold it until respondent calls {markDeliverableReceived}
+   * @dev Buys the offered value at current price
    * It calculates the price at `now` point of time.
+   * It checks if `_transferredValue` is enough to buy. Any surplus is transferred back to the respondent.
+   * If offered value is non-deliverable, it'll transfer respective values to both
+   * offerer and respondent and the trade is completed.
+   * If offered value is deliverable, the contract will hold value until respondent calls {markDeliverableReceived}.
    * This function can't be called more than once successfully.
+   * `_ipfsData` can be empty
    *
    * Emits {OfferResponseCreated} event
    *
    * See spec :marketplace/offer-response-created for format of _ipfsData file
    * TODO: Needs implementation
    */
-  function createOfferResponse(
+  function _createOfferResponse(
     address _respondent,
-    bytes calldata _ipfsData
-  ) external {
+    MrktTypes.TradeValue memory _transferredValue,
+    bytes memory _ipfsData
+  ) internal {
     super._createOfferResponse(_respondent);
   }
 
@@ -84,8 +87,8 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * This function is called by respondent after he receives deliverable from the offerer
    * Prior to this, respondent already transferred price into this contract when
    * creating the response.
-   * It'll transfer value to the offerer and complete the trade.
-   * Can be called only when offered value is a deliverable
+   * It'll transfer value to the offerer and the trade is completed.
+   * Can be called only when the offered value is a deliverable
    * It calls BaseOffer._markDeliverableReceived with `offerResponseIndex` of the only offer response created
    *
    * Emits {OfferDeliverableReceived} event with `offerResponseIndex` of the only offer response created
@@ -101,23 +104,28 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
 
   /**
-   * @dev Dipsute can be raised either by offerer or respondent, in case when
+   * @dev Dispute can be raised either by offerer or respondent, in case when
    * respondent hasn't yet called {markDeliverableReceived}
    *
-   * Requirements:
+   * It calls {BaseOffer._raiseDispute} with `_disputedValue` being price at which the respondent
+   * paid for the offered value.
    *
-   * - `_offerResponseIndex` must refer to valid offer response
    * TODO: Needs implementation
    */
-  function _canRaiseDispute(
-    uint _offerResponseIndex
-  ) internal override returns(bool) {
-    return true;
+  function raiseDispute(
+    uint _offerResponseIndex,
+    bytes memory _ipfsData
+  ) external {
   }
 
 
   /**
    * @dev Supply can be withdrawn at any point
+   *
+   * If the offered value is deliverable, it always reverts.
+   *
+   * It calls {BaseOffer._withdrawSupply} with `_withdrawableValue` being the offered value
+   * TODO: Needs implementation
    */
   function withdrawSupply(
   ) external onlyOfferer {
@@ -125,9 +133,10 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
 
   /**
-   * @dev This function is called automatically when this contract receives ERC20 token
+   * @dev This function is called automatically when this contract receives approval for ERC20 token
+   * It transfers approved tokens into this contract.
    * If `_from` is the offerer, it reverts (DynamicPriceOffer cannot be resupplied)
-   * If `_from` is not the offerer, it decodes `_data` and calls {createOfferResponse}
+   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
    */
   function receiveApproval(
@@ -142,7 +151,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
   /**
    * @dev This function is called automatically when this contract receives ERC1155 token
    * If `_from` is the offerer, it reverts (DynamicPriceOffer cannot be resupplied)
-   * If `_from` is not the offerer, it decodes `_data` and calls {createOfferResponse}
+   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
    */
   function onERC1155Received(
@@ -169,6 +178,17 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
     bytes calldata data
   ) external override returns (bytes4) {
     revert("DynamicPriceOffer doesn't support trading multiple tokens");
+  }
+
+
+  /**
+   * @dev This function is called automatically when this contract receives ETH
+   * If `msg.sender` is the offerer, it reverts (DynamicPriceOffer cannot be resupplied)
+   * If `msg.sender` is not the offerer, it decodes `msg.data` and calls {_createOfferResponse}
+   * TODO: Needs implementation
+   */
+  receive(
+  ) external payable {
   }
 
 }

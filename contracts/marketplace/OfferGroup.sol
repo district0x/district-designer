@@ -33,8 +33,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * because this contract is used through a proxy.
    * This function cannot be called twice.
    *
-   * @param _offerBaseContract Address of base contract for {Offer} proxies
-   * @param _offerIpfsAbi IPFS hash of ABI for {Offer} contract
+   * @param _offerTarget Contract for {Offer} proxies
    * @param _district {District} address
    * @param _offerableAssets Assets offerer can choose to offer
    * @param _requestableAssets Assets offerer can request for his offer
@@ -55,8 +54,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * See spec :marketplace/offer-group-created for format of _ipfsData file
    */
   function initialize(
-    address _offerBaseContract,
-    bytes memory _offerIpfsAbi,
+    ProxyFactory.ProxyTarget memory _offerTarget,
     District _district,
     MrktTypes.TradeAsset[] memory _offerableAssets,
     MrktTypes.TradeAsset[] memory _requestableAssets,
@@ -70,28 +68,47 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
   /**
    * @dev Creates a new {Offer}
-   * It creates {OwnerProxy} forwarding to {Offer} contract
-   * Owner of the proxy is this contract. Created proxy is not meant to be updatable
+   * It creates {OwnerProxy} forwarding to a offer contract based on `_offeredValue`
+   * Owner of the proxy is this contract. Created proxy is not meant to be updated.
+   *
+   * If there's nonzero Fees.createOfferFee for this offer group, it checks if
    *
    * Requirements:
    *
    * - `_offerer` cannot be zero address
    * - `_offerer` must be within `Offer.PermissionUserRoles.createOfferUserRoles`, if it's not empty
    * - `_offeredValue` must be one of `offerableAssets`
-   * - `_requestedValues` must be all within `requestableAssets`
+   * - `_offerRequest` token addresses of any sort must be within `_requestableAssets`
    *
    * Emits an {OfferCreated} event
    *
    * See spec :marketplace/offer-created for format of _ipfsData file
    * TODO: Needs implementation
    */
-  function createOffer(
+  function _createOffer(
     address _offerer,
-    MrktTypes.TradeValue calldata _offeredValue,
-    address[] calldata _allowedRespondents,
-    bytes calldata _ipfsData
+    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.OfferRequest memory _offerRequest,
+    address[] memory _allowedRespondents,
+    bytes memory _ipfsData
+  ) internal {
+  }
+
+
+  /**
+   * @dev This function is for the sole purpose of creating an offer with
+   * the offered value that is deliverable. Since there's no token callback for that.
+   * It calls {_createOffer}
+   * TODO: Needs implementation
+   */
+  function createDeliverableOffer(
+    address _offerer,
+    MrktTypes.OfferRequest memory _offerRequest,
+    address[] memory _allowedRespondents,
+    bytes memory _ipfsData
   ) external {
   }
+
 
   /**
    * @dev Updates {OfferGroup}
@@ -106,12 +123,12 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * TODO: Needs implementation
    */
   function updateOfferGroup(
-    MrktTypes.TradeAsset[] calldata _offerableAssets,
-    MrktTypes.TradeAsset[] calldata _requestableAssets,
-    MrktTypes.OfferType[] calldata _allowedOfferTypes,
-    MrktTypes.Fees calldata _fees,
-    MrktTypes.PermissionUserRoles calldata _permissionUserRoles,
-    bytes calldata _ipfsData
+    MrktTypes.TradeAsset[] memory _offerableAssets,
+    MrktTypes.TradeAsset[] memory _requestableAssets,
+    MrktTypes.OfferType[] memory _allowedOfferTypes,
+    MrktTypes.Fees memory _fees,
+    MrktTypes.PermissionUserRoles memory _permissionUserRoles,
+    bytes memory _ipfsData
   ) external {
   }
 
@@ -120,41 +137,42 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * @dev Updates contract address and ABI of {Offer} contract that new proxies will forward to
    * It's meant to be called only by {targetUpdated}
    *
-   * Requirements:
-   *
-   * - `_offerBaseContract` cannot be zero address
-   * - `_offerIpfsAbi` must be valid ipfs hash
-   *
-   * Emits an {OfferGroupBaseContractsUpdated} event
+   * Emits an {OfferGroupProxyTargetsUpdated} event
    * TODO: Needs implementation
    */
-  function _updateBaseContracts(
-    address _offerBaseContract,
-    bytes calldata _offerIpfsAbi
+  function _updateProxyTargets(
+    ProxyFactory.ProxyTarget memory _fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget memory _dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget memory _highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _deliverableAuctionOfferTarget
   ) internal {
   }
 
 
   /**
    * @dev This function is called automatically when proxy updates its target
-   * It should decode `_data` into arguments of {_updateBaseContracts} and call it
+   * It should decode `_data` into arguments of {_updateProxyTargets} and call it
    * TODO: Needs implementation
    */
   function targetUpdated(
-    address _newTarget,
-    bytes calldata _ipfsAbi,
-    bytes calldata _data
+    ProxyFactory.ProxyTarget memory _newOfferGroup,
+    bytes memory _data
   ) external override onlySelf {
   }
 
 
   /**
-   * @dev Called when this contract receives ERC20 token as offered value when creating an offer
-   * It should call {createOffer}
+   * @dev This function is called automatically when this contract receives approval for ERC20 token
+   * It transfers approved tokens into this contract.
+   * It calls {_createOffer} where:
+   * - passed `_offerer` is `_from`
+   * - passed `_offeredValue` is constructed from the transferred token
+   * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
   function receiveApproval(
-    address from,
+    address _from,
     uint256 _amount,
     address _token,
     bytes memory _data
@@ -163,45 +181,70 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
 
   /**
-   * @dev Called when this contract receives ERC721 token as offered value when creating an offer
-   * It should call {createOffer}
+   * @dev This function is called automatically when this contract receives ERC721 token
+   * It calls {_createOffer} where:
+   * - passed `_offerer` is `_from`
+   * - passed `_offeredValue` is constructed from the transferred token
+   * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
   function onERC721Received(
-    address operator,
-    address from,
-    uint256 tokenId,
-    bytes memory data
+    address _operator,
+    address _from,
+    uint256 _tokenId,
+    bytes memory _data
   ) public override returns (bytes4) {
     return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
   }
 
 
   /**
-   * @dev Called when this contract receives ERC1155 token as offered value when creating an offer
-   * It should call {createOffer}
+   * @dev This function is called automatically when this contract receives ERC1155 token
+   * It calls {_createOffer} where:
+   * - passed `_offerer` is `_from`
+   * - passed `_offeredValue` is constructed from the transferred token
+   * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
   function onERC1155Received(
-    address operator,
-    address from,
-    uint256 id,
-    uint256 value,
-    bytes calldata data
+    address _operator,
+    address _from,
+    uint256 _id,
+    uint256 _value,
+    bytes calldata _data
   ) external override returns (bytes4) {
     return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
   }
 
 
+  /**
+   * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
+   * If `_from` is the offerer, it decodes `_data` and calls {acceptOfferResponse}
+   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
+   * TODO: Needs implementation
+   */
   function onERC1155BatchReceived(
-    address operator,
-    address from,
-    uint256[] calldata ids,
-    uint256[] calldata values,
-    bytes calldata data
+    address _operator,
+    address _from,
+    uint256[] calldata _ids,
+    uint256[] calldata _values,
+    bytes calldata _data
   ) external override returns (bytes4) {
     return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
   }
 
 
+  /**
+  * @dev This function is called automatically when this contract receives ETH
+   * It calls {_createOffer} where:
+   * - passed `_offerer` is `msg.sender`
+   * - passed `_offeredValue` is constructed from `msg.value`
+   * - rest of arguments is obtained by decoding `msg.data`
+  * If there's nonzero Fees.createOfferFee for this offer group, it needs to subtract
+  * fee from msg.value before creating `_offeredValue`.
+  * TODO: Needs implementation
+  */
+  receive(
+  ) external payable {
+  }
 }

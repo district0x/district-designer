@@ -21,14 +21,14 @@ contract DistrictAdminProxy is BaseProxy {
    * TODO: Needs implementation
    */
   constructor(
-    address _target,
+    ProxyFactory.ProxyTarget memory _target,
     address _district
   ) public BaseProxy(_target) {
     if (_district == address(0)) {
       _district = address(this);
     }
     district = District(_district);
-    target = _target;
+    proxyTarget = _target;
   }
 
 
@@ -37,7 +37,7 @@ contract DistrictAdminProxy is BaseProxy {
    */
   function _canUpdateTarget(
     address _sender
-  ) internal view override returns(bool) {
+  ) internal view override returns (bool) {
     return district.adminUserRoleHasAddress(_sender);
   }
 
