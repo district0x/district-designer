@@ -2,6 +2,11 @@
 pragma solidity >=0.4.22 <0.7.0;
 pragma experimental ABIEncoderV2;
 
+/**
+ * @dev All Marketplace types are stored here in one place.
+ * It's because compiler had problems with tangled dependencies. (I couldn't make it work, open for suggestions)
+ */
+
 abstract contract MrktTypes {
 
   enum OfferType {
