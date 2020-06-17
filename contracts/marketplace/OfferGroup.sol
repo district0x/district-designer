@@ -33,7 +33,11 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * because this contract is used through a proxy.
    * This function cannot be called twice.
    *
-   * @param _offerTarget Contract for {Offer} proxies
+   * @param _fixedPricesOfferTarget Contract for {FixedPricesOffer} proxies
+   * @param _dynamicPriceOfferTarget Contract for {DynamicPriceOffer} proxies
+   * @param _highestBidAuctionOfferTarget Contract for {HighestBidAuctionOffer} proxies
+   * @param _multiTokenAuctionOfferTarget Contract for {MultiTokenAuctionOffer} proxies
+   * @param _deliverableAuctionOfferTarget Contract for {DeliverableAuctionOffer} proxies
    * @param _district {District} address
    * @param _offerableAssets Assets offerer can choose to offer
    * @param _requestableAssets Assets offerer can request for in his offers
@@ -54,7 +58,11 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * See spec :marketplace/offer-group-created for format of _ipfsData file
    */
   function initialize(
-    ProxyFactory.ProxyTarget memory _offerTarget,
+    ProxyFactory.ProxyTarget memory _fixedPricesOfferTarget,
+    ProxyFactory.ProxyTarget memory _dynamicPriceOfferTarget,
+    ProxyFactory.ProxyTarget memory _highestBidAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _multiTokenAuctionOfferTarget,
+    ProxyFactory.ProxyTarget memory _deliverableAuctionOfferTarget,
     District _district,
     MrktTypes.TradeAsset[] memory _offerableAssets,
     MrktTypes.TradeAsset[] memory _requestableAssets,
@@ -140,6 +148,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * @dev Updates proxy targets that newly created proxies will forward to
    * It's meant to be called only by {targetUpdated}
    *
+   * Contracts with zero addresses will not be updated.
+   *
    * Emits an {OfferGroupProxyTargetsUpdated} event
    * TODO: Needs implementation
    */
@@ -160,7 +170,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * TODO: Needs implementation
    */
   function targetUpdated(
-    ProxyFactory.ProxyTarget memory _newOfferGroup,
+    ProxyFactory.ProxyTarget memory _newOfferGroupTarget,
     bytes memory _data
   ) external override onlySelf {
   }
