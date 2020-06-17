@@ -8,16 +8,17 @@ import "../OfferGroupFactory.sol";
 /**
  * @dev Sponsorable offer extensions adds functionality for sponsoring an offer.
  * It keeps track of sponsor's addresses and sponsored amounts.
- * It allowes sponsors to withdraw their sponsorships back as long as available supply allows it
+ * It allows sponsors to withdraw their sponsorships back as long as available supply allows it
  */
 
 abstract contract Sponsorable {
+
 
   /**
    * @dev Adds a new sponsorship
    * It associates `_sponsorship` with `_sponsor`.
    * If the sponsor added sponsorship before, it adds values up.
-   * Only single token is allowed as sponsorship. If the sponsor tries to add different token
+   * Only single token (and token ids) is allowed as sponsorship. If the sponsor tries to add different token
    * than he added before, it reverts.
    *
    * Emits {SponsorshipAdded} event
@@ -30,8 +31,9 @@ abstract contract Sponsorable {
   ) internal {
   }
 
+
   /**
-   * @dev Transfers sponsorship back to the owner.
+   * @dev Transfers sponsorship back to the sponsor.
    * If `_availableSupply` is less than the sponsorship it transfers only `_availableSupply`.
    * It should never transfer to the sponsor more than he added.
    *
@@ -47,6 +49,4 @@ abstract contract Sponsorable {
   ) internal returns (MrktTypes.TradeValue memory _withdrawal){
     return _withdrawal;
   }
-
-
 }

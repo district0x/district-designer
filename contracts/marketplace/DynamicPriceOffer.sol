@@ -21,8 +21,6 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * @dev Contract initialization
    * Dynamic price starts at the moment of initialization.
    *
-   * Emits {OfferCreated} event
-   *
    * Requirements:
    *
    * - `_request.tokenId` must be defined if `tokenType` is ERC1155
@@ -62,11 +60,15 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * @dev Buys the offered value at current price
    * It calculates the price at `now` point of time.
    * It checks if `_transferredValue` is enough to buy. Any surplus is transferred back to the respondent.
+   *
    * If offered value is non-deliverable, it'll transfer respective values to both
    * offerer and respondent and the trade is completed.
+   *
    * If offered value is deliverable, the contract will hold value until respondent calls {markDeliverableReceived}.
+   *
    * This function can't be called more than once successfully.
-   * `_ipfsData` can be empty
+   *
+   * `_ipfsData` can be empty or valid IPFS hash
    *
    * Emits {OfferResponseCreated} event
    *
@@ -87,8 +89,10 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    * This function is called by respondent after he receives deliverable from the offerer
    * Prior to this, respondent already transferred price into this contract when
    * creating the response.
+   *
    * It'll transfer value to the offerer and the trade is completed.
    * Can be called only when the offered value is a deliverable
+   *
    * It calls BaseOffer._markDeliverableReceived with `offerResponseIndex` of the only offer response created
    *
    * Emits {OfferDeliverableReceived} event with `offerResponseIndex` of the only offer response created
@@ -105,7 +109,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
   /**
    * @dev Dispute can be raised either by offerer or respondent, in case when
-   * respondent hasn't yet called {markDeliverableReceived}
+   * the offered valud is deliverable and the respondent hasn't yet called {markDeliverableReceived}
    *
    * It calls {BaseOffer._raiseDispute} with `_disputedValue` being price at which the respondent
    * paid for the offered value.
@@ -150,6 +154,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
   /**
    * @dev This function is called automatically when this contract receives ERC1155 token
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it reverts (DynamicPriceOffer cannot be resupplied)
    * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
@@ -167,6 +172,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
   /**
    * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * It always reverts because DynamicPriceOffer doesn't support multiple tokens nor
    * it can't be resupplied
    */
@@ -183,6 +189,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
   /**
    * @dev This function is called automatically when this contract receives ETH
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `msg.sender` is the offerer, it reverts (DynamicPriceOffer cannot be resupplied)
    * If `msg.sender` is not the offerer, it decodes `msg.data` and calls {_createOfferResponse}
    * TODO: Needs implementation

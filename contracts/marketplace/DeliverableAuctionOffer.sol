@@ -9,9 +9,9 @@ import "../tokens/ApproveAndCallFallback.sol";
 import "../tokens/openzeppelin/ERC1155/ERC1155Receiver.sol"; // Replace with npm dependency once published
 
 /**
- * @dev DeliverableAuctionOffer is the only offer type where requested value can be deliverable.
+ * @dev DeliverableAuctionOffer is the only offer type where requested value is a deliverable.
  * Offerer requests deliverable and respondents bid price for their provided deliverable.
- * Offerer picks the winner by his preference.
+ * Offerer picks the winner by his preference and pays the price specified by the respondent.
  * This offer is not limited by duration.
  */
 
@@ -23,10 +23,6 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
   /**
    * @dev Contract initialization
-   *
-   * Emits {OfferCreated} event
-   *
-   * See spec :marketplace/offer-created for format of _ipfsData file
    * TODO: Needs implementation
    */
   function initialize(
@@ -42,7 +38,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
   /**
    * @dev Creates an offer response
    *
-   * Respondent can specify different price than offered value.
+   * Respondent can specify different price than is the offered value.
    *
    * `_responseValue` must be of the same token as the offered value, but amounts
    * can be either lower or higher.
@@ -78,7 +74,9 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    * the offerer calls {markDeliverableReceived}.
    * If the offered value is deliverable, it doesn't transfer anything, just marks response as accepted.
    *
-   * `_ipfsData` can be empty
+   * Requirements:
+   *
+   * - `_ipfsData` must be valid IPFS hash
    *
    * Emits {OfferResponseAccepted} event
    * TODO: Needs implementation
@@ -102,7 +100,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    * in order to make the trade completed. In such case, no token transfer is made, because it's
    * deliverable-for-deliverable trade.
    *
-   * Emits {OfferDeliverableReceived} event with `offerResponseIndex` of the only offer response created
+   * Emits {OfferDeliverableReceived} event
    *
    * Requirements:
    *
@@ -119,7 +117,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    * Dipsute can be raised either by offerer or respondent, in case when
    * a response was accepted but {markDeliverableReceived} has not been called yet.
    *
-   * If offered value is deliverable, dispute can never be raised, because it's
+   * If the offered value is a deliverable, dispute can never be raised, because it's
    * deliverable-for-deliverable trade with no value stored in the contract.
    *
    * It calls {BaseOffer._raiseDispute} with `_disputedValue` being `_responseValue` specified
@@ -139,8 +137,8 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
   /**
    * @dev Amount of supply that can be widthdrawn is
-   * the supply in the contract minus value reserved for accepted responses,
-   * that haven't yet been {markDeliverableReceived}
+   * the supply in the contract minus value reserved for accepted responses, that
+   * haven't yet been {markDeliverableReceived}
    *
    * If offered value is deliverable, it always reverts.
    *
@@ -169,10 +167,9 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
 
   /**
-   * @dev Withdraws previously added sponsorship for `msg.sender` from the contract
+   * @dev Withdraws previously added sponsorship for `msg.sender`
    * It calls {Sponsorable._withdrawSponsorship} with `_availableSupply` argument being value stored
-   * in the contract minus value reserved for accepted responses,
-   * that haven't yet been {markDeliverableReceived}
+   * in the contract minus value reserved for accepted responses, that haven't yet been {markDeliverableReceived}
    *
    * Emits {OfferAvailableSupplyUpdated} event
    * TODO: Needs implementation
@@ -200,6 +197,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
   /**
    * @dev This function is called automatically when this contract receives ERC1155 token
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it decodes `_data` and calls {acceptOfferResponse}
    * If `_from` is not the offerer, it calls {_addSponsorship}
    * TODO: Needs implementation
@@ -217,6 +215,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
   /**
    * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it decodes `_data` and calls {acceptOfferResponse}
    * If `_from` is not the offerer, it calls {_addSponsorship}
    * TODO: Needs implementation
@@ -234,6 +233,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
   /**
    * @dev This function is called automatically when this contract receives ETH
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `msg.sender` is the offerer, it decodes `msg.data` and calls {acceptOfferResponse}
    * If `msg.sender` is not the offerer, it calls {_addSponsorship}
    * TODO: Needs implementation
@@ -241,6 +241,4 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
   receive(
   ) external payable {
   }
-
-
 }

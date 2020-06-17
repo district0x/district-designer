@@ -23,8 +23,6 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    * @dev Contract initialization
    * Auction countdown starts at the moment of initialization
    *
-   * Emits {OfferCreated} event
-   *
    * Requirements:
    *
    * - `_request.tokenId` must be defined if `_request.tokenType` is ERC1155
@@ -109,10 +107,11 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
 
   /**
    * @dev Transfers bid back to the bidder
-   * Cannot be called for currently winning bid.
    *
    * If the bidder was overbid and automatic transfer didn't work, he calls this function in order to
    * reclaim his bid.
+   *
+   * Cannot be called for currently winning bid.
    *
    * Emits {OfferResponseCanceled} event
    * TODO: Needs implementation
@@ -127,6 +126,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    * @dev Marks deliverable as received
    * This function is called by respondent after he receives a deliverable from the offerer.
    * Respondent must be the winner of the auction.
+   *
    * It'll transfer value to the offerer and the trade is completed.
    * Can be called only when offered value is a deliverable.
    * Can be called only after auction finished.
@@ -146,7 +146,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
 
   /**
    * @dev Dipsute can be raised either by offerer or respondent, in case when
-   * the auction is finished and the winning respondent hasn't yet called {markDeliverableReceived}
+   * the response was already accepted, but the respondent hasn't yet called {markDeliverableReceived}
    *
    * It calls {BaseOffer._raiseDispute} with `_disputedValue` being price at which the respondent
    * paid for the offered value.
@@ -190,6 +190,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
 
   /**
    * @dev This function is called automatically when this contract receives ERC1155 token
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it reverts (HighestBidAuctionOffer cannot be resupplied)
    * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
@@ -207,6 +208,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
 
   /**
    * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * It always reverts because HighestBidAuctionOffer doesn't support multiple tokens nor
    * it can't be resupplied
    */
@@ -223,6 +225,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
 
   /**
   * @dev This function is called automatically when this contract receives ETH
+  * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
   * If `msg.sender` is the offerer, it reverts (HighestBidAuctionOffer cannot be resupplied)
   * If `msg.sender` is not the offerer, it decodes `msg.data` and calls {_createOfferResponse}
   * TODO: Needs implementation

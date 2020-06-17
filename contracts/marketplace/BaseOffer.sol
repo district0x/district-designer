@@ -30,7 +30,8 @@ abstract contract BaseOffer {
    * This function cannot be called twice.
    *
    * It considers msg.sender to be {OfferGroup}
-   * It transfers `_offeredValue` into this contract
+   * It checks if this contract is the owner of `_offeredValue`. Offered value is transferred
+   * into this contract before {initialize} is called.
    *
    * Requirements:
    *
@@ -54,12 +55,12 @@ abstract contract BaseOffer {
    * @dev Creates an offer response
    * Associates respondent with a new offerResponseIndex
    * Same address can create multiple responses.
-   * Extending contracts should add indivitual logic
+   * Extending contracts should add individual logic
    *
    * Requirements:
    *
    * - `_respondent` cannot be zero address
-   * - `_respondent` cannot be offerer
+   * - `_respondent` cannot be the offerer
    * - `_respondent` must be within `allowedRespondents` if it's not empty
    * - `_respondent` must be within `PermissionUserRoles.offerResponseUserRoles` if it's not empty
    *
@@ -90,7 +91,7 @@ abstract contract BaseOffer {
 
   /**
    * @dev Raises a dispute
-   * Dispute can be raised only by the offerer or the respondent
+   * Dispute can be raised only by the offerer or by the respondent
    * Dispute cannot be raised twice for the same offer response.
    *
    * Emits {DisputeRaised} event
@@ -138,15 +139,15 @@ abstract contract BaseOffer {
 
 
   /**
-   * @dev Allows the offerer to fully his supply.
+   * @dev Allows the offerer to withdraw his supply.
    * Can be called only by the offerer and makes transfer only to the offerer.
    *
-   * Supply cannot be withdrawn if one or more disputes is raised, but not resolved.
+   * Supply cannot be withdrawn if some dispute is not resolved yet.
    * It reverts if the offered value is a deliverable.
    *
    * It is meant to be called by extending contracts.
    *
-   * Emits {OfferAvailableSupplyUpdated} event
+   * Emits {OfferAvailableSupplyUpdated} event with supply being 0
    * TODO: Needs implementation
    */
   function _withdrawSupply(

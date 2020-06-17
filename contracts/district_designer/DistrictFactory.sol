@@ -7,7 +7,7 @@ import "./proxy/ProxyFactory.sol";
 import "./District.sol";
 
 /**
- * @dev Factory contract for creating {District}
+ * @dev Factory contract for creating {District} contracts.
  * It also emits all events related to District Designer core module
  * This contract is used through a proxy, therefore its address will never change.
  * No breaking changes will be introduced for events, so they all stay accessible from a single contract.
@@ -15,8 +15,7 @@ import "./District.sol";
  * in other modules.
  */
 
-contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack
-{
+contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
 
   uint public constant version = 1;
 
@@ -78,7 +77,7 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack
    * Requirements:
    *
    * - `_proxyFactory` cannot be zero address
-   * - `_districtTarget` Contract for {District} proxies
+   * - `_districtTarget` cannot be empty
    * TODO: Needs implementation
    */
   function initialize(
@@ -93,7 +92,11 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack
   /**
    * @dev Creates a new {District}
    * It creates {DistrictAdminProxy} forwarding to {District} contract
-   * It initializes a district
+   *
+   * When creating DistrictAdminProxy contract it passes zero address as a district,
+   * so it uses its own address as a district.
+   *
+   * It calls {initialize} on newly created district
    *
    * Emits an {DistrictCreated} event
    * TODO: Needs implementation
@@ -140,7 +143,7 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack
 
 
   /**
-   * @dev Updates contract address and ABI of {District} contract that new proxies will forward to
+   * @dev Updates proxy target for {District} contract that new proxies will forward to.
    * It's meant to be called only by {targetUpdated}
    *
    * Emits an {ProxyTargetsUpdated} event
@@ -153,7 +156,8 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack
 
 
   /**
-   * @dev This function is called automatically when proxy updates its target
+   * @dev This function is called automatically when proxy forwarding to this contract
+   * update its target.
    * It should decode `_data` into arguments of {_updateProxyTargets} and call it
    * TODO: Needs implementation
    */

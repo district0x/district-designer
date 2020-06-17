@@ -44,12 +44,6 @@ contract ProxyFactory {
    * DistrictAdminProxy is a proxy contract, whose target can be updated
    * only by admin user role of a district
    *
-   * Requirements:
-   *
-   * - `_target.contractAddress` cannot be zero address
-   * - `_target.ipfsAbi` must be valid IPFS hash
-   * - `_district` must be already initialized district
-   *
    */
   function createDistrictAdminProxy(
     ProxyTarget memory _target,
@@ -68,7 +62,6 @@ contract ProxyFactory {
    *
    * Requirements:
    *
-   * - `_target` cannot be zero address
    * - `_owner` cannot be zero address
    *
    */

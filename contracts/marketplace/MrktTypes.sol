@@ -74,10 +74,6 @@ abstract contract MrktTypes {
     bytes16[] resolveDisputeUserRoles; // Only user roles that can resolve disputes
   }
 
-  struct Fees {
-    uint createOfferFee; // Fee transferred to district treasury when offer is created
-  }
-
   struct DeliverableAuctionOfferResponse {
     uint[] values; // Array, because ERC1155 can have multiple ids
   }

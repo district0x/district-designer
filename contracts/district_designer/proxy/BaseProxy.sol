@@ -10,7 +10,7 @@ import  "../../_libs/validIPFSHash/validIPFSHash.sol";
  * @dev Base contract for {DistrictAdminProxy} and {OwnerProxy}
  *
  * Implements full proxy functionality, extending contracts are only responsible for
- * defining permissions to update the `target`
+ * defining permissions to update the `proxyTarget`
  *
  */
 

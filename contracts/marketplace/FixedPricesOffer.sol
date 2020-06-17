@@ -23,8 +23,6 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
   /**
    * @dev Contract initialization
    *
-   * Emits {OfferCreated} event
-   *
    * Requirements:
    *
    * - `_request.prices` cannot be empty
@@ -172,6 +170,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev This function is called automatically when this contract receives ERC721 token
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
    * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
@@ -188,6 +187,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev This function is called automatically when this contract receives ERC1155 token
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
    * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
@@ -205,6 +205,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
+   * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
    * If `_from` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
    * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
    * TODO: Needs implementation
@@ -222,6 +223,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
   * @dev This function is called automatically when this contract receives ETH
+  * If this is called before {initialize} it does nothing, since that's initial transfer of the offered value.
   * If `msg.sender` is the offerer, it reverts. (FixedPricesOffer cannot be resupplied)
   * If `msg.sender` is not the offerer, it decodes `msg.data` and calls {_createOfferResponse}
   * TODO: Needs implementation

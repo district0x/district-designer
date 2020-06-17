@@ -36,9 +36,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * @param _offerTarget Contract for {Offer} proxies
    * @param _district {District} address
    * @param _offerableAssets Assets offerer can choose to offer
-   * @param _requestableAssets Assets offerer can request for his offer
+   * @param _requestableAssets Assets offerer can request for in his offers
    * @param _allowedOfferTypes Offer types allowed to be created
-   * @param _fees Operational fees associated with the offer
    * @param _permissionUserRoles Access restrictions for certain operations
    * @param _ipfsData Hash of additional data stored on IPFS
    *
@@ -46,10 +45,11 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    *
    * Requirements:
    *
-   * - `_offerBaseContract` cannot be zero address
-   * - `_offerIpfsAbi` must be valid ipfs hash
-   * - `_offerableAssets` must contain at least 1 item
-   * - `_requestableAssets` must contain at least 1 item
+   * - `_offerTarget` cannot be empty
+   * - `_offerableAssets` cannot be empty
+   * - `_requestableAssets` cannot be empty
+   * - `_allowedOfferTypes` cannot be empty
+   * - `_ipfsData` must be valid IPFS hash
    *
    * See spec :marketplace/offer-group-created for format of _ipfsData file
    */
@@ -59,7 +59,6 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
     MrktTypes.TradeAsset[] memory _offerableAssets,
     MrktTypes.TradeAsset[] memory _requestableAssets,
     MrktTypes.OfferType[] memory _allowedOfferTypes,
-    MrktTypes.Fees memory _fees,
     MrktTypes.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
   ) external {
@@ -68,10 +67,13 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
   /**
    * @dev Creates a new {Offer}
-   * It creates {OwnerProxy} forwarding to a offer contract based on `_offeredValue`
-   * Owner of the proxy is this contract. Created proxy is not meant to be updated.
    *
-   * If there's nonzero Fees.createOfferFee for this offer group, it checks if
+   * It creates a new offer in following steps:
+   * 1. Creates new {OwnerProxy} forwarding to an offer contract based on `_offerType`.
+   * 2. Transfers `_offeredValue` from this contract into newly created contract
+   * 3. Calls `initialize` on the newly created contract
+   *
+   * Owner of the proxy is this contract. Created proxy is not meant to be updated.
    *
    * Requirements:
    *
@@ -79,6 +81,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * - `_offerer` must be within `Offer.PermissionUserRoles.createOfferUserRoles`, if it's not empty
    * - `_offeredValue` must be one of `offerableAssets`
    * - `_offerRequest` token addresses of any sort must be within `_requestableAssets`
+   * - `_ipfsData` can be empty or valid IPFS hash
    *
    * Emits an {OfferCreated} event
    *
@@ -88,6 +91,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
   function _createOffer(
     address _offerer,
     MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.OfferType _offerType,
     MrktTypes.OfferRequest memory _offerRequest,
     address[] memory _allowedRespondents,
     bytes memory _ipfsData
@@ -97,12 +101,12 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
   /**
    * @dev This function is for the sole purpose of creating an offer with
-   * the offered value that is deliverable. Since there's no token callback for that.
+   * deliverable as the offered value. Since there's no token callback for that.
    * It calls {_createOffer}
    * TODO: Needs implementation
    */
   function createDeliverableOffer(
-    address _offerer,
+    MrktTypes.OfferType _offerType,
     MrktTypes.OfferRequest memory _offerRequest,
     address[] memory _allowedRespondents,
     bytes memory _ipfsData
@@ -126,7 +130,6 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
     MrktTypes.TradeAsset[] memory _offerableAssets,
     MrktTypes.TradeAsset[] memory _requestableAssets,
     MrktTypes.OfferType[] memory _allowedOfferTypes,
-    MrktTypes.Fees memory _fees,
     MrktTypes.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
   ) external {
@@ -134,7 +137,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
 
   /**
-   * @dev Updates contract address and ABI of {Offer} contract that new proxies will forward to
+   * @dev Updates proxy targets that newly created proxies will forward to
    * It's meant to be called only by {targetUpdated}
    *
    * Emits an {OfferGroupProxyTargetsUpdated} event
@@ -151,7 +154,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
 
   /**
-   * @dev This function is called automatically when proxy updates its target
+   * @dev This function is called automatically when proxy forwarding to this contract
+   * update its target.
    * It should decode `_data` into arguments of {_updateProxyTargets} and call it
    * TODO: Needs implementation
    */
@@ -240,8 +244,6 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * - passed `_offerer` is `msg.sender`
    * - passed `_offeredValue` is constructed from `msg.value`
    * - rest of arguments is obtained by decoding `msg.data`
-  * If there's nonzero Fees.createOfferFee for this offer group, it needs to subtract
-  * fee from msg.value before creating `_offeredValue`.
   * TODO: Needs implementation
   */
   receive(

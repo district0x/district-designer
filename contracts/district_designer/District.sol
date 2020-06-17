@@ -143,19 +143,6 @@ contract District {
 
 
   /**
-   * @dev Returns true if an array of user roles contain an address
-   * TODO: Needs implementation
-   */
-  function userRolesHaveAddress(
-    bytes16[] memory _userRoleIds,
-    address _address
-  ) public view
-  returns (bool) {
-    return true;
-  }
-
-
-  /**
    * @dev Updates a district treasury address
    *
    * Only admin user role is allowed to update district treasury
