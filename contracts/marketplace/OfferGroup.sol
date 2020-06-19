@@ -49,7 +49,6 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    *
    * Requirements:
    *
-   * - `_offerTarget` cannot be empty
    * - `_offerableAssets` cannot be empty
    * - `_requestableAssets` cannot be empty
    * - `_allowedOfferTypes` cannot be empty

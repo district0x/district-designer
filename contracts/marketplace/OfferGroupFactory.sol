@@ -165,6 +165,8 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
    * because this contract is used through a proxy.
    * This function cannot be called twice.
    *
+   * It stores addresses of contracts where proxies will forward to.
+   *
    * TODO: Needs implementation
    */
   function initialize(
@@ -205,7 +207,7 @@ contract OfferGroupFactory is UpdateTargetAndCallFallBack {
 
 
   /**
-   * @dev Updates contract addresses and ABIs which serve as base contracts for created proxies
+   * @dev Updates contracts that serve as targets for proxies.
    * It's meant to be called only by {targetUpdated}
    *
    * Contracts with zero addresses will not be updated.

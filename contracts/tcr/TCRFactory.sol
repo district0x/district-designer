@@ -7,6 +7,12 @@ import "../district_designer/proxy/ProxyFactory.sol";
 import "./TCR.sol";
 import "../tokens/TokenFactory.sol";
 
+/**
+ * @dev Factory contract for creating {TCR}
+ * It also emits all events related to tcr module
+ * This contract is used through a proxy, therefore its address will never change.
+ * No breaking changes will be introduced for events, so they all stay accessible from a single contract.
+ */
 
 contract TCRFactory is UpdateTargetAndCallFallBack {
 
@@ -135,14 +141,22 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
 
   event TCRProxyTargetsUpdated(
     address tcr,
-    address regEntryBaseContract,
-    bytes regEntryIpfsAbi,
-    address paramChangeEntryBaseContract,
-    bytes paramChangeEntryIpfsAbi,
+    ProxyFactory.ProxyTarget regEntryTarget,
+    ProxyFactory.ProxyTarget paramChangeEntryTarget,
     uint timestamp
   );
 
 
+  /**
+   * @dev Contract initialization
+   * It is manually called instead of native contructor,
+   * because this contract is used through a proxy.
+   * This function cannot be called twice.
+   *
+   * It stores addresses of contracts where proxies will forward to.
+   *
+   * TODO: Needs implementation
+   */
   function initialize(
     DistrictFactory _districtFactory,
     ProxyFactory.ProxyTarget memory _tcrTarget,
@@ -153,10 +167,24 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   }
 
 
+  /**
+   * @dev Creates a new {OfferGroup}
+   * It creates {DistrictAdminProxy} forwarding to tcrTarget` contract
+   *
+   * Requirements:
+   *
+   * - `_district` must be existing district created by {DistrictFactory}
+   * - `msg.sender` must have "MANAGE_TCRS" permission for given district
+   *
+   * Emits an {TcrCreated} event
+   *
+   * See spec :tcr/tcr-created for format of _ipfsData file
+   * TODO: Needs implementation
+   */
   function createTCR(
-    address _district,
+    District _district,
     address _tcr,
-    address _votingToken,
+    TCR.VotingToken memory _votingToken,
     TCR.TCRType _tcrType,
     TCR.RegistryEntryRepresentation memory _regEntryRepr,
     TCR.PermissionUserRoles memory _permissionUserRoles,
@@ -166,7 +194,15 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   ) external {
   }
 
-
+  /**
+   * @dev Updates contracts that serve as targets for proxies.
+   * It's meant to be called only by {targetUpdated}
+   *
+   * Contracts with zero addresses will not be updated.
+   *
+   * Emits an {ProxyTargetsUpdated} event
+   * TODO: Needs implementation
+   */
   function _updateProxyTargets(
     ProxyFactory.ProxyTarget memory _tcrTarget,
     ProxyFactory.ProxyTarget memory _regEntryTarget,
@@ -175,6 +211,12 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   }
 
 
+  /**
+   * @dev This function is called automatically when proxy forwarding to this contract
+   * update its target.
+   * It should decode `_data` into arguments of {_updateProxyTargets} and call it
+   * TODO: Needs implementation
+   */
   function targetUpdated(
     ProxyFactory.ProxyTarget memory _newTcrFactory,
     bytes memory _data
@@ -182,6 +224,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   }
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireRegistryEntryCreated(
     address _regEntry,
     ProxyFactory.ProxyTarget memory _regEntryTarget,
@@ -194,6 +239,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   }
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireParamChangeEntryCreated(
     address _paramChangeEntry,
     ProxyFactory.ProxyTarget memory _paramChangeEntryTarget,
@@ -208,6 +256,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireRegistryEntryTokenMinted(
     address _regEntry,
     uint _tokenId
@@ -215,12 +266,18 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireParamChangeEntryApplied(
     address _paramChange
   ) external
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireChallengeCreated(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -234,6 +291,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireChallengerRewardClaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -243,6 +303,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireCreatorRewardClaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -252,6 +315,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireVotesReclaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -261,6 +327,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireVoteCommitted(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -270,6 +339,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireVoteRevealed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -280,6 +352,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireVoteRewardClaimed(
     address _entry,
     TCR.EntriesGroup _entriesGroup,
@@ -289,6 +364,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
   {}
 
 
+  /**
+   * TODO: Needs implementation
+   */
   function fireTcrProxyTargetsUpdated(
     address _tcr,
     ProxyFactory.ProxyTarget memory _regEntryTarget,
