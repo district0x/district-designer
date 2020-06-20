@@ -11,6 +11,10 @@ contract ERC20Token is ERC20Snapshot, Ownable {
 
   uint public constant version = 1;
 
+  /**
+   * @dev Performs initial disitribution
+   * TODO: Needs implementation
+   */
   constructor(
     string memory _tokenName,
     string memory _tokenSymbol,
@@ -78,9 +82,11 @@ contract ERC20Token is ERC20Snapshot, Ownable {
    *  its behalf, and then a function is triggered in the contract that is
    *  being approved, `_spender`. This allows users to use their tokens to
    *  interact with contracts in one function call instead of two
+   *
    * @param _spender The address of the contract able to transfer the tokens
    * @param _amount The amount of tokens to be approved for transfer
    * @return True if the function call was successful
+   *
    */
   function approveAndCall(
     ApproveAndCallFallBack _spender,

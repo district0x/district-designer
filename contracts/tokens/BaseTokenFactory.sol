@@ -4,6 +4,11 @@ pragma experimental ABIEncoderV2;
 
 import  "../_libs/validIPFSHash/validIPFSHash.sol";
 
+/**
+ * @dev Base contract for {ERC20TokenFactory} {ERC20TokenFactory} {ERC20TokenFactory}
+ * It stores token's IPFS ABI
+ */
+
 contract BaseTokenFactory {
   using validIPFSHash for bytes;
 
