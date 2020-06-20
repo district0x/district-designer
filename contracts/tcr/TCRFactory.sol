@@ -168,8 +168,8 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
 
 
   /**
-   * @dev Creates a new {OfferGroup}
-   * It creates {DistrictAdminProxy} forwarding to tcrTarget` contract
+   * @dev Creates a new {TCR}
+   * It creates {DistrictAdminProxy} forwarding to `tcrTarget` contract
    *
    * Requirements:
    *
@@ -260,7 +260,6 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
    * TODO: Needs implementation
    */
   function fireRegistryEntryTokenMinted(
-    address _regEntry,
     uint _tokenId
   ) external
   {}
@@ -270,7 +269,6 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
    * TODO: Needs implementation
    */
   function fireParamChangeEntryApplied(
-    address _paramChange
   ) external
   {}
 

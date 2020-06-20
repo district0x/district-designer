@@ -19,7 +19,7 @@ contract TCR is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, ERC1155Rece
 
   enum TCRType {
     /**
-     * Type of TCR where there's initial challenge period, after which if
+     * Type of TCR where there's initial challenge period, after which, if
      * a registry entry doesn't get challenged, it stays in the registry forever.
      */
     CHALLENGABLE_ONCE,
@@ -154,6 +154,8 @@ contract TCR is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, ERC1155Rece
    * 3. Calls `initialize` on the newly created contract
    *
    * Owner of the proxy is this contract. Created proxy is not meant to be updated.
+   * If TCR type is CHALLENGEABLE_ANYTIME and representation is a token, it also mints
+   * the token.
    *
    * Requirements:
    *
@@ -223,13 +225,15 @@ contract TCR is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, ERC1155Rece
    * It mints the amount specified when creating the registry entry.
    * Can be called by anyone.
    * If tokens are already minted for given registry entry, it reverts.
+   * It calls {RegistryEntry.markAsMinted}
    *
    * Emits an {RegistryEntryTokenMinted} event
+   *
    * TODO: Needs implementation
    */
   function mintRegistryEntryToken(
     address _regEntry
-  ) external {
+  ) public {
   }
 
 
@@ -240,10 +244,10 @@ contract TCR is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, ERC1155Rece
    * in TCR parameters.
    * Same param change entry cannot be applied twice.
    * Can be called by anyone.
+   * It calls {ParamChangeEntry.markAsApplied}
    *
-   * Emits an {RegistryEntryTokenMinted} event
+   * Emits an {ParamChangeEntryApplied} event
    *
-   * See spec :marketplace/offer-created for format of _ipfsData file
    * TODO: Needs implementation
    */
   function applyParamChangeEntry(

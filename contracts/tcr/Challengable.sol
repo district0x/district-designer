@@ -77,10 +77,10 @@ abstract contract Challengable is ApproveAndCallFallBack, ERC1155Receiver {
 
   /**
    * @dev Reveal a vote
-   * It checks if hashing `_voteOption` and `_salt` together equals to previously commited `_secretHash`.
+   * It checks if hashing `_voteOption` and `_salt` together equals previously commited `_secretHash`.
    * Revealing is allowed only if the entry is in vote reveal period.
    * Same vote cannot be revealed twice.
-   * It adds votes based on `_voteOption`.
+   * It adds up votes based on `_voteOption`.
    *
    * Requirements:
    *
@@ -139,7 +139,7 @@ abstract contract Challengable is ApproveAndCallFallBack, ERC1155Receiver {
    * Vote reward is calculated as follows:
    * - Value of 1 deposit is split according to the parameter challengeDispensation.
    * - If challengeDispensation is 50, it splits 50/50. If it's 40, it splits 40/60.
-   * - First part of this split is reserved as creator or challenger reward, depends on who won.
+   * - First part of this split is reserved as creator's or challenger's reward, depends on who won.
    * - The second part of the split is rewarded to voters according to their vote amounts.
    *
    * Requirements:
@@ -230,7 +230,7 @@ abstract contract Challengable is ApproveAndCallFallBack, ERC1155Receiver {
   function claimRewards(
     address _voter,
     uint _challengeIndex
-  ) external {
+  ) public {
   }
 
 

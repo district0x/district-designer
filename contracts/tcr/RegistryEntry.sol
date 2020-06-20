@@ -38,6 +38,7 @@ contract RegistryEntry is Challengable {
    * TODO: Needs implementation
    */
   function markAsMinted(
+    uint _tokenId
   ) external {
   }
 }
