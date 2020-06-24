@@ -56,8 +56,7 @@ contract DistrictFactory is Ownable, UpdateTargetAndCallFallBack {
   );
 
   event ProxyTargetsUpdated(
-    address districtBaseContract,
-    bytes districtIpfsAbi,
+    ProxyFactory.ProxyTarget districtTarget,
     uint timestamp
   );
 
