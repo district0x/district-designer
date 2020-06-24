@@ -36,7 +36,7 @@
                   proxy-type
 
                   ^{:type String}
-                  target
+                  proxy-target
 
                   ^{:type String}
                   owner
@@ -67,9 +67,9 @@
 
 
                  District
-                 [^{:type ID
+                 [^{:type String
                     :datomic/unique :db.unique/identity}
-                  uuid
+                  address
 
                   ^{:type String}
                   name
@@ -417,19 +417,19 @@
 
 
                  ^:enum
-                 TradeAssetCategory
+                 AssetCategory
                  [ETH ERC20 ERC721 ERC1155 DELIVERABLE]
 
                  ^:enum
                  OfferType
-                 [FIXED_PRICE DYNAMIC_PRICE HIGHEST_BID_AUCTION OFFERER_PICKS_WINNER MULTIPLE_FIXED_PRICES]
+                 [FIXED_PRICE DYNAMIC_PRICE HIGEST_BID_AUCTION MULTI_TOKEN_AUCTION DELIVERABLE_AUCTION]
 
                  TradeAsset
                  [^{:type TokenContract}
                   token-contract
 
                   ^{:type TradeAssetCategory}
-                  category]
+                  asset-category]
 
 
                  OfferGroup
@@ -444,14 +444,15 @@
 
                   ^{:type TradeAsset
                     :cardinality [0 n]}
-                  assets-to-offer
+                  offerable-assets
 
                   ^{:type TradeAsset
                     :cardinality [0 n]}
-                  assets-to-request
+                  requestable-assets
 
-                  ^{:type OfferType}
-                  offer-type
+                  ^{:type OfferType
+                    :cardinality [0 n]}
+                  allowed-offer-types
 
                   ^{:type FieldConfig
                     :cardinality [1 n]}
@@ -460,16 +461,6 @@
                   ^{:type FieldConfig
                     :cardinality [0 n]}
                   response-field-configs
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint
-                    :default 0}
-                  create-offer-fee
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint
-                    :default 0}
-                  offer-response-fee
 
                   ^{:type UserRole
                     :cardinality [0 n]}
@@ -497,11 +488,7 @@
 
                   ^{:type OfferGroupUserRating
                     :cardinality [0 n]}
-                  user-ratings
-
-                  ^{:type String
-                    :cardinality [0 n]}
-                  dispute-resolvers]
+                  user-ratings]
 
 
                  OfferGroupUserRating
@@ -517,11 +504,7 @@
 
 
                  Offer
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type SmartContract}
+                 [^{:type SmartContract}
                   smart-contract
 
                   ^{:type UnknownType}
@@ -533,15 +516,8 @@
                   ^{:type TradeValue}
                   offered-value
 
-                  ^{:type TradeValue
-                    :cardinality [0 n]}
-                  requested-values
-
-                  ^{:type TradeAuction}
-                  requested-auction
-
-                  ^{:type OfferResponse}
-                  auction-highest-bid-response
+                  ^{:type OfferRequest}
+                  offer-request
 
                   ^{:type OfferResponse
                     :cardinality [0 n]}
@@ -553,17 +529,58 @@
                   ^{:type User}
                   offerer
 
-                  ^{:type Boolean}
-                  closed?
+                  ^{:type TradeValue}
+                  available-supply
 
-                  ^{:type Boolean}
-                  close-after-first-trade?]
+                  ^{:type String
+                    :cardinality [0 n]}
+                  allowed-respondents]
+
+
+                 OfferRequest
+                 [^{:type TradeValue
+                    :cardinality [0 n]}
+                  fixed-prices
+
+                  ^{:type TokenContract}
+                  token-contract
+
+                  ^{:type Integer}
+                  token-id
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  start-price
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  end-price
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  min-price
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint}
+                  min-bid-step
+
+                  ^{:type Integer}
+                  duration
+
+                  ^{:type Integer}
+                  extension-trigger-duration
+
+                  ^{:type Integer}
+                  extension-duration
+
+                  ^{:type TokenContract
+                    :cardinality [0 n]}
+                  accepted-tokens]
 
 
                  OfferResponse
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
+                 [^{:type Integer}
+                  index
 
                   ^{:type User}
                   respondent
@@ -578,16 +595,19 @@
                   canceled-on
 
                   ^{:type DateTime}
-                  traded-on
+                  completed-on
 
                   ^{:type UnknownType}
                   field-uuid
 
                   ^{:type TradeValue}
-                  offerer-traded-value
+                  response-value
 
                   ^{:type TradeValue}
-                  respondent-traded-value
+                  offerer-received-value
+
+                  ^{:type TradeValue}
+                  respondent-received-value
 
                   ^{:type Feedback}
                   offerer-feedback
@@ -615,13 +635,7 @@
                   resolved-on
 
                   ^{:type String}
-                  resolved-by
-
-                  ^{:type TradeValue}
-                  resolved-value-for-offerer
-
-                  ^{:type TradeValue}
-                  resolved-value-for-respondent]
+                  resolved-by]
 
 
                  TradeValue
@@ -637,30 +651,6 @@
 
                   ^{:type String}
                   textual-repr]
-
-
-                 TradeAuction
-                 [^{:type TradeAsset}
-                  asset
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint}
-                  start-amount
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint}
-                  end-amount
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint}
-                  min-amount
-
-                  ^{:type Integer
-                    :datomic/type :db.type/bigint}
-                  min-bid-step
-
-                  ^{:type Integer}
-                  duration]
 
 
                  Feedback
@@ -773,12 +763,8 @@
 
 
                  NFTToken
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type Integer}
-                  id
+                 [^{:type Integer}
+                  token-id
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
@@ -790,7 +776,7 @@
 
                  ^:enum
                  TCRType
-                 [INITIAL_CHALLENGE_PERIOD CHALLENGEABLE_ANYTIME]
+                 [CHALLENGEABLE_ONCE CHALLENGEABLE_ANYTIME]
 
                  ^:enum
                  TCRRegEntryRepresentationCategory
@@ -798,9 +784,8 @@
 
 
                  TCR
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
+                 [^{:type SmartContract}
+                  smart-contract
 
                   ^{:type String}
                   name
@@ -866,11 +851,7 @@
 
 
                  TCRRegEntry
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type SmartContract}
+                 [^{:type SmartContract}
                   smart-contract
 
                   ^{:type UnknownType}
@@ -885,11 +866,7 @@
 
 
                  TCRParamChangeEntry
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type SmartContract}
+                 [^{:type SmartContract}
                   smart-contract
 
                   ^{:type String}
@@ -945,9 +922,8 @@
 
 
                  TCRChallenge
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
+                 [^{:type Integer}
+                  index
 
                   ^{:type User}
                   challenger
@@ -1001,11 +977,7 @@
 
 
                  TCRVote
-                 [^{:type ID
-                    :datomic/unique :db.unique/identity}
-                  uuid
-
-                  ^{:type User}
+                 [^{:type User}
                   voter
 
                   ^{:type TCRVoteOption}
