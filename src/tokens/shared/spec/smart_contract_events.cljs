@@ -5,10 +5,8 @@
     [district-designer.shared.spec.smart-contract-events]
     [tokens.shared.spec.ipfs-events]))
 
-(def smart-contract-events
-  #{:tokens/token-created})
 
-(s/def ::token-address address?)
+(s/def ::token address?)
 (s/def ::token-type #{:token-type/erc-20
                       :token-type/erc-721
                       :token-type/erc-1155})
@@ -30,7 +28,7 @@
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [:district-designer.shared.spec.smart-contract-events/district
-                     ::token-address
+                     ::token
                      ::token-type
                      ::token-ipfs-abi
                      ::token-version
@@ -40,3 +38,12 @@
                      ::decimal-units
                      ::owner
                      :token-created/ipfs-data])))
+
+
+(s/def ::new-factory address?)
+
+(defmethod event-type :tokens/factory-updated [_]
+  (s/merge
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req-un [::new-factory
+                     ::token-type])))

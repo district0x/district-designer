@@ -3,13 +3,8 @@
     [cljs.spec.alpha :as s]
     [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
-(def ipfs-events
-  #{:tcr/add-tcr-factory
-    :tcr/update-tcr
-    :tcr/add-district-tcr
-    :tcr/remove-district-tcr})
 
-(s/def :tcr/uuid uuid?)
+(s/def :tcr/address address?)
 (s/def :tcr/name string?)
 (s/def :tcr/reg-entry-field-configs (s/coll-of :field-config/field-config))
 (s/def :tcr/global-enabled? boolean?)
@@ -22,7 +17,7 @@
 (defmethod event-type :tcr/update-tcr [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:tcr/uuid]
+    (s/keys :req [:tcr/address]
             :opt [:tcr/name
                   :tcr/reg-entry-field-configs
                   :tcr/global-enabled?
@@ -33,8 +28,8 @@
 (defmethod event-type :tcr/add-district-tcr [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/uuid
-                  :tcr/uuid])))
+    (s/keys :req [:district/address
+                  :tcr/address])))
 
 (defmethod event-type :tcr/remove-district-tcr [_]
   :tcr/add-district-tcr)

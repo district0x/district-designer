@@ -63,7 +63,7 @@ contract TCR is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, ERC1155Rece
 
   struct VotingToken {
     address tokenAddress;
-    VotingTokenType tokenType;
+    VotingTokenType votingTokenType;
     uint tokenId; // only for ERC1155
   }
 

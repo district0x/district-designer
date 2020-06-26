@@ -147,7 +147,7 @@ abstract contract BaseOffer {
    *
    * It is meant to be called by extending contracts.
    *
-   * Emits {OfferAvailableSupplyUpdated} event with supply being 0
+   * Emits {SupplyWithdrawn} event
    * TODO: Needs implementation
    */
   function _withdrawSupply(

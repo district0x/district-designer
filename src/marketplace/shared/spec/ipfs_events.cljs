@@ -5,16 +5,6 @@
     [users.shared.spec.ipfs-events]))
 
 
-(def ipfs-events
-  #{:marketplace/update-offer-group
-    :marketplace/add-district-offer-group
-    :marketplace/remove-district-offer-group
-    :marketplace/update-offer
-    :marketplace/add-message
-    :marketplace/add-feedback
-    :marketplace/update-feedback})
-
-
 (defn rating? [x]
   (and (number? x) (>= x 0) (<= x 5)))
 
@@ -27,7 +17,7 @@
 (s/def :offer-group/global-description :global/description)
 
 (s/def :offer/address address?)
-(s/def :offer-response/uuid uuid?)
+(s/def :offer-response/index nat-int?)
 
 (s/def :feedback/uuid uuid?)
 (s/def :feedback/rating rating?)
@@ -51,14 +41,14 @@
 (defmethod event-type :marketplace/add-district-offer-group [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :offer-group/address])))
 
 
 (defmethod event-type :marketplace/remove-district-offer-group [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :offer-group/address])))
 
 
@@ -71,7 +61,7 @@
 (defmethod event-type :marketplace/add-message [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:offer-response/uuid
+    (s/keys :req [:offer-response/index
                   :message/uuid
                   :message/receiver
                   :message/text]
@@ -81,7 +71,7 @@
 (defmethod event-type :marketplace/add-feedback [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:offer-response/uuid
+    (s/keys :req [:offer-response/index
                   :feedback/uuid
                   :feedback/rating
                   :feedback/text])))

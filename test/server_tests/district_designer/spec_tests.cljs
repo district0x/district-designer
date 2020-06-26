@@ -7,37 +7,27 @@
 
 (s/def :event/event (s/multi-spec event-type :event/type))
 
+
 (deftest ipfs-events-spec-tests
   (is (s/valid? :event/event
                 {:event/type :district-designer/events-batch
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :events [{:event/type :district-designer/add-dd-proxy-factory
+                 :events [{:event/type :district-designer/add-proxy-factory
                            :timestamp 1590913803
                            :smart-contract/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                            :smart-contract/abi {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                                                 :file/name "abc"}}
-                          {:event/type :district-designer/add-district-designer
+                          {:event/type :district-designer/add-district-factory
                            :timestamp 1590913803
                            :smart-contract/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                            :smart-contract/abi {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
-                                                :file/name "abc"}}]}))
+                                                :file/name "abc"}
+                           :smart-contract/proxy? true
+                           :smart-contract/proxy-target "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                           :smart-contract/proxy-type :proxy-type/owner-proxy
+                           :smart-contract/owner "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}]}))
 
-  (is (s/valid? :event/event
-                {:event/type :district-designer/add-dd-proxy-factory
-                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :timestamp 1590913803
-                 :smart-contract/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :smart-contract/abi {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
-                                      :file/name "abc"}}))
-
-  (is (s/valid? :event/event
-                {:event/type :district-designer/add-district-designer
-                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :timestamp 1590913803
-                 :smart-contract/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :smart-contract/abi {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
-                                      :file/name "abc"}}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/add-module
@@ -153,7 +143,7 @@
                 {:event/type :district/update-theme
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :district/theme "some_theme"
                  :district/theme-settings "{:a 1 :b 2}"}))
 
@@ -161,7 +151,7 @@
                 {:event/type :district/update-styles
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :district/less-file {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                                       :file/name "abc"}
                  :district/css-file {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
@@ -171,21 +161,21 @@
                 {:event/type :district/add-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :module/id "marketplace"}))
 
   (is (s/valid? :event/event
                 {:event/type :district/remove-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :module/id "marketplace"}))
 
   (is (s/valid? :event/event
                 {:event/type :district/add-ui-component
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :ui-component/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :ui-component/name "abc"
                  :ui-component/type "abc"
@@ -198,7 +188,7 @@
                 {:event/type :district/update-ui-component
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :ui-component/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :ui-component/name "abc"
                  :ui-component/type "abc"
@@ -211,16 +201,16 @@
                 {:event/type :district/remove-ui-component
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :ui-component/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"})))
 
 
 (deftest smart-contract-events-spec-tests
   (is (s/valid? :event/event
-                {:event/type :district-designer/district-initialized
+                {:event/type :district-designer/district-created
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :permissions [{:permission-id "some_permission"
                                 :user-role-ids [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}]
                  :user-roles [{:user-role-id #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
@@ -237,7 +227,7 @@
                 {:event/type :district-designer/permissions-updated
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :permissions [{:permission-id "some_permission"
                                 :user-role-ids [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}]}))
 
@@ -246,7 +236,7 @@
                 {:event/type :district-designer/user-roles-updated
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :user-roles [{:user-role-id #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                                :addresses ["0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"]}]
                  :ipfs-data {:user-role-names [{:user-role/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
@@ -257,7 +247,7 @@
                 {:event/type :district-designer/district-treasury-updated
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :treasury "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}))
 
 
@@ -268,11 +258,13 @@
                  :module-id "some_module"
                  :is-emergency true}))
 
+
   (is (s/valid? :event/event
-                {:event/type :dd-proxy-factory/proxy-target-updated
+                {:event/type :proxy-factory/proxy-target-updated
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :proxy "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :old-target "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :new-target "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"})))
+                 :old-target {:contract-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                              :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
+                 :new-target {:contract-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                              :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}})))

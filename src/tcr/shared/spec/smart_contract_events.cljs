@@ -2,33 +2,22 @@
   (:require
     [cljs.spec.alpha :as s]
     [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]
+    [district-designer.shared.spec.smart-contract-events]
     [tcr.shared.spec.ipfs-events]
     [tokens.shared.spec.smart-contract-events]))
 
-(def smart-contract-events
-  #{:tcr/tcr-created
-    :tcr/registry-entry-created
-    :tcr/param-change-entry-created
-    :tcr/challenge-created
-    :tcr/registry-entry-token-minted
-    :tcr/param-change-entry-applied
-    :tcr/challenger-reward-claimed
-    :tcr/creator-reward-claimed
-    :tcr/votes-reclaimed
-    :tcr/vote-committed
-    :tcr/vote-revealed
-    :tcr/vote-reward-claimed
-    :tcr/base-contracts-updated
-    :tcr/tcr-base-contracts-updated})
 
-(s/def ::tcr :tcr/uuid)
-(s/def ::tcr-address address?)
-(s/def ::tcr-base-contract address?)
-(s/def ::tcr-ipfs-abi ipfs-hash?)
+(s/def ::tcr address?)
+(s/def ::tcr-target :proxy-factory/proxy-target)
 (s/def ::tcr-version :district-designer.shared.spec.ipfs-events/version)
-(s/def ::voting-token address?)
+(s/def ::voting-token-type #{:voting-token-type/erc-20
+                             :voting-token-type/erc-1155})
+(s/def ::token-address address?)
+(s/def ::token-id nat-int?)
+(s/def ::voting-token (s/keys :req-un [::voting-token-type ::token-address]
+                              :opt-un [::token-id]))
 (s/def ::tcr-type #{:tcr-type/challengeable-anytime
-                    :tcr-type/initial-challenge-period})
+                    :tcr-type/challengeable-once})
 (s/def :reg-entry-representation/category #{:tcr-reg-entry-representation-category/erc-1155
                                             :tcr-reg-entry-representation-category/erc-721
                                             :tcr-reg-entry-representation-category/no-token})
@@ -48,14 +37,14 @@
 (defn percentage? [x]
   (and (number? x) (>= x 0) (<= x 100)))
 
-(s/def :tcr-parameters/challenge-deposit-dispensation percentage?)
+(s/def :tcr-parameters/challenge-dispensation percentage?)
 (s/def :tcr-parameters/challenge-period-duration nat-int?)
 (s/def :tcr-parameters/deposit pos-int?)
 (s/def :tcr-parameters/vote-commit-period-duration pos-int?)
 (s/def :tcr-parameters/vote-quorum percentage?)
 (s/def :tcr-parameters/vote-reveal-period-duration pos-int?)
 
-(s/def ::tcr-parameters (s/keys :req-un [:tcr-parameters/challenge-deposit-dispensation
+(s/def ::tcr-parameters (s/keys :req-un [:tcr-parameters/challenge-dispensation
                                          :tcr-parameters/challenge-period-duration
                                          :tcr-parameters/deposit
                                          :tcr-parameters/vote-commit-period-duration
@@ -82,11 +71,9 @@
 (defmethod event-type :tcr/tcr-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req-un [:district-designer.shared.spec/district
+    (s/keys :req-un [:district-designer.shared.spec.smart-contract-events/district
                      ::tcr
-                     ::tcr-address
-                     ::tcr-base-contract
-                     ::tcr-ipfs-abi
+                     ::tcr-target
                      ::tcr-version
                      ::voting-token
                      ::tcr-type
@@ -97,10 +84,9 @@
                      :tcr-created/ipfs-data])))
 
 
-(s/def ::reg-entry uuid?)
-(s/def ::reg-entry-address address?)
+(s/def ::reg-entry address?)
 (s/def ::reg-entry-base-contract address?)
-(s/def ::reg-entry-ipfs-abi ipfs-hash?)
+(s/def ::reg-entry-target :proxy-factory/proxy-target)
 (s/def ::creator address?)
 (s/def ::token-amount pos-int?)
 (s/def ::token-meta-ipfs-data ipfs-hash?)
@@ -116,9 +102,7 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr
                      ::reg-entry
-                     ::reg-entry-address
-                     ::reg-entry-base-contract
-                     ::reg-entry-ipfs-abi
+                     ::reg-entry-target
                      ::reg-entry-version
                      ::creator
                      ::token-amount
@@ -126,17 +110,15 @@
                      :registry-entry-created/ipfs-data])))
 
 (s/def ::param-change-entry ::reg-entry)
-(s/def ::param-change-entry-address ::reg-entry-address)
-(s/def ::param-change-entry-base-contract ::reg-entry-base-contract)
-(s/def ::param-change-entry-ipfs-abi ::reg-entry-ipfs-abi)
+(s/def ::param-change-entry-target :proxy-factory/proxy-target)
 (s/def ::param-change-entry-version :district-designer.shared.spec.ipfs-events/version)
 
 (s/def ::entries-group #{:entries-group/registry-entries
                          :entries-group/param-change-entries})
 
-(s/def :param-change-entry/key string?)
-(s/def :param-change-entry/value nat-int?)
-(s/def :param-change-entry/original-value :param-change-entry/value)
+(s/def :param-change-entry/parameter-key string?)
+(s/def :param-change-entry/parameter-value nat-int?)
+(s/def :param-change-entry/original-parameter-value :param-change-entry/parameter-value)
 (s/def :param-change-entry/comment string?)
 
 
@@ -149,19 +131,17 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr
                      ::param-change-entry
-                     ::param-change-entry-address
-                     ::param-change-entry-base-contract
-                     ::param-change-entry-ipfs-abi
+                     ::param-change-entry-target
                      ::param-change-entry-version
                      ::creator
                      ::entries-group
-                     :param-change-entry/key
-                     :param-change-entry/value
-                     :param-change-entry/original-value
+                     :param-change-entry/parameter-key
+                     :param-change-entry/parameter-value
+                     :param-change-entry/original-parameter-value
                      :param-change-entry-created/ipfs-data])))
 
 (s/def ::entry ::reg-entry)
-(s/def ::challenge uuid?)
+(s/def ::challenge-index nat-int?)
 (s/def ::challenger address?)
 (s/def ::commit-period-end pos-int?)
 (s/def ::reveal-period-end pos-int?)
@@ -177,14 +157,13 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::entry
                      ::entries-group
-                     ::challenge
+                     ::challenge-index
                      ::challenger
                      ::commit-period-end
                      ::reveal-period-end
                      ::reward-pool
                      :challenge-created/ipfs-data])))
 
-(s/def ::token-id nat-int?)
 
 (defmethod event-type :tcr/registry-entry-token-minted [_]
   (s/merge
@@ -258,25 +237,20 @@
                      ::voter
                      ::amount])))
 
-(defmethod event-type :tcr/base-contracts-updated [_]
+(defmethod event-type :tcr/proxy-targets-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req-un [::tcr-base-contract
-                     ::tcr-ipfs-abi
-                     ::reg-entry-base-contract
-                     ::reg-entry-ipfs-abi
-                     ::param-change-entry-base-contract
-                     ::param-change-entry-ipfs-abi])))
+    (s/keys :req-un [::tcr-target
+                     ::reg-entry-target
+                     ::param-change-entry-target])))
 
 
-(defmethod event-type :tcr/tcr-base-contracts-updated [_]
+(defmethod event-type :tcr/tcr-proxy-targets-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::tcr
-                     ::reg-entry-base-contract
-                     ::reg-entry-ipfs-abi
-                     ::param-change-entry-base-contract
-                     ::param-change-entry-ipfs-abi])))
+                     ::reg-entry-target
+                     ::param-change-entry-target])))
 
 
 

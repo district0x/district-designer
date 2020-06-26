@@ -23,7 +23,7 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     address tcr,
     ProxyFactory.ProxyTarget tcrTarget,
     uint tcrVersion,
-    address votingToken,
+    TCR.VotingToken votingToken,
     TCR.TCRType tcrType,
     TCR.RegistryEntryRepresentation regEntryRepresentation,
     TCR.PermissionUserRoles permissionUserRoles,
@@ -52,9 +52,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     uint paramChangeEntryVersion,
     address creator,
     TCR.EntriesGroup entriesGroup,
-    string key,
-    uint value,
-    uint originalValue,
+    string parameterKey,
+    uint parameterValue,
+    uint originalParameterValue,
     bytes ipfsData,
     uint timestamp
   );
@@ -248,9 +248,9 @@ contract TCRFactory is UpdateTargetAndCallFallBack {
     uint _paramChangeEntryVersion,
     address _creator,
     TCR.EntriesGroup _paramGroup,
-    string memory _key,
-    uint _value,
-    uint _originalValue,
+    string memory _parameterKey,
+    uint _parameterValue,
+    uint _originalParameterValue,
     bytes memory _ipfsData
   ) external
   {}

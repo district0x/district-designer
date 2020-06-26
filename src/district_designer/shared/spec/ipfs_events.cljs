@@ -1,41 +1,6 @@
 (ns district-designer.shared.spec.ipfs-events
   (:require [cljs.spec.alpha :as s]))
 
-(def ipfs-events
-  #{:district-designer/events-batch
-    :district-designer/add-dd-proxy-factory
-    :district-designer/add-district-designer
-    :district-designer/add-module
-    :district-designer/update-module
-    :district-designer/remove-module
-    :district-designer/add-wizard
-    :district-designer/update-wizard
-    :district-designer/remove-wizard
-    :district-designer/add-theme
-    :district-designer/update-theme
-    :district-designer/remove-theme
-    :district-designer/add-permission
-    :district-designer/update-permission
-    :district-designer/remove-permission
-    :district-designer/add-tag-group
-    :district-designer/update-tag-group
-    :district-designer/remove-tag-group
-    :district-designer/add-tags
-    :district-designer/remove-tags
-    :district/update-theme
-    :district/update-styles
-    :district/add-module
-    :district/remove-module
-    :district/add-ui-component
-    :district/update-ui-component
-    :district/remove-ui-component
-    :district/add-database-view
-    :district/update-datadatabase-view
-    :district/remove-datadatabase-view
-    :district/add-statistics-view
-    :district/update-statistics-view
-    :district/remove-statistics-view})
-
 
 (defn address? [x]
   (and (string? x) (= 42 (count x))))
@@ -64,6 +29,11 @@
 
 (s/def :smart-contract/address address?)
 (s/def :smart-contract/abi :file/file)
+(s/def :smart-contract/proxy? boolean?)
+(s/def :smart-contract/proxy-target address?)
+(s/def :smart-contract/proxy-type #{:proxy-type/owner-proxy :proxy-type/district-admin-proxy})
+(s/def :smart-contract/owner address?)
+(s/def :smart-contract/district address?)
 
 (s/def :module/id string?)
 (s/def :module/name string?)
@@ -87,7 +57,7 @@
 (s/def :theme/preview-images (s/coll-of :file/file))
 (s/def :theme/files (s/coll-of :file/file))
 
-(s/def :district/uuid uuid?)
+(s/def :district/address address?)
 (s/def :district/less-file :file/file)
 (s/def :district/css-file :file/file)
 (s/def :district/theme :theme/id)
@@ -137,12 +107,18 @@
 (s/def :district-designer/add-smart-contract
   (s/merge
     ::event-base
-    (s/keys :req [:smart-contract/address :smart-contract/abi])))
+    (s/keys :req [:smart-contract/address
+                  :smart-contract/abi]
+            :opt [:smart-contract/proxy?
+                  :smart-contract/proxy-target
+                  :smart-contract/proxy-type
+                  :smart-contract/owner
+                  :smart-contract/district])))
 
-(defmethod event-type :district-designer/add-dd-proxy-factory [_]
+(defmethod event-type :district-designer/add-proxy-factory [_]
   :district-designer/add-smart-contract)
 
-(defmethod event-type :district-designer/add-district-designer [_]
+(defmethod event-type :district-designer/add-district-factory [_]
   :district-designer/add-smart-contract)
 
 (defmethod event-type :district-designer/add-module [_]
@@ -289,7 +265,7 @@
 (defmethod event-type :district/update-theme [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid]
+    (s/keys :req [:district/address]
             :opt [:district/theme
                   :district/theme-settings])))
 
@@ -297,7 +273,7 @@
 (defmethod event-type :district/update-styles [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid]
+    (s/keys :req [:district/address]
             :opt [:district/less-file
                   :district/css-file])))
 
@@ -305,18 +281,18 @@
 (defmethod event-type :district/add-module [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid :module/id])))
+    (s/keys :req [:district/address :module/id])))
 
 (defmethod event-type :district/remove-module [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid :module/id])))
+    (s/keys :req [:district/address :module/id])))
 
 
 (defmethod event-type :district/add-ui-component [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :ui-component/uuid
                   :ui-component/name
                   :ui-component/type
@@ -328,7 +304,7 @@
 (defmethod event-type :district/update-ui-component [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :ui-component/uuid]
             :opt [:ui-component/name
                   :ui-component/type
@@ -340,14 +316,14 @@
 (defmethod event-type :district/remove-ui-component [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :ui-component/uuid])))
 
 
 (defmethod event-type :district/add-database-view [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :data-view/uuid
                   :data-view/name
                   :data-view/settings])))
@@ -356,7 +332,7 @@
 (defmethod event-type :district/update-datadatabase-view [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :data-view/uuid]
             :opt [:data-view/name
                   :data-view/settings])))
@@ -365,7 +341,7 @@
 (defmethod event-type :district/remove-datadatabase-view [_]
   (s/merge
     ::event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :data-view/uuid])))
 
 (defmethod event-type :district/add-statistics-view [_]

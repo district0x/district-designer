@@ -42,7 +42,6 @@ abstract contract MrktTypes {
     address tokenAddress;
   }
 
-
   struct TradeAsset {
     AssetCategory assetCategory;
     address tokenAddress;
@@ -61,16 +60,16 @@ abstract contract MrktTypes {
   }
 
   struct ERC1155Value {
-    uint[] ids;
+    uint[] tokenIds;
     uint[] values;
   }
 
   struct TradeValue {
     TradeAsset tradeAsset;
-    ETHValue eth;
-    ERC20Value erc20;
-    ERC721Value erc721;
-    ERC1155Value erc1155;
+    ETHValue ethValue;
+    ERC20Value erc20Value;
+    ERC721Value erc721Value;
+    ERC1155Value erc1155Value;
   }
 
   struct PermissionUserRoles {
@@ -123,9 +122,9 @@ abstract contract MrktTypes {
   }
 
   struct OfferRequest {
-    DynamicPriceOfferRequest dynamicPriceOffer;
-    FixedPricesOfferRequest fixedPriceOffer;
-    HighestBidAuctionOfferRequest highestBidAuctionOffer;
-    MultiTokenAuctionOfferRequest multiTokenAuction;
+    DynamicPriceOfferRequest dynamicPriceOfferRequest;
+    FixedPricesOfferRequest fixedPriceOfferRequest;
+    HighestBidAuctionOfferRequest highestBidAuctionOfferRequest;
+    MultiTokenAuctionOfferRequest multiTokenAuctionOfferRequest;
   }
 }

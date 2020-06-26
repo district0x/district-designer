@@ -3,19 +3,16 @@
     [cljs.spec.alpha :as s]
     [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
-(def ipfs-events
-  #{:users/add-direct-message
-    :users/add-user-profile
-    :users/update-user-profile
-    :users/remove-user-profile
-    :users/add-district-user-profile
-    :users/remove-district-user-profile
-    :users/update-user})
 
 (s/def :message/uuid uuid?)
 (s/def :message/receiver address?)
 (s/def :message/text string?)
 (s/def :message/files (s/coll-of :file/file))
+(s/def ::message (s/keys :req [:message/uuid
+                               :message/receiver
+                               :message/text]
+                         :opt [:message/files]))
+(s/def ::messages (s/coll-of ::message))
 
 (s/def :user-profile/uuid uuid?)
 (s/def :user-profile/name string?)
@@ -36,7 +33,7 @@
 (defmethod event-type :users/add-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :user-profile/uuid
                   :user-profile/name
                   :user-profile/field-configs]
@@ -65,14 +62,14 @@
 (defmethod event-type :users/add-district-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :user-profile/uuid])))
 
 
 (defmethod event-type :users/remove-district-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/uuid
+    (s/keys :req [:district/address
                   :user-profile/uuid])))
 
 

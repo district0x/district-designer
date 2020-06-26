@@ -21,7 +21,7 @@
                 {:event/type :users/add-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :user-profile/name "abc"
                  :user-profile/field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
@@ -56,7 +56,7 @@
                 {:event/type :users/add-district-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"}))
 
 
@@ -64,7 +64,7 @@
                 {:event/type :users/remove-district-user-profile
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :district/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"}))
 
 

@@ -156,7 +156,6 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    * If offered value is deliverable, it reverts.
    * It calls {Sponsorable._addSponsorship}
    *
-   * Emits {OfferAvailableSupplyUpdated} event
    * TODO: Needs implementation
    */
   function _addSponsorship(
@@ -171,7 +170,6 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    * It calls {Sponsorable._withdrawSponsorship} with `_availableSupply` argument being value stored
    * in the contract minus value reserved for accepted responses, that haven't yet been {markDeliverableReceived}
    *
-   * Emits {OfferAvailableSupplyUpdated} event
    * TODO: Needs implementation
    */
   function withdrawSponsorship(

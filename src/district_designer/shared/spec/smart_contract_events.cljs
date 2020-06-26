@@ -4,23 +4,14 @@
     [district-designer.shared.spec.ipfs-events :refer [ipfs-hash? address? edn? event-type]]))
 
 
-(def smart-contract-events
-  #{:district-designer/district-initialized
-    :district-designer/permissions-updated
-    :district-designer/user-roles-updated
-    :district-designer/district-treasury-updated
-    :district-designer/emergency-updated
-    :dd-proxy-factory/proxy-target-updated})
-
-
-(s/def ::district uuid?)
+(s/def ::address address?)
+(s/def ::district ::address)
 (s/def ::permission-id string?)
 (s/def ::permission-ids (s/coll-of ::permission-id))
 (s/def ::user-role-id uuid?)
 (s/def ::user-role-ids (s/coll-of ::user-role-id))
 (s/def ::permission (s/keys :req-un [::permission-id ::user-role-ids]))
 (s/def ::permissions (s/coll-of ::permission))
-(s/def ::address address?)
 (s/def ::addresses (s/coll-of ::address))
 (s/def ::treasury ::address)
 (s/def ::user-role (s/keys :req-un [::user-role-id ::addresses]))
@@ -41,7 +32,7 @@
     (s/keys :req-un [::user-role-names])))
 
 
-(defmethod event-type :district-designer/district-initialized [_]
+(defmethod event-type :district-designer/district-created [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::district
@@ -87,15 +78,27 @@
     (s/keys :req-un [::module-id
                      ::is-emergency])))
 
-(s/def ::proxy ::address)
-(s/def ::old-target ::address)
-(s/def ::new-target ::address)
+(s/def ::contract-address ::address)
 (s/def ::ipfs-abi ipfs-hash?)
+(s/def :proxy-factory/proxy-target (s/keys :req-un [::contract-address ::ipfs-abi]))
+(s/def ::district-target :proxy-factory/proxy-target)
 
-(defmethod event-type :dd-proxy-factory/proxy-target-updated [_]
+
+(defmethod event-type :district-designer/proxy-targets-updated
+  [_]
+  (s/merge
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req-un [::district-target])))
+
+
+(s/def ::proxy ::address)
+(s/def ::old-target :proxy-factory/proxy-target)
+(s/def ::new-target :proxy-factory/proxy-target)
+
+
+(defmethod event-type :proxy-factory/proxy-target-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::proxy
                      ::old-target
-                     ::new-target
-                     ::ipfs-abi])))
+                     ::new-target])))

@@ -644,10 +644,20 @@
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
-                  amount
+                  value
 
                   ^{:type NFTToken}
                   nft-token
+
+                  ; For ERC1155 batch transfer
+                  ^{:type NFTToken
+                    :cardinality [0 n]}
+                  nft-tokens
+
+                  ^{:type Integer
+                    :datomic/type :db.type/bigint
+                    :cardinality [0 n]}
+                  values
 
                   ^{:type String}
                   textual-repr]
@@ -790,9 +800,6 @@
                   ^{:type String}
                   name
 
-                  ^{:type SmartContract}
-                  smart-contract
-
                   ^{:type District}
                   created-by
 
@@ -801,6 +808,9 @@
 
                   ^{:type TokenContract}
                   voting-token-contract
+
+                  ^{:type Integer}
+                  voting-token-id
 
                   ^{:type TCRRegEntryRepresentationCategory}
                   reg-entry-representation-category
@@ -873,18 +883,18 @@
                   db
 
                   ^{:type String}
-                  key
+                  parameter-key
 
                   ^{:type String}
                   comment
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
-                  value
+                  parameter-value
 
                   ^{:type Integer
                     :datomic/type :db.type/bigint}
-                  original-value
+                  parameter-original-value
 
                   ^{:type DateTime}
                   created-on
@@ -915,7 +925,7 @@
                   vote-reveal-period-duration
 
                   ^{:type Integer}
-                  challenge-deposit-dispensation
+                  challenge-dispensation
 
                   ^{:type Integer}
                   vote-quorum]
