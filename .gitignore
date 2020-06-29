@@ -24,5 +24,6 @@ pom.xml.asc
 district-designer-tests/
 /browser-tests/
 /smart-contracts-tests/
+/server-tests/
 resources/public/js/compiled/
 resources/public/contracts/build/
