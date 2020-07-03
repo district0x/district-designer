@@ -1,0 +1,669 @@
+@startuml
+
+skinparam BackgroundColor transparent
+skinparam DefaultFontName Monospaced
+skinparam RoundCorner     5
+skinparam shadowing       false
+
+skinparam class {
+  ArrowColor              #5498C4
+  ArrowThickness          3
+  BackgroundColor         #F3F4F9
+  BorderColor             #2C82AB
+  BorderThickness         2
+  FontName                Ariel
+}
+
+title District Designer Database Diagram
+
+
+' ------------------------
+' District Designer Module
+' ------------------------
+
+
+class SmartContracts << (T, #2C82AB) Table >> {
+  :smart-contract/address            - address
+  :smart-contract/abi                - ipfs
+  :smart-contract/name               - varchar
+  :smart-contract/owner              - address
+  :smart-contract/proxy-target       - address
+  :smart-contract/proxy-type         - ProxyType
+  :smart-contract/proxy?             - boolean
+  :smart-contract/version            - unsigned integer
+  :smart-contract/created-on         - unsigned integer
+
+  primary key(:smart-contract/address)
+  foreign key(:smart-contract/abi, Files(:file/hash))
+}
+
+enum ProxyType {
+  DISTRICT_ADMIN_PROXY
+  OWNER_PROXY
+}
+
+class SmartContractEvents << (T, #2C82AB) Table >> {
+  :smart-contract/address                    - address
+  :smart-contract-event/event-key            - varchar
+  :smart-contract-event/last-block-number    - unsigned integer
+  :smart-contract-event/last-log-index       - unsigned integer
+
+  primary key(:smart-contract/address, :smart-contract-event/event-key)
+}
+SmartContracts -- SmartContractEvents : fk(:smart-contract/address)
+
+
+class IpfsEvents << (T, #2C82AB) Table >> {
+  :ipfs-events/id                             - unsigned integer
+  :ipfs-events/last-hash                      - ipfs
+
+  primary key(:ipfs-events/id)
+}
+
+
+class Districts << (T, #2C82AB) Table >> {
+  :district/address                           - address
+  :district/title                             - varchar
+  :district/name                              - varchar
+  :district/subdomain                         - varchar, unique
+  :district/description                       - varchar
+  :district/logo                              - ipfs
+  :district/cover-image                       - ipfs
+  :district/favicon                           - ipfs
+  :district/ga-tracking-id                    - varchar
+  :district/treasury                          - address
+  :district/created-on                        - unsigned integer
+  :district/updated-on                        - unsigned integer
+
+  primary key(:district/address)
+  foreign key(:district/css-file, Files(:file/hash))
+  foreign key(:district/less-file, Files(:file/hash))
+  foreign key(:district/logo, Files(:file/hash))
+  foreign key(:district/cover-image, Files(:file/hash))
+  foreign key(:district/favicon, Files(:file/hash))
+}
+Districts -- SmartContracts : fk(:district/address)
+
+
+class Permissions << (T, #2C82AB) Table >> {
+  :permission/id                     - varchar
+  :permission/description            - varchar
+  :permission/name                   - varchar
+
+  primary key(:permission/id)
+}
+
+
+class UserRoles << (T, #2C82AB) Table >> {
+  :user-role/uuid                    - uuid
+  :user-role/name                    - varchar
+
+  primary key(:user-role/uuid)
+}
+
+
+class MultiUserRoles << (T, #2C82AB) Table >> {
+  :multi-user-role/uuid                    - uuid
+  :user-role/uuid                          - uuid
+
+  primary key(:multi-user-role/uuid, :user-role/uuid)
+  foreign key(:user-role/uuid, UserRoles(:user-role/uuid))
+}
+MultiUserRoles -- UserRoles : fk(:user-role/uuid)
+
+
+class UserRoleAddresses << (T, #2C82AB) Table >> {
+  :user-role/uuid                    - uuid
+  :user-role/address                 - address
+  :user-role/admin-user-role?        - boolean, indexed
+
+  primary key(:user-role/uuid, :user-role/address)
+}
+UserRoleAddresses -- UserRoles : fk(:user-role/uuid)
+
+
+class DistrictPermissionUserRoles << (T, #2C82AB) Table >> {
+  :district/address                 - address
+  :permission/id                    - varchar
+  :user-role/uuid                   - uuid
+
+  primary key(:district/address, :permission/id, :user-role/uuid)
+}
+DistrictPermissionUserRoles -- Districts : fk(:district/address)
+DistrictPermissionUserRoles -- Permissions : fk(:permission/id)
+DistrictPermissionUserRoles -- UserRoles : fk(:user-role/uuid)
+
+
+class Files << (T, #2C82AB) Table >> {
+  :file/hash                        - ipfs
+  :file/name                        - varchar
+  :file/decryptable-by              - address
+  :file/encrypted?                  - boolean
+
+  primary key(:file/hash)
+}
+
+
+class MultiFiles << (T, #2C82AB) Table >> {
+  :multi-file/uuid                  - uuid
+  :file/hash                        - ipfs
+
+  primary key(:multi-file/uuid, :file/hash)
+  foreign key(:file/hash, Files(:file/hash))
+}
+MultiFiles -- Files : fk(:file/hash)
+
+
+
+class Fields << (T, #2C82AB) Table >> {
+  :field/uuid                        - uuid
+  :field/name                        - varchar
+  :field/namespace                   - varchar
+  :field/settings                    - varchar
+  :field/type                        - varchar
+
+  primary key(:field/uuid)
+}
+
+
+class MultiFields << (T, #2C82AB) Table >> {
+  :multi-field/uuid                  - uuid
+  :field/uuid                        - uuid
+
+  primary key(:multi-field/uuid, :field/uuid)
+  foreign key(:field/uuid, FieldValues(:field/uuid))
+}
+MultiFields -- Fields : fk(:field/uuid)
+
+
+class FieldValues << (T, #2C82AB) Table >> {
+  :field-value/uuid                  - uuid
+  :field/uuid                        - uuid
+  :field-value/type                  - varchar, indexed
+  :field-value/string                - varchar, indexed
+  :field-value/integer               - integer, indexed
+  :field-value/bigint                - unsigned big integer, indexed
+  :field-value/float                 - float, indexed
+  :field-value/boolean               - boolean, indexed
+  :field-value/datetime              - unsigned integer, indexed
+
+  primary key(:field-value/uuid)
+  foreign key(:field/uuid, Fields(:field/uuid))
+}
+FieldValues -- Fields : fk(:field/uuid)
+
+
+class MultiFieldValues << (T, #2C82AB) Table >> {
+  :multi-field-value/uuid            - uuid
+  :field-value/uuid                  - uuid
+
+  primary key(:multi-field-value/uuid, :field-value/uuid)
+  foreign key(:field-value/uuid, FieldValues(:field-value/uuid))
+}
+MultiFieldValues -- FieldValues : fk(:field-value/uuid)
+
+
+class Modules << (T, #2C82AB) Table >> {
+  :module/code                            - varchar
+  :module/name                            - varchar
+  :module/description                     - varchar
+  :module/owner                           - varchar
+  :module/logo                            - ipfs
+  :module/preview-images                  - uuid
+  :module/installs-count                  - unsigned integer
+  :module/created-on                      - unsigned integer
+
+  primary key(:module/code)
+  foreign key(:module/preview-images, MultiFiles(:multi-file/uuid))
+}
+Modules -- MultiFiles : fk(:module/preview-images)
+
+
+class DistrictModules << (T, #2C82AB) Table >> {
+  :module/code                           - varchar
+  :district/address                      - address
+  :district-module/active?               - boolean, indexed
+  :district-module/installed-on          - unsigned integer
+
+  primary key(:module/code, :district/address)
+}
+DistrictModules -- Modules : fk(:module/code)
+DistrictModules -- Districts : fk(:smart-contract/address)
+
+
+class Themes << (T, #2C82AB) Table >> {
+  :theme/code                            - varchar
+  :theme/name                            - varchar
+  :theme/description                     - varchar
+  :theme/default-settings                - varchar
+  :theme/owner                           - address
+  :theme/preview-images                  - uuid
+  :theme/installs-count                  - unsigned integer
+  :theme/created-on                      - unsigned integer
+
+  primary key(:theme/code)
+  foreign key(:theme/preview-images, MultiFiles(:multi-file/uuid))
+}
+Themes -- MultiFiles : fk(:module/preview-images)
+
+
+class DistrictThemes << (T, #2C82AB) Table >> {
+  :theme/code                            - varchar
+  :district/address                      - address
+  :district-theme/settings               - varchar
+  :district-theme/css                    - ipfs
+  :district-theme/less                   - ipfs
+  :district-theme/active?                - boolean, indexed
+
+  primary key(:theme/code, :district/address)
+  foreign key(:district-theme/css, Files(:file/hash))
+  foreign key(:district-theme/less, Files(:file/hash))
+}
+DistrictThemes -- Themes : fk(:theme/code)
+DistrictThemes -- Districts : fk(:district/address)
+
+
+class Wizards << (T, #2C82AB) Table >> {
+  :wizard/code                            - varchar
+  :wizard/name                            - varchar
+  :wizard/description                     - varchar
+  :wizard/owner                           - address
+  :wizard/logo                            - ipfs
+  :wizard/completions-count               - unsigned integer
+  :wizard/created-on                      - unsigned integer
+
+
+  primary key(:wizard/code)
+  foreign key(:wizard/logo, Files(:file/hash))
+}
+
+
+class UIComponents << (T, #2C82AB) Table >> {
+  :ui-component/uuid                     - uuid
+  :district/address                      - address
+  :ui-component/name                     - varchar
+  :ui-component/settings                 - varchar
+  :ui-component/type                     - varchar, indexed
+  :ui-component/files                    - uuid
+
+  primary key(:ui-component/uuid)
+  foreign key(:district/address, Districts(:district/address))
+  foreign key(:ui-component/files, MultiFiles(:multi-file/uuid))
+}
+UIComponents -- Districts : fk(:district/address)
+UIComponents -- MultiFiles : fk(:ui-component/files)
+
+
+class UIComponentChildren << (T, #2C82AB) Table >> {
+  :ui-component/uuid                     - uuid
+  :ui-component/child                    - uuid
+
+  primary key(:ui-component/uuid, :ui-component/child)
+  foreign key(:ui-component/uuid, UIComponent(:ui-component/uuid))
+}
+UIComponentChildren -- UIComponents : fk(:ui-component/uuid)
+
+
+' -------------
+' Tokens Module
+' -------------
+
+
+class TokenContracts << (T, #2C82AB) Table >> {
+  :token-contract/address                           - address
+  :token-contract/fields                            - uuid
+  :token-contract/symbol                            - varchar
+  :token-contract/type                              - varchar, indexed
+  :token-contract/district-origin                   - address
+  :token-contract/metadata-format                   - varchar
+  :token-contract/metadata-format-settings          - varchar
+  :token-contract/misconfig-report-creator          - address
+  :token-contract/misconfig-report-comment          - varchar
+  :token-contract/misconfig-report-created-on       - unsigned integer
+  :token-contract/misconfig-report-resolved-by      - address
+  :token-contract/misconfig-report-resolved-on      - unsigned integer
+  
+  primary key(:token-contract/address)
+  foreign key(:token-contract/address, SmartContracts(:token-contract/address))
+  foreign key(:token-contract/fields, MultiFields(:multi-field/uuid))
+  foreign key(:token-contract/district-origin, Districts(:district/address))
+}
+TokenContracts -- SmartContracts : fk(:token-contract/address)
+TokenContracts -- Districts : fk(:token-contract/district-origin)
+TokenContracts -- MultiFields : fk(:token-contract/fields)
+
+
+class MultiTokenContracts << (T, #2C82AB) Table >> {
+  :multi-token-contract/uuid                        - uuid
+  :token-contract/address                           - address
+
+  primary key(:multi-token-contract/uuid, :token-contract/address)
+  foreign key(:token-contract/address, TokenContracts(:token-contract/address))
+}
+MultiTokenContracts -- TokenContracts : fk(:token-contract/address)
+
+
+class DistrictTokenContracts << (T, #2C82AB) Table >> {
+  :token-contract/address            - address
+  :district/address                  - address
+
+  primary key(:token-contract/address, :district/address)
+  foreign key(:token-contract/address, TokenContracts(:token-contract/address))
+  foreign key(:district/address, Districts(:district/address))
+}
+DistrictTokenContracts -- TokenContracts : fk(:token-contract/address)
+DistrictTokenContracts -- Districts : fk(:district/address)
+
+
+class Tokens << (T, #2C82AB) Table >> {
+  :token-contract/address                 - address
+  :token/id                               - unsigned integer
+  :token/decimals                         - unsigned integer
+  :token/total-supply                     - unsigned big integer
+  :token/field-values                     - uuid
+
+  primary key(:token-contract/address, :token/id)
+  foreign key(:token-contract/address, TokenContracts(:token-contract/address))
+  foreign key(:token/field-values, MultiFieldValues(:multi-field-value/uuid))
+}
+Tokens -- TokenContracts : fk(:token-contract/address)
+Tokens -- MultiFieldValues : fk(:token/field-values)
+
+
+class MultiTokens << (T, #2C82AB) Table >> {
+  :multi-token/uuid                       - uuid
+  :token-contract/address                 - address
+  :token/id                               - unsigned integer
+
+  primary key(:multi-token/uuid, :token-contract/address, :token/id)
+  foreign key(:token-contract/address, Tokens(:token-contract/address))
+  foreign key(:token/id, Tokens(:token/id))
+}
+MultiTokens -- Tokens : fk(:token-contract/address, :token/id)
+
+
+class TokenValues << (T, #2C82AB) Table >> {
+  :token-value/uuid                       - uuid
+  :token-contract/address                 - address
+  :token/id                               - unsigned integer
+  :token-value/value                      - unsigned big integer
+
+  primary key(:token-value/uuid)
+  foreign key(:token-contract/address, Tokens(:token-contract/address))
+  foreign key(:token/id, Tokens(:token/id))
+}
+TokenValues -- Tokens : fk(:token-contract/address, :token/id)
+
+
+class MultiTokenValues << (T, #2C82AB) Table >> {
+  :multi-token-value/uuid                 - uuid
+  :token-value/uuid                       - uuid
+
+  primary key(:multi-token-value/uuid, :token-value/uuid)
+  foreign key(:token-value/uuid, TokenValues(:token-value/uuid))
+}
+MultiTokenValues -- TokenValues : fk(:token-value/uuid)
+
+
+' -------------
+' Users Module
+' -------------
+
+
+class UserProfiles << (T, #2C82AB) Table >> {
+  :user-profile/uuid                        - uuid
+  :user-profile/fields                      - uuid
+  :user-profile/name                        - varchar
+  :user-profile/district-origin             - address
+  :user-profile/global-description          - varchar
+  :user-profile/global-enabled?             - boolean
+  :user-profile/global-logo                 - ipfs
+
+  primary key(:user-profile/uuid)
+  foreign key(:user-profile/fields, MultiFields(:multi-field/uuid))
+  foreign key(:user-profile/global-logo, Files(:file/hash))
+}
+UserProfiles -- MultiFields : fk(:user-profile/fields)
+
+
+class DistrictUserProfiles << (T, #2C82AB) Table >> {
+  :district/address                       - address
+  :user-profile/uuid                      - uuid
+
+  primary key(:district/address, :user-profile/uuid)
+  foreign key(:district/address, Districts(:district/address))
+  foreign key(:user-profile/uuid, UserProfiles(:user-profile/uuid))
+}
+DistrictUserProfiles -- Districts : fk(:district/address)
+DistrictUserProfiles -- UserProfiles : fk(:user-profile/uuid)
+
+
+class Users << (T, #2C82AB) Table >> {
+  :user/address                        - address
+  :user/field-values                   - uuid
+  :user/global-rating                  - unsigned float, indexed
+  :user/global-ratings-count           - unsigned integer, indexed
+
+  primary key(:user/address)
+  foreign key(:user/field-values, MultiFieldValues(:multi-field-value/uuid))
+
+}
+Users -- MultiFieldValues : fk(:user/field-values)
+
+
+class Messages << (T, #2C82AB) Table >> {
+  :message/uuid                        - uuid
+  :message/sender                      - address
+  :message/receiver                    - address
+  :message/type                        - varchar, indexed
+  :message/text                        - varchar
+  :message/files                       - uuid
+  :message/created-on                  - unsigned integer, indexed
+
+  primary key(:message/uuid)
+  foreign key(:message/files, MultiFiles(:multi-file/uuid))
+}
+Messages -- MultiFiles : fk(:message/files)
+
+
+class MultiMessages << (T, #2C82AB) Table >> {
+  :multi-message/uuid                  - uuid
+  :message/uuid                        - uuid
+
+  primary key(:multi-message/uuid, :message/uuid)
+  foreign key(:message/uuid, Messages(:message/uuid))
+}
+MultiMessages -- Messages : fk(:message/uuid)
+
+
+' ------------------------
+' Marketplace Module
+' ------------------------
+
+
+enum OfferType {
+  DELIVERABLE_AUCTION
+  DYNAMIC_PRICE
+  FIXED_PRICES
+  HIGEST_BID_AUCTION
+  MULTI_TOKEN_AUCTION
+}
+
+
+class OfferGroups << (T, #2C82AB) Table >> {
+  :offer-group/address                            - address
+  :offer-group/offer-fields                       - uuid
+  :offer-group/offer-response-fields              - uuid
+  :offer-group/offerable-token-contracts          - uuid
+  :offer-group/requestable-token-contracts        - uuid
+  :offer-group/create-offer-user-roles            - uuid
+  :offer-group/create-offer-response-user-roles   - uuid
+  :offer-group/resolve-dispute-user-roles         - uuid
+  :offer-group/name                               - varchar
+  :offer-group/district-origin                    - address
+  :offer-group/global-description                 - varchar
+  :offer-group/global-enabled?                    - boolean
+  :offer-group/global-logo                        - ipfs
+  :offer-group/created-on                         - unsigned integer
+
+  primary key(:offer-group/address)
+  foreign key(:offer-group/address, SmartContracts(:smart-contract/address))
+  foreign key(:offer-group/offer-fields, MultiFields(:multi-field/uuid))
+  foreign key(:offer-group/offer-response-fields, MultiFields(:multi-field/uuid))
+  foreign key(:offer-group/offerable-token-contracts, MultiTokenContracts(:multi-token-contract/uuid))
+  foreign key(:offer-group/requestable-token-contracts, MultiTokenContracts(:multi-token-contract/uuid))
+  foreign key(:offer-group/create-offer-user-roles, MultiUserRoles(:multi-user-role/uuid))
+  foreign key(:offer-group/create-offer-response-user-roles, MultiUserRoles(:multi-user-role/uuid))
+  foreign key(:offer-group/resolve-dispute-user-roles, MultiUserRoles(:multi-user-role/uuid))
+  foreign key(:offer-group/district-origin, Districts(:district/address))
+}
+OfferGroups -- SmartContracts : fk(:offer-group/address)
+OfferGroups -- Districts : fk(:offer-group/district-origin)
+OfferGroups -- MultiFields : fk(:offer-group/offer-fields, :offer-group/offer-response-fields)
+OfferGroups -- MultiTokenContracts : fk(:offer-group/offerable-token-contracts, :offer-group/requestable-token-contracts)
+OfferGroups -- MultiUserRoles : fk(:offer-group/create-offer-user-roles, :offer-group/create-offer-response-user-roles, :offer-group/resolve-dispute-user-roles)
+
+
+class OfferGroupAllowedOfferTypes << (T, #2C82AB) Table >> {
+  :offer-group/address                    - address
+  :offer-group/allowed-offer-type         - OfferType
+
+  primary key(:offer-group/address, :offer-group/allowed-offer-type)
+  foreign key(:offer-group/address, OfferGroups(:offer-group/address))
+}
+OfferGroupAllowedOfferTypes -- OfferGroups : fk(:offer-group/address)
+
+
+class OfferGroupUsers << (T, #2C82AB) Table >> {
+  :offer-group/address                       - address
+  :user/address                              - address
+  :offer-group-user/rating                   - unsigned float, indexed
+  :offer-group-user/ratings-count            - unsigned integer, indexed
+
+  primary key(:offer-group/address, :user/address)
+  foreign key(:offer-group/address, OfferGroups(:offer-group/address))
+  foreign key(:user/address, Fields(:user/address))
+}
+OfferGroupUsers -- OfferGroups : fk(:offer-group/address)
+OfferGroupUsers -- Users : fk(:user/address)
+
+
+class Offers << (T, #2C82AB) Table >> {
+  :offer/address                               - address
+  :offer-group/address                         - address
+  :offer/field-values                          - uuid
+  :offer/type                                  - OfferType
+  :offer/creator                               - address, indexed
+  :offer/offered-values                        - uuid
+  :offer/available-values                      - uuid
+  :offer/created-on                            - unsigned integer, indexed
+
+  primary key(:offer/address)
+  foreign key(:offer/address, SmartContracts(:offer/address))
+  foreign key(:offer-group/address, OfferGroups(:offer-group/address))
+  foreign key(:offer/field-values, MultiFieldValues(:multi-field-value/uuid))
+  foreign key(:offer/offered-values, MultiTokenValues(:multi-token-value/uuid))
+  foreign key(:offer/available-values, MultiTokenValues(:multi-token-value/uuid))
+}
+Offers -- SmartContracts : fk(:offer/address)
+Offers -- OfferGroups : fk(:offer-group/address)
+Offers -- MultiTokenValues : fk(:offer/offered-values, :offer/available-values)
+Offers -- MultiFieldValues : fk(:offer/field-values)
+
+
+class FixedPricesOfferRequests << (T, #2C82AB) Table >> {
+  :offer/address                               - address
+  :offer-request/fixed-prices                  - uuid
+
+  primary key(:offer/address)
+  foreign key(:offer/address, Offers(:offer/address))
+  foreign key(:offer-request/fixed-prices, MultiTokenValues(:multi-token-value/uuid))
+}
+FixedPricesOfferRequests -- Offers : fk(:offer/address)
+FixedPricesOfferRequests -- MultiTokenValues : fk(:offer-request/fixed-prices)
+
+
+class DynamicPriceOfferRequests << (T, #2C82AB) Table >> {
+  :offer/address                               - address
+  :token-contract/address                      - address
+  :token/id                                    - unsigned integer
+  :offer-request/start-price                   - unsigned big integer
+  :offer-request/end-price                     - unsigned big integer
+  :offer-request/duration                      - unsigned integer
+
+  primary key(:offer/address)
+  foreign key(:offer/address, Offers(:offer/address))
+  foreign key(:token-contract/address, Tokens(:token-contract/address))
+  foreign key(:token/id, Tokens(:token/id))
+}
+DynamicPriceOfferRequests -- Offers : fk(:offer/address)
+DynamicPriceOfferRequests -- Tokens : fk(:token-contract/address, :token/id)
+
+
+class HighestBidAuctionOfferRequests << (T, #2C82AB) Table >> {
+  :offer/address                               - address
+  :token-contract/address                      - address
+  :token/id                                    - unsigned integer
+  :offer-request/min-price                     - unsigned big integer
+  :offer-request/min-bid-step                  - unsigned big integer
+  :offer-request/duration                      - unsigned integer
+  :offer-request/extension-duration            - unsigned integer
+  :offer-request/extension-trigger-duration    - unsigned integer
+
+  primary key(:offer/address)
+  foreign key(:offer/address, Offers(:offer/address))
+  foreign key(:token-contract/address, Tokens(:token-contract/address))
+  foreign key(:token/id, Tokens(:token/id))
+}
+HighestBidAuctionOfferRequests -- Offers : fk(:offer/address)
+HighestBidAuctionOfferRequests -- Tokens : fk(:token-contract/address, :token/id)
+
+
+class MultiTokenAuctionOfferRequests << (T, #2C82AB) Table >> {
+  :offer/address                               - address
+  :offer-request/accepted-tokens               - uuid
+  :offer-request/duration                      - unsigned integer
+  :offer-request/extension-duration            - unsigned integer
+  :offer-request/extension-trigger-duration    - unsigned integer
+
+  primary key(:offer/address)
+  foreign key(:offer/address, Offers(:offer/address))
+  foreign key(:offer-request/accepted-tokens, MultiTokens(:multi-token/uuid))
+}
+MultiTokenAuctionOfferRequests -- Offers : fk(:offer/address)
+MultiTokenAuctionOfferRequests -- MultiTokens : fk(:multi-token/uuid)
+
+
+class OfferResponses << (T, #2C82AB) Table >> {
+  :offer/address                              - address
+  :offer-response/index                       - unsigned integer
+  :offer-response/field-values                - uuid
+  :offer-response/respondent                  - address
+  :offer-response/response-values              - uuid
+  :offer-response/offerer-received-values     - uuid
+  :offer-response/respondent-received-values  - uuid
+  :offer-response/messages                    - uuid
+  :offer-response/canceled-on                 - unsigned integer
+  :offer-response/completed-on                - unsigned integer
+  :offer-response/created-on                  - unsigned integer
+  :offer-response/updated-on                  - unsigned integer
+  :offer-response/dispute-raised-on           - unsigned integer
+  :offer-response/dispute-resolved-on         - unsigned integer
+  :offer-response/dispute-resolved-by         - address
+
+  primary key(:offer/address, :offer-response/index)
+  foreign key(:offer/address, Offers(:offer/address))
+  foreign key(:offer-response/field-values, MultiFieldValues(:multi-field-value/uuid))
+  foreign key(:offer-response/response-values, MultiTokenValues(:multi-token-value/uuid))
+  foreign key(:offer-response/offerer-received-values, MultiTokenValues(:multi-token-value/uuid))
+  foreign key(:offer-response/respondent-received-values, MultiTokenValues(:multi-token-value/uuid))
+  foreign key(:offer-response/messages, MultiMessages(:multi-message/uuid))
+}
+OfferResponses -- Offers : fk(:offer/address)
+OfferResponses -- MultiFieldValues : fk(:offer-response/field-values)
+OfferResponses -- MultiTokenValues : fk(:offer-response/response-values, :offer-response/offerer-received-values, :offer-response/respondent-received-values)
+OfferResponses -- MultiMessages : fk(:multi-message/uuid)
+
+
+
+@enduml

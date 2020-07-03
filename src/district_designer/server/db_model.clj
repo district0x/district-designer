@@ -1,4 +1,4 @@
-(ns district-designer.server.model
+(ns district-designer.server.db-model
   (:require
     [hodur-engine.core :as hodur]
     [hodur-graphviz-schema.core :as hodur-graphviz]
@@ -147,6 +147,10 @@
                   ^{:type OfferGroup
                     :cardinality [0 n]}
                   offers-groups
+
+                  ^{:type TCR
+                    :cardinality [0 n]}
+                  tcrs
 
                   ^{:type TokenContract
                     :cardinality [0 n]}

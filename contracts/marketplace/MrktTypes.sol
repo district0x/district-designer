@@ -78,10 +78,6 @@ abstract contract MrktTypes {
     bytes16[] resolveDisputeUserRoles; // Only user roles that can resolve disputes
   }
 
-  struct DeliverableAuctionOfferResponse {
-    uint[] values; // Array, because ERC1155 can have multiple ids
-  }
-
   struct DynamicPriceOfferRequest {
     TokenType tokenType;
     address tokenAddress;
