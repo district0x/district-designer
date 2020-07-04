@@ -31,11 +31,11 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
   function initialize(
     address _offerer,
     address[] memory _allowedRespondents,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     MrktTypes.DynamicPriceOfferRequest memory _request,
     bytes memory _ipfsData
   ) external {
-    super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
+    super._initialize(_offerer, _allowedRespondents, _offeredValues, _ipfsData);
   }
 
 
@@ -57,7 +57,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
 
 
   /**
-   * @dev Buys the offered value at current price
+   * @dev Buys the offered values at current price
    * It calculates the price at `now` point of time.
    * It checks if `_transferredValue` is enough to buy. Any surplus is transferred back to the respondent.
    *
@@ -77,7 +77,7 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    */
   function _createOfferResponse(
     address _respondent,
-    MrktTypes.TradeValue memory _transferredValue,
+    MrktTypes.TokenValue memory _transferredValue,
     bytes memory _ipfsData
   ) internal {
     super._createOfferResponse(_respondent);
@@ -128,10 +128,10 @@ contract DynamicPriceOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Receiver
    *
    * If the offered value is deliverable, it always reverts.
    *
-   * It calls {BaseOffer._withdrawSupply} with `_withdrawableValue` being the offered value
+   * It calls {BaseOffer._withdrawAvailableValues} with `_withdrawableValue` being the offered value
    * TODO: Needs implementation
    */
-  function withdrawSupply(
+  function withdrawAvailableValues(
   ) external onlyOfferer {
   }
 

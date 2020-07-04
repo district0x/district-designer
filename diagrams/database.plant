@@ -22,7 +22,7 @@ title District Designer Database Diagram
 ' ------------------------
 
 
-class SmartContracts << (T, #2C82AB) Table >> {
+class SmartContracts << (T, #c0b7b1) Table >> {
   :smart-contract/address            - address
   :smart-contract/abi                - ipfs
   :smart-contract/name               - varchar
@@ -42,7 +42,7 @@ enum ProxyType {
   OWNER_PROXY
 }
 
-class SmartContractEvents << (T, #2C82AB) Table >> {
+class SmartContractEvents << (T, #c0b7b1) Table >> {
   :smart-contract/address                    - address
   :smart-contract-event/event-key            - varchar
   :smart-contract-event/last-block-number    - unsigned integer
@@ -50,10 +50,10 @@ class SmartContractEvents << (T, #2C82AB) Table >> {
 
   primary key(:smart-contract/address, :smart-contract-event/event-key)
 }
-SmartContracts -- SmartContractEvents : fk(:smart-contract/address)
+SmartContractEvents -- SmartContracts : fk(:smart-contract/address)
 
 
-class IpfsEvents << (T, #2C82AB) Table >> {
+class IpfsEvents << (T, #c0b7b1) Table >> {
   :ipfs-events/id                             - unsigned integer
   :ipfs-events/last-hash                      - ipfs
 
@@ -61,7 +61,7 @@ class IpfsEvents << (T, #2C82AB) Table >> {
 }
 
 
-class Districts << (T, #2C82AB) Table >> {
+class Districts << (T, #c0b7b1) Table >> {
   :district/address                           - address
   :district/title                             - varchar
   :district/name                              - varchar
@@ -85,7 +85,7 @@ class Districts << (T, #2C82AB) Table >> {
 Districts -- SmartContracts : fk(:district/address)
 
 
-class Permissions << (T, #2C82AB) Table >> {
+class Permissions << (T, #c0b7b1) Table >> {
   :permission/id                     - varchar
   :permission/description            - varchar
   :permission/name                   - varchar
@@ -94,7 +94,7 @@ class Permissions << (T, #2C82AB) Table >> {
 }
 
 
-class UserRoles << (T, #2C82AB) Table >> {
+class UserRoles << (T, #c0b7b1) Table >> {
   :user-role/uuid                    - uuid
   :user-role/name                    - varchar
 
@@ -102,7 +102,7 @@ class UserRoles << (T, #2C82AB) Table >> {
 }
 
 
-class MultiUserRoles << (T, #2C82AB) Table >> {
+class MultiUserRoles << (T, #c0b7b1) Table >> {
   :multi-user-role/uuid                    - uuid
   :user-role/uuid                          - uuid
 
@@ -112,7 +112,7 @@ class MultiUserRoles << (T, #2C82AB) Table >> {
 MultiUserRoles -- UserRoles : fk(:user-role/uuid)
 
 
-class UserRoleAddresses << (T, #2C82AB) Table >> {
+class UserRoleAddresses << (T, #c0b7b1) Table >> {
   :user-role/uuid                    - uuid
   :user-role/address                 - address
   :user-role/admin-user-role?        - boolean, indexed
@@ -122,7 +122,7 @@ class UserRoleAddresses << (T, #2C82AB) Table >> {
 UserRoleAddresses -- UserRoles : fk(:user-role/uuid)
 
 
-class DistrictPermissionUserRoles << (T, #2C82AB) Table >> {
+class DistrictPermissionUserRoles << (T, #c0b7b1) Table >> {
   :district/address                 - address
   :permission/id                    - varchar
   :user-role/uuid                   - uuid
@@ -134,7 +134,7 @@ DistrictPermissionUserRoles -- Permissions : fk(:permission/id)
 DistrictPermissionUserRoles -- UserRoles : fk(:user-role/uuid)
 
 
-class Files << (T, #2C82AB) Table >> {
+class Files << (T, #c0b7b1) Table >> {
   :file/hash                        - ipfs
   :file/name                        - varchar
   :file/decryptable-by              - address
@@ -144,7 +144,7 @@ class Files << (T, #2C82AB) Table >> {
 }
 
 
-class MultiFiles << (T, #2C82AB) Table >> {
+class MultiFiles << (T, #c0b7b1) Table >> {
   :multi-file/uuid                  - uuid
   :file/hash                        - ipfs
 
@@ -155,7 +155,7 @@ MultiFiles -- Files : fk(:file/hash)
 
 
 
-class Fields << (T, #2C82AB) Table >> {
+class Fields << (T, #c0b7b1) Table >> {
   :field/uuid                        - uuid
   :field/name                        - varchar
   :field/namespace                   - varchar
@@ -166,7 +166,7 @@ class Fields << (T, #2C82AB) Table >> {
 }
 
 
-class MultiFields << (T, #2C82AB) Table >> {
+class MultiFields << (T, #c0b7b1) Table >> {
   :multi-field/uuid                  - uuid
   :field/uuid                        - uuid
 
@@ -176,7 +176,7 @@ class MultiFields << (T, #2C82AB) Table >> {
 MultiFields -- Fields : fk(:field/uuid)
 
 
-class FieldValues << (T, #2C82AB) Table >> {
+class FieldValues << (T, #c0b7b1) Table >> {
   :field-value/uuid                  - uuid
   :field/uuid                        - uuid
   :field-value/type                  - varchar, indexed
@@ -186,14 +186,17 @@ class FieldValues << (T, #2C82AB) Table >> {
   :field-value/float                 - float, indexed
   :field-value/boolean               - boolean, indexed
   :field-value/datetime              - unsigned integer, indexed
+  :field-value/file                  - ipfs
 
   primary key(:field-value/uuid)
   foreign key(:field/uuid, Fields(:field/uuid))
+  foreign key(:field-value/file, Files(:file/hash))
 }
 FieldValues -- Fields : fk(:field/uuid)
+FieldValues -- Files : fk(:file/hash)
 
 
-class MultiFieldValues << (T, #2C82AB) Table >> {
+class MultiFieldValues << (T, #c0b7b1) Table >> {
   :multi-field-value/uuid            - uuid
   :field-value/uuid                  - uuid
 
@@ -203,7 +206,7 @@ class MultiFieldValues << (T, #2C82AB) Table >> {
 MultiFieldValues -- FieldValues : fk(:field-value/uuid)
 
 
-class Modules << (T, #2C82AB) Table >> {
+class Modules << (T, #c0b7b1) Table >> {
   :module/code                            - varchar
   :module/name                            - varchar
   :module/description                     - varchar
@@ -219,7 +222,7 @@ class Modules << (T, #2C82AB) Table >> {
 Modules -- MultiFiles : fk(:module/preview-images)
 
 
-class DistrictModules << (T, #2C82AB) Table >> {
+class DistrictModules << (T, #c0b7b1) Table >> {
   :module/code                           - varchar
   :district/address                      - address
   :district-module/active?               - boolean, indexed
@@ -231,7 +234,7 @@ DistrictModules -- Modules : fk(:module/code)
 DistrictModules -- Districts : fk(:smart-contract/address)
 
 
-class Themes << (T, #2C82AB) Table >> {
+class Themes << (T, #c0b7b1) Table >> {
   :theme/code                            - varchar
   :theme/name                            - varchar
   :theme/description                     - varchar
@@ -247,7 +250,7 @@ class Themes << (T, #2C82AB) Table >> {
 Themes -- MultiFiles : fk(:module/preview-images)
 
 
-class DistrictThemes << (T, #2C82AB) Table >> {
+class DistrictThemes << (T, #c0b7b1) Table >> {
   :theme/code                            - varchar
   :district/address                      - address
   :district-theme/settings               - varchar
@@ -263,7 +266,7 @@ DistrictThemes -- Themes : fk(:theme/code)
 DistrictThemes -- Districts : fk(:district/address)
 
 
-class Wizards << (T, #2C82AB) Table >> {
+class Wizards << (T, #c0b7b1) Table >> {
   :wizard/code                            - varchar
   :wizard/name                            - varchar
   :wizard/description                     - varchar
@@ -278,7 +281,7 @@ class Wizards << (T, #2C82AB) Table >> {
 }
 
 
-class UIComponents << (T, #2C82AB) Table >> {
+class UIComponents << (T, #c0b7b1) Table >> {
   :ui-component/uuid                     - uuid
   :district/address                      - address
   :ui-component/name                     - varchar
@@ -294,7 +297,7 @@ UIComponents -- Districts : fk(:district/address)
 UIComponents -- MultiFiles : fk(:ui-component/files)
 
 
-class UIComponentChildren << (T, #2C82AB) Table >> {
+class UIComponentChildren << (T, #c0b7b1) Table >> {
   :ui-component/uuid                     - uuid
   :ui-component/child                    - uuid
 
@@ -309,7 +312,7 @@ UIComponentChildren -- UIComponents : fk(:ui-component/uuid)
 ' -------------
 
 
-class TokenContracts << (T, #2C82AB) Table >> {
+class TokenContracts << (T, #EF476F) Table >> {
   :token-contract/address                           - address
   :token-contract/fields                            - uuid
   :token-contract/symbol                            - varchar
@@ -333,7 +336,7 @@ TokenContracts -- Districts : fk(:token-contract/district-origin)
 TokenContracts -- MultiFields : fk(:token-contract/fields)
 
 
-class MultiTokenContracts << (T, #2C82AB) Table >> {
+class MultiTokenContracts << (T, #EF476F) Table >> {
   :multi-token-contract/uuid                        - uuid
   :token-contract/address                           - address
 
@@ -343,7 +346,7 @@ class MultiTokenContracts << (T, #2C82AB) Table >> {
 MultiTokenContracts -- TokenContracts : fk(:token-contract/address)
 
 
-class DistrictTokenContracts << (T, #2C82AB) Table >> {
+class DistrictTokenContracts << (T, #EF476F) Table >> {
   :token-contract/address            - address
   :district/address                  - address
 
@@ -355,7 +358,7 @@ DistrictTokenContracts -- TokenContracts : fk(:token-contract/address)
 DistrictTokenContracts -- Districts : fk(:district/address)
 
 
-class Tokens << (T, #2C82AB) Table >> {
+class Tokens << (T, #EF476F) Table >> {
   :token-contract/address                 - address
   :token/id                               - unsigned integer
   :token/decimals                         - unsigned integer
@@ -370,7 +373,7 @@ Tokens -- TokenContracts : fk(:token-contract/address)
 Tokens -- MultiFieldValues : fk(:token/field-values)
 
 
-class MultiTokens << (T, #2C82AB) Table >> {
+class MultiTokens << (T, #EF476F) Table >> {
   :multi-token/uuid                       - uuid
   :token-contract/address                 - address
   :token/id                               - unsigned integer
@@ -382,7 +385,7 @@ class MultiTokens << (T, #2C82AB) Table >> {
 MultiTokens -- Tokens : fk(:token-contract/address, :token/id)
 
 
-class TokenValues << (T, #2C82AB) Table >> {
+class TokenValues << (T, #EF476F) Table >> {
   :token-value/uuid                       - uuid
   :token-contract/address                 - address
   :token/id                               - unsigned integer
@@ -395,7 +398,7 @@ class TokenValues << (T, #2C82AB) Table >> {
 TokenValues -- Tokens : fk(:token-contract/address, :token/id)
 
 
-class MultiTokenValues << (T, #2C82AB) Table >> {
+class MultiTokenValues << (T, #EF476F) Table >> {
   :multi-token-value/uuid                 - uuid
   :token-value/uuid                       - uuid
 
@@ -410,7 +413,7 @@ MultiTokenValues -- TokenValues : fk(:token-value/uuid)
 ' -------------
 
 
-class UserProfiles << (T, #2C82AB) Table >> {
+class UserProfiles << (T, #FFD166) Table >> {
   :user-profile/uuid                        - uuid
   :user-profile/fields                      - uuid
   :user-profile/name                        - varchar
@@ -426,7 +429,7 @@ class UserProfiles << (T, #2C82AB) Table >> {
 UserProfiles -- MultiFields : fk(:user-profile/fields)
 
 
-class DistrictUserProfiles << (T, #2C82AB) Table >> {
+class DistrictUserProfiles << (T, #FFD166) Table >> {
   :district/address                       - address
   :user-profile/uuid                      - uuid
 
@@ -438,7 +441,7 @@ DistrictUserProfiles -- Districts : fk(:district/address)
 DistrictUserProfiles -- UserProfiles : fk(:user-profile/uuid)
 
 
-class Users << (T, #2C82AB) Table >> {
+class Users << (T, #FFD166) Table >> {
   :user/address                        - address
   :user/field-values                   - uuid
   :user/global-rating                  - unsigned float, indexed
@@ -451,7 +454,7 @@ class Users << (T, #2C82AB) Table >> {
 Users -- MultiFieldValues : fk(:user/field-values)
 
 
-class Messages << (T, #2C82AB) Table >> {
+class Messages << (T, #FFD166) Table >> {
   :message/uuid                        - uuid
   :message/sender                      - address
   :message/receiver                    - address
@@ -466,7 +469,7 @@ class Messages << (T, #2C82AB) Table >> {
 Messages -- MultiFiles : fk(:message/files)
 
 
-class MultiMessages << (T, #2C82AB) Table >> {
+class MultiMessages << (T, #FFD166) Table >> {
   :multi-message/uuid                  - uuid
   :message/uuid                        - uuid
 
@@ -490,7 +493,7 @@ enum OfferType {
 }
 
 
-class OfferGroups << (T, #2C82AB) Table >> {
+class OfferGroups << (T, #00B4D8) Table >> {
   :offer-group/address                            - address
   :offer-group/offer-fields                       - uuid
   :offer-group/offer-response-fields              - uuid
@@ -524,7 +527,7 @@ OfferGroups -- MultiTokenContracts : fk(:offer-group/offerable-token-contracts, 
 OfferGroups -- MultiUserRoles : fk(:offer-group/create-offer-user-roles, :offer-group/create-offer-response-user-roles, :offer-group/resolve-dispute-user-roles)
 
 
-class OfferGroupAllowedOfferTypes << (T, #2C82AB) Table >> {
+class OfferGroupAllowedOfferTypes << (T, #00B4D8) Table >> {
   :offer-group/address                    - address
   :offer-group/allowed-offer-type         - OfferType
 
@@ -534,7 +537,7 @@ class OfferGroupAllowedOfferTypes << (T, #2C82AB) Table >> {
 OfferGroupAllowedOfferTypes -- OfferGroups : fk(:offer-group/address)
 
 
-class OfferGroupUsers << (T, #2C82AB) Table >> {
+class OfferGroupUsers << (T, #00B4D8) Table >> {
   :offer-group/address                       - address
   :user/address                              - address
   :offer-group-user/rating                   - unsigned float, indexed
@@ -548,7 +551,7 @@ OfferGroupUsers -- OfferGroups : fk(:offer-group/address)
 OfferGroupUsers -- Users : fk(:user/address)
 
 
-class Offers << (T, #2C82AB) Table >> {
+class Offers << (T, #00B4D8) Table >> {
   :offer/address                               - address
   :offer-group/address                         - address
   :offer/field-values                          - uuid
@@ -571,11 +574,11 @@ Offers -- MultiTokenValues : fk(:offer/offered-values, :offer/available-values)
 Offers -- MultiFieldValues : fk(:offer/field-values)
 
 
-class FixedPricesOfferRequests << (T, #2C82AB) Table >> {
+class FixedPricesOfferRequests << (T, #00B4D8) Table >> {
   :offer/address                               - address
   :offer-request/fixed-prices                  - uuid
 
-  primary key(:offer/address)
+  primary key(:offer/address, :offer-request/fixed-prices)
   foreign key(:offer/address, Offers(:offer/address))
   foreign key(:offer-request/fixed-prices, MultiTokenValues(:multi-token-value/uuid))
 }
@@ -583,7 +586,7 @@ FixedPricesOfferRequests -- Offers : fk(:offer/address)
 FixedPricesOfferRequests -- MultiTokenValues : fk(:offer-request/fixed-prices)
 
 
-class DynamicPriceOfferRequests << (T, #2C82AB) Table >> {
+class DynamicPriceOfferRequests << (T, #00B4D8) Table >> {
   :offer/address                               - address
   :token-contract/address                      - address
   :token/id                                    - unsigned integer
@@ -600,7 +603,7 @@ DynamicPriceOfferRequests -- Offers : fk(:offer/address)
 DynamicPriceOfferRequests -- Tokens : fk(:token-contract/address, :token/id)
 
 
-class HighestBidAuctionOfferRequests << (T, #2C82AB) Table >> {
+class HighestBidAuctionOfferRequests << (T, #00B4D8) Table >> {
   :offer/address                               - address
   :token-contract/address                      - address
   :token/id                                    - unsigned integer
@@ -619,7 +622,7 @@ HighestBidAuctionOfferRequests -- Offers : fk(:offer/address)
 HighestBidAuctionOfferRequests -- Tokens : fk(:token-contract/address, :token/id)
 
 
-class MultiTokenAuctionOfferRequests << (T, #2C82AB) Table >> {
+class MultiTokenAuctionOfferRequests << (T, #00B4D8) Table >> {
   :offer/address                               - address
   :offer-request/accepted-tokens               - uuid
   :offer-request/duration                      - unsigned integer
@@ -634,15 +637,17 @@ MultiTokenAuctionOfferRequests -- Offers : fk(:offer/address)
 MultiTokenAuctionOfferRequests -- MultiTokens : fk(:multi-token/uuid)
 
 
-class OfferResponses << (T, #2C82AB) Table >> {
+class OfferResponses << (T, #00B4D8) Table >> {
   :offer/address                              - address
   :offer-response/index                       - unsigned integer
   :offer-response/field-values                - uuid
   :offer-response/respondent                  - address
-  :offer-response/response-values              - uuid
+  :offer-response/response-values             - uuid
   :offer-response/offerer-received-values     - uuid
   :offer-response/respondent-received-values  - uuid
   :offer-response/messages                    - uuid
+  :offer-response/offerer-feedback            - uuid
+  :offer-response/respondent-feedback         - uuid
   :offer-response/canceled-on                 - unsigned integer
   :offer-response/completed-on                - unsigned integer
   :offer-response/created-on                  - unsigned integer
@@ -654,6 +659,8 @@ class OfferResponses << (T, #2C82AB) Table >> {
   primary key(:offer/address, :offer-response/index)
   foreign key(:offer/address, Offers(:offer/address))
   foreign key(:offer-response/field-values, MultiFieldValues(:multi-field-value/uuid))
+  foreign key(:offer-response/offerer-feedback, Feedbacks(:feedback/uuid))
+  foreign key(:offer-response/respondent-feedback, Feedbacks(:feedback/uuid))
   foreign key(:offer-response/response-values, MultiTokenValues(:multi-token-value/uuid))
   foreign key(:offer-response/offerer-received-values, MultiTokenValues(:multi-token-value/uuid))
   foreign key(:offer-response/respondent-received-values, MultiTokenValues(:multi-token-value/uuid))
@@ -661,9 +668,230 @@ class OfferResponses << (T, #2C82AB) Table >> {
 }
 OfferResponses -- Offers : fk(:offer/address)
 OfferResponses -- MultiFieldValues : fk(:offer-response/field-values)
+OfferResponses -- Feedbacks : fk(:offer-response/offerer-feedback, :offer-response/respondent-feedback)
 OfferResponses -- MultiTokenValues : fk(:offer-response/response-values, :offer-response/offerer-received-values, :offer-response/respondent-received-values)
 OfferResponses -- MultiMessages : fk(:multi-message/uuid)
 
 
+class OfferSponsorships << (T, #00B4D8) Table >> {
+  :offer/address                              - address
+  :offer-sponsorship/sponsor                  - address
+  :offer-sponsorship/sponsored-values         - uuid
+  :offer-sponsorship/updated-on               - unsigned integer, indexed
+  :offer-sponsorship/created-on               - unsigned integer, indexed
+
+  primary key(:offer/address, :offer-sponsorship/sponsor)
+  foreign key(:offer/address, Offers(:offer/address))
+  foreign key(:offer-sponsorship/sponsored-values, MultiTokenValues(:multi-token-value/uuid))
+}
+OfferSponsorships -- Offers : fk(:offer/address)
+OfferSponsorships -- MultiTokenValues : fk(:multi-token-value/uuid)
+
+
+class OfferAllowedRespondents << (T, #00B4D8) Table >> {
+  :offer/address                              - address
+  :offer/allowed-respondent                   - address
+
+  primary key(:offer/address, :offer/allowed-respondent)
+  foreign key(:offer/address, Offers(:offer/address))
+}
+OfferAllowedRespondents -- Offers : fk(:offer/address)
+
+
+class Feedbacks << (T, #00B4D8) Table >> {
+  :feedback/uuid                              - uuid
+  :feedback/rating                            - unsigned float, indexed
+  :feedback/receiver                          - address
+  :feedback/sender                            - address
+  :feedback/text                              - varchar
+  :feedback/created-on                        - unsigned integer, indexed
+  :feedback/updated-on                        - unsigned integer, indexed
+
+  primary key(:feedback/uuid)
+}
+
+
+' -------------
+' TCR Module
+' -------------
+
+
+enum TCRType {
+  CHALLENGEABLE_ONCE
+  CHALLENGEABLE_ANYTIME
+}
+
+
+enum TCRRegEntryRepresentationCategory {
+  ERC721
+  ERC1155
+  NO_TOKEN
+}
+
+enum TCREntriesGroup {
+  REGISTRY_ENTRIES
+  PARAM_CHANGE_ENTRIES
+}
+
+enum TCRParameterKey {
+  CHALLENGE_DISPENSATION
+  CHALLENGE_PERIOD_DURATION
+  DEPOSIT
+  VOTE_COMMIT_PERIOD_DURATION
+  VOTE_QUORUM
+  VOTE_REVEAL_PERIOD_DURATION
+}
+
+enum TCRVoteOption {
+  INCLUDE
+  EXCLUDE
+  NO_VOTE
+}
+
+
+class TCRs << (T, #06D6A0) Table >> {
+  :tcr/address                                    - address
+  :tcr/reg-entry-fields                           - uuid
+  :tcr/reg-entry-representation-category          - TCRRegEntryRepresentationCategory
+  :tcr/reg-entry-representation-token-contract    - address
+  :tcr/type                                       - TCRType
+  :tcr/voting-token-address                       - address
+  :tcr/voting-token-id                            - unsigned integer
+  :tcr/create-reg-entry-user-roles                - uuid
+  :tcr/create-param-change-entry-user-roles       - uuid
+  :tcr/district-origin                            - address
+  :tcr/global-enabled?                            - boolean
+  :tcr/global-description                         - varchar
+  :tcr/global-imports-count                       - unsigned integer
+  :tcr/global-logo                                - ipfs
+  :tcr/created-on                                 - unsigned integer, indexed
+
+  primary key(:tcr/address)
+  foreign key(:tcr/address, SmartContracts(:smart-contract/address))
+  foreign key(:tcr/reg-entry-fields, MultiFields(:multi-field/uuid))
+  foreign key(:tcr/reg-entry-representation-token-contract, TokenContracts(:token-contract/address))
+  foreign key(:tcr/voting-token-address, Tokens(:token-contract/address))
+  foreign key(:tcr/voting-token-id, Tokens(:token/id))
+  foreign key(:tcr/create-reg-entry-user-roles, MultiUserRoles(:multi-user-role/uuid))
+  foreign key(:tcr/create-param-change-entry-user-roles, MultiUserRoles(:multi-user-role/uuid))
+  foreign key(:tcr/district-origin, Districts(:district/address))
+  foreign key(:tcr/global-logo, Files(:file/hash))
+}
+TCRs -- SmartContracts : fk(:tcr/address)
+TCRs -- MultiFields : fk(:tcr/reg-entry-fields)
+TCRs -- TokenContracts : fk(:tcr/reg-entry-representation-token-contract)
+TCRs -- Tokens : fk(:tcr/voting-token-address, :tcr/voting-token-id)
+TCRs -- MultiUserRoles : fk(:tcr/create-reg-entry-user-roles, :tcr/create-param-change-entry-user-roles)
+TCRs -- Districts : fk(:tcr/district-origin)
+
+
+class TCREntries << (T, #06D6A0) Table >> {
+  :tcr-entry/address                       - address
+  :tcr/address                             - address
+  :tcr-entry/creator                       - address, indexed
+  :tcr-entry/created-on                    - unsigned integer, indexed
+
+  primary key(:tcr-entry/address)
+  foreign key(:tcr-entry/address, SmartContracts(:smart-contract/address))
+  foreign key(:tcr/address, TCRs(:tcr/address))
+}
+TCREntries -- SmartContracts : fk(:tcr-entry/address)
+TCREntries -- TCRs : fk(:tcr/address)
+
+
+class TCRRegEntries << (T, #06D6A0) Table >> {
+  :tcr-entry/address                              - address
+  :tcr-reg-entry/field-values                     - uuid
+  :tcr-reg-entry/minted-token-value               - unsigned integer
+  :tcr-reg-entry/minted-on                        - unsigned integer
+
+  primary key(:tcr-entry/address)
+  foreign key(:tcr-entry/address, TCREntries(:tcr-entry/address))
+  foreign key(:tcr-reg-entry/field-values, MultiFieldValues(:multi-field-value/uuid))
+  foreign key(:tcr-reg-entry/minted-token-value, TokenValues(:token-value/uuid))
+}
+TCRRegEntries -- TCREntries : fk(:tcr-entry/address)
+TCRRegEntries -- MultiFieldValues : fk(:tcr-reg-entry/field-values)
+TCRRegEntries -- TokenValues : fk(:tcr-reg-entry/minted-token-value)
+
+
+class TCRParamChangeEntries << (T, #06D6A0) Table >> {
+  :tcr-entry/address                                          - address
+  :tcr-param-change-entry/parameter-key                       - TCRParameterKey
+  :tcr-param-change-entry/parameter-value                     - unsigned integer
+  :tcr-param-change-entry/parameter-original-value            - unsigned integer
+  :tcr-param-change-entry/entries-group                       - TCREntriesGroup
+  :tcr-param-change-entry/comment                             - varchar
+  :tcr-param-change-entry/applied-on                          - unsigned integer, indexed
+
+  primary key(:tcr-entry/address)
+  foreign key(:tcr-entry/address, TCREntries(:tcr-entry/address))
+}
+TCRParamChangeEntries -- TCREntries : fk(:tcr-entry/address)
+
+
+class TCRChallenges << (T, #06D6A0) Table >> {
+  :tcr-entry/address                                          - address
+  :tcr-challenge/index                                        - unsigned integer
+  :tcr-challenge/challenger                                   - address, indexed
+  :tcr-challenge/challenge-period-end                         - unsigned integer, indexed
+  :tcr-challenge/vote-commit-period-end                       - unsigned integer, indexed
+  :tcr-challenge/vote-reveal-period-end                       - unsigned integer, indexed
+  :tcr-challenge/challenger-reward                            - uuid
+  :tcr-challenge/challenger-reward-claimed-on                 - unsigned integer
+  :tcr-challenge/creator-reward                               - uuid
+  :tcr-challenge/creator-reward-claimed-on                    - unsigned integer
+  :tcr-challenge/comment                                      - varchar
+  :tcr-challenge/reward-pool                                  - uuid
+  :tcr-challenge/votes-exclude                                - unsigned integer
+  :tcr-challenge/votes-include                                - unsigned integer
+  :tcr-challenge/votes-total                                  - unsigned integer
+  :tcr-challenge/created-on                                   - unsigned integer
+
+  primary key(:tcr-entry/address, :tcr-challenge/index)
+  foreign key(:tcr-entry/address, TCREntries(:tcr-entry/address))
+  foreign key(:tcr-challenge/challenger-reward, TokenValues(:token-value/uuid))
+  foreign key(:tcr-challenge/creator-reward, TokenValues(:token-value/uuid))
+  foreign key(:tcr-challenge/reward-pool, TokenValues(:token-value/uuid))
+}
+TCRChallenges -- TCREntries : fk(:tcr-entry/address)
+TCRChallenges -- TokenValues : fk(:tcr-challenge/challenger-reward, :tcr-challenge/creator-reward, :tcr-challenge/reward-pool)
+
+
+class TCRVotes << (T, #06D6A0) Table >> {
+  :tcr-entry/address                                      - address
+  :tcr-challenge/index                                    - unsigned integer
+  :tcr-vote/voter                                         - address, indexed
+  :tcr-vote/option                                        - TCRVoteOption, indexed
+  :tcr-vote/amount                                        - unsigned big integer
+  :tcr-vote/voter-reward-claimed-on                       - unsigned integer
+  :tcr-vote/voter-reward                                  - uuid
+  :tcr-vote/votes-reclaimed-on                            - unsigned integer
+  :tcr-vote/revealed-on                                   - unsigned integer
+  :tcr-vote/created-on                                    - unsigned integer
+
+  primary key(:tcr-entry/address, :tcr-challenge/index)
+  foreign key(:tcr-entry/address, TCRChallenges(:tcr-entry/address))
+  foreign key(:tcr-challenge/index, TCRChallenges(:tcr-challenge/index))
+  foreign key(:tcr-vote/voter-reward, TokenValues(:token-value/uuid))
+}
+TCRVotes -- TCRChallenges : fk(:tcr-entry/address, :tcr-challenge/index)
+TCRVotes -- TokenValues : fk(:tcr-vote/voter-reward)
+
+
+class TCRParameters << (T, #06D6A0) Table >> {
+  :tcr/address                                            - address
+  :tcr-parameter/entries-group                            - TCREntriesGroup
+  :tcr-parameter/challenge-dispensation                   - unsigned integer
+  :tcr-parameter/challenge-period-duration                - unsigned integer
+  :tcr-parameter/deposit                                  - unsigned big integer
+  :tcr-parameter/vote-commit-period-duration              - unsigned integer
+  :tcr-parameter/vote-quorum                              - unsigned integer
+  :tcr-parameter/vote-reveal-period-duration              - unsigned integer
+
+  primary key(:tcr/address, :tcr-parameter/entries-group)
+  foreign key(:tcr/address, TCRs(:tcr/address))
+}
+TCRParameters -- TCRs : fk(:tcr/address)
 
 @enduml

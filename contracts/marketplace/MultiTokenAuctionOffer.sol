@@ -33,11 +33,11 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
   function initialize(
     address _offerer,
     address[] memory _allowedRespondents,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     MrktTypes.MultiTokenAuctionOfferRequest memory _request,
     bytes memory _ipfsData
   ) external {
-    super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
+    super._initialize(_offerer, _allowedRespondents, _offeredValues, _ipfsData);
   }
 
 
@@ -60,7 +60,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
 
   /**
    * @dev It makes a bid to the auction.
-   * It checks if `_transferredValue` is within MultiTokenAuctionOfferRequest.acceptedTokens
+   * It checks if `_transferredValues` are all within MultiTokenAuctionOfferRequest.acceptedTokens
    * Bid can be made only before auction countdown is finished, otherwise revert.
    *
    * If bid arrives `extensionTriggerDuration` seconds before the end of auction,
@@ -75,7 +75,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
    */
   function _createOfferResponse(
     address _respondent,
-    MrktTypes.TradeValue memory _transferredValue,
+    MrktTypes.TokenValue[] memory _transferredValues,
     bytes memory _ipfsData
   ) internal {
     super._createOfferResponse(_respondent);
@@ -170,10 +170,10 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
    *
    * If he withdraws before the auction is finished, the auction is immidiately finished.
    *
-   * It calls {BaseOffer._withdrawSupply} with `_withdrawableValue` being the offered value
+   * It calls {BaseOffer._withdrawAvailableValues} with `_withdrawableValue` being the offered value
    * TODO: Needs implementation
    */
-  function withdrawSupply(
+  function withdrawAvailableValues(
   ) external onlyOfferer {
   }
 

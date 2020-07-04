@@ -39,8 +39,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * @param _multiTokenAuctionOfferTarget Contract for {MultiTokenAuctionOffer} proxies
    * @param _deliverableAuctionOfferTarget Contract for {DeliverableAuctionOffer} proxies
    * @param _district {District} address
-   * @param _offerableAssets Assets offerer can choose to offer
-   * @param _requestableAssets Assets offerer can request for in his offers
+   * @param _offerableTokenContracts Assets offerer can choose to offer
+   * @param _requestableTokenContracts Assets offerer can request for in his offers
    * @param _allowedOfferTypes Offer types allowed to be created
    * @param _permissionUserRoles Access restrictions for certain operations
    * @param _ipfsData Hash of additional data stored on IPFS
@@ -49,8 +49,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    *
    * Requirements:
    *
-   * - `_offerableAssets` cannot be empty
-   * - `_requestableAssets` cannot be empty
+   * - `_offerableTokenContracts` cannot be empty
+   * - `_requestableTokenContracts` cannot be empty
    * - `_allowedOfferTypes` cannot be empty
    * - `_ipfsData` must be valid IPFS hash
    *
@@ -63,8 +63,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
     ProxyFactory.ProxyTarget memory _multiTokenAuctionOfferTarget,
     ProxyFactory.ProxyTarget memory _deliverableAuctionOfferTarget,
     District _district,
-    MrktTypes.TradeAsset[] memory _offerableAssets,
-    MrktTypes.TradeAsset[] memory _requestableAssets,
+    MrktTypes.TokenContract[] memory _offerableTokenContracts,
+    MrktTypes.TokenContract[] memory _requestableTokenContracts,
     MrktTypes.OfferType[] memory _allowedOfferTypes,
     MrktTypes.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
@@ -77,7 +77,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    *
    * It creates a new offer in following steps:
    * 1. Creates new {OwnerProxy} forwarding to an offer contract based on `_offerType`.
-   * 2. Transfers `_offeredValue` from this contract into newly created contract
+   * 2. Transfers `_offeredValues` from this contract into newly created contract
    * 3. Calls `initialize` on the newly created contract
    *
    * Owner of the proxy is this contract. Created proxy is not meant to be updated.
@@ -86,8 +86,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    *
    * - `_offerer` cannot be zero address
    * - `_offerer` must be within `Offer.PermissionUserRoles.createOfferUserRoles`, if it's not empty
-   * - `_offeredValue` must be one of `offerableAssets`
-   * - `_offerRequest` token addresses of any sort must be within `_requestableAssets`
+   * - `_offeredValues` must be within `offerableTokenContracts`
+   * - `_offerRequest` token addresses of any sort must be within `_requestableTokenContracts`
    * - `_ipfsData` can be empty or valid IPFS hash
    *
    * Emits an {OfferCreated} event
@@ -97,7 +97,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    */
   function _createOffer(
     address _offerer,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     MrktTypes.OfferType _offerType,
     MrktTypes.OfferRequest memory _offerRequest,
     address[] memory _allowedRespondents,
@@ -134,8 +134,8 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * TODO: Needs implementation
    */
   function updateOfferGroup(
-    MrktTypes.TradeAsset[] memory _offerableAssets,
-    MrktTypes.TradeAsset[] memory _requestableAssets,
+    MrktTypes.TokenContract[] memory _offerableTokenContracts,
+    MrktTypes.TokenContract[] memory _requestableTokenContracts,
     MrktTypes.OfferType[] memory _allowedOfferTypes,
     MrktTypes.PermissionUserRoles memory _permissionUserRoles,
     bytes memory _ipfsData
@@ -180,7 +180,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * It transfers approved tokens into this contract.
    * It calls {_createOffer} where:
    * - passed `_offerer` is `_from`
-   * - passed `_offeredValue` is constructed from the transferred token
+   * - passed `_offeredValues` is constructed from the transferred token
    * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
@@ -197,7 +197,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * @dev This function is called automatically when this contract receives ERC721 token
    * It calls {_createOffer} where:
    * - passed `_offerer` is `_from`
-   * - passed `_offeredValue` is constructed from the transferred token
+   * - passed `_offeredValues` are constructed from the transferred token
    * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
@@ -215,7 +215,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
    * @dev This function is called automatically when this contract receives ERC1155 token
    * It calls {_createOffer} where:
    * - passed `_offerer` is `_from`
-   * - passed `_offeredValue` is constructed from the transferred token
+   * - passed `_offeredValues` are constructed from the transferred token
    * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
@@ -232,8 +232,10 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
 
   /**
    * @dev This function is called automatically when this contract receives multiple ERC1155 tokens
-   * If `_from` is the offerer, it decodes `_data` and calls {acceptOfferResponse}
-   * If `_from` is not the offerer, it decodes `_data` and calls {_createOfferResponse}
+   * It calls {_createOffer} where:
+   * - passed `_offerer` is `_from`
+   * - passed `_offeredValues` are constructed from transferred tokens
+   * - rest of arguments is obtained by decoding `_data`
    * TODO: Needs implementation
    */
   function onERC1155BatchReceived(
@@ -251,7 +253,7 @@ contract OfferGroup is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, IERC
   * @dev This function is called automatically when this contract receives ETH
    * It calls {_createOffer} where:
    * - passed `_offerer` is `msg.sender`
-   * - passed `_offeredValue` is constructed from `msg.value`
+   * - passed `_offeredValues` are constructed from `msg.value`
    * - rest of arguments is obtained by decoding `msg.data`
   * TODO: Needs implementation
   */

@@ -30,8 +30,10 @@ abstract contract BaseOffer {
    * This function cannot be called twice.
    *
    * It considers msg.sender to be {OfferGroup}
-   * It checks if this contract is the owner of `_offeredValue`. Offered value is transferred
+   * It checks if this contract is the owner of all `_offeredValues`. Offered values are transferred
    * into this contract before {initialize} is called.
+   *
+   * If there's a deliverable in `_offeredValues`, it cannot contain any other items
    *
    * Requirements:
    *
@@ -45,7 +47,7 @@ abstract contract BaseOffer {
   function _initialize(
     address _offerer,
     address[] memory _allowedRespondents,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     bytes memory _ipfsData
   ) internal {
   }
@@ -105,7 +107,7 @@ abstract contract BaseOffer {
    */
   function _raiseDispute(
     uint _offerResponseIndex,
-    MrktTypes.TradeValue memory _disputedValue,
+    MrktTypes.TokenValue[] memory _disputedValues,
     bytes memory _ipfsData
   ) internal {
   }
@@ -113,10 +115,10 @@ abstract contract BaseOffer {
 
   /**
    * @dev Resolves a dispute
-   * Transfers `_valueForOfferer` to the offerer.
-   * Transfers `_valueForRespondent` to the respondent.
+   * Transfers `_valuesForOfferer` to the offerer.
+   * Transfers `_valuesForRespondent` to the respondent.
    *
-   * Adding up `_valueForOfferer` and `_valueForRespondent` must be exactly `_disputedValue`,
+   * Adding up `_valuesForOfferer` and `_valuesForRespondent` must be exactly `_disputedValues`,
    * which was specified when the dispute was raised.
    *
    * Emits {DisputeResolved} event
@@ -131,8 +133,8 @@ abstract contract BaseOffer {
    */
   function resolveDispute(
     uint _offerResponseIndex,
-    MrktTypes.TradeValue memory _valueForOfferer,
-    MrktTypes.TradeValue memory _valueForRespondent,
+    MrktTypes.TokenValue[] memory _valuesForOfferer,
+    MrktTypes.TokenValue[] memory _valuesForRespondent,
     bytes memory _ipfsData
   ) external {
   }
@@ -147,11 +149,11 @@ abstract contract BaseOffer {
    *
    * It is meant to be called by extending contracts.
    *
-   * Emits {SupplyWithdrawn} event
+   * Emits {AvailableValuesWithdrawn} event
    * TODO: Needs implementation
    */
-  function _withdrawSupply(
-    MrktTypes.TradeValue memory _withdrawableValue
+  function _withdrawAvailableValues(
+    MrktTypes.TokenValue[] memory _withdrawableValues
   ) internal onlyOfferer {
   }
 

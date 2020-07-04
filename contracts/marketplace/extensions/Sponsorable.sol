@@ -16,10 +16,10 @@ abstract contract Sponsorable {
 
   /**
    * @dev Adds a new sponsorship
-   * It associates `_sponsorship` with `_sponsor`.
+   * It associates `_sponsoredValues` with `_sponsor`.
    * If the sponsor added sponsorship before, it adds values up.
-   * Only single token (and token ids) is allowed as sponsorship. If the sponsor tries to add different token
-   * than he added before, it reverts.
+   * If previously added, `_sponsoredValues` must be of the same length, token address and token ids as
+   * initially added sponsorship.
    *
    * Emits {SponsorshipAdded} event
    * TODO: Needs implementation
@@ -27,14 +27,14 @@ abstract contract Sponsorable {
   function _addSponsorship(
     OfferGroupFactory _offerGroupFactory,
     address _sponsor,
-    MrktTypes.TradeValue memory _sponsorship
+    MrktTypes.TokenValue[] memory _sponsoredValues
   ) internal {
   }
 
 
   /**
    * @dev Transfers sponsorship back to the sponsor.
-   * If `_availableSupply` is less than the sponsorship it transfers only `_availableSupply`.
+   * If `_availableValues` is less than the sponsorship it transfers only `_availableValues`.
    * It should never transfer to the sponsor more than he added.
    *
    * Emits {SponsorshipWithdrawn} event
@@ -45,8 +45,8 @@ abstract contract Sponsorable {
   function _withdrawSponsorship(
     OfferGroupFactory _offerGroupFactory,
     address _sponsor,
-    MrktTypes.TradeValue memory _availableSupply
-  ) internal returns (MrktTypes.TradeValue memory _withdrawal){
-    return _withdrawal;
+    MrktTypes.TokenValue[] memory _availableValues
+  ) internal returns (MrktTypes.TokenValue[] memory _withdrawnValues){
+    return _withdrawnValues;
   }
 }

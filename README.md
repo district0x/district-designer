@@ -11,7 +11,7 @@ District Designer is no-code platform for creating full-featured blockchain appl
 ![District Designer Component Diagram](https://github.com/district0x/district-designer/blob/master/diagrams/district_designer_03_component.png)
 
 ## Database Schema
-![Database Schema](https://github.com/district0x/district-designer/blob/master/diagrams/database.png)
+![Database Schema](https://github.com/district0x/district-designer/blob/master/diagrams/database.svg)
 
 ## Smart Contracts Schema
 ![Smart Contracts Schema](https://github.com/district0x/district-designer/blob/master/diagrams/smart_contracts.svg)

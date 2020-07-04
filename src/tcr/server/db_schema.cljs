@@ -55,7 +55,6 @@
    #:db{:ident :tcr-param-change-entry/challenges :valueType :db.type/ref :cardinality :db.cardinality/many}
    #:db{:ident :tcr-param-change-entry/comment :valueType :db.type/string :cardinality :db.cardinality/one}
    #:db{:ident :tcr-param-change-entry/created-on :valueType :db.type/instant :cardinality :db.cardinality/one}
-   #:db{:ident :tcr-param-change-entry/creator-reward-claimed-on :valueType :db.type/instant :cardinality :db.cardinality/one}
    #:db{:ident :tcr-param-change-entry/db :valueType :db.type/string :cardinality :db.cardinality/one}
    #:db{:ident :tcr-param-change-entry/parameter-key :valueType :db.type/string :cardinality :db.cardinality/one}
    #:db{:ident :tcr-param-change-entry/parameter-original-value :valueType :db.type/bigint :cardinality :db.cardinality/one}

@@ -17,7 +17,7 @@ abstract contract MrktTypes {
     DELIVERABLE_AUCTION
   }
 
-  enum AssetCategory {
+  enum TokenType {
     ETH,
     ERC20,
     ERC721,
@@ -30,46 +30,19 @@ abstract contract MrktTypes {
     DELIVERABLE
   }
 
-  enum TokenType {
-    ETH,
-    ERC20,
-    ERC721,
-    ERC1155
-  }
-
-  struct Token {
+  struct TokenContract {
     TokenType tokenType;
     address tokenAddress;
   }
 
-  struct TradeAsset {
-    AssetCategory assetCategory;
-    address tokenAddress;
-  }
-
-  struct ETHValue {
-    uint value;
-  }
-
-  struct ERC20Value {
-    uint value;
-  }
-
-  struct ERC721Value {
+  struct Token {
+    TokenContract tokenContract;
     uint tokenId;
   }
 
-  struct ERC1155Value {
-    uint[] tokenIds;
-    uint[] values;
-  }
-
-  struct TradeValue {
-    TradeAsset tradeAsset;
-    ETHValue ethValue;
-    ERC20Value erc20Value;
-    ERC721Value erc721Value;
-    ERC1155Value erc1155Value;
+  struct TokenValue {
+    Token token;
+    uint value;
   }
 
   struct PermissionUserRoles {
@@ -79,22 +52,18 @@ abstract contract MrktTypes {
   }
 
   struct DynamicPriceOfferRequest {
-    TokenType tokenType;
-    address tokenAddress;
-    uint tokenId; // `tokenId` is used only for ERC1155
+    Token token;
     uint startPrice;
     uint endPrice;
     uint duration;
   }
 
   struct FixedPricesOfferRequest {
-    TradeValue[] prices; // Definitions of several fixed prices
+    TokenValue[][] prices; // Definitions of several fixed prices
   }
 
   struct HighestBidAuctionOfferRequest {
-    TokenType tokenType;
-    address tokenAddress;
-    uint tokenId; // `tokenId` is used only for ERC1155
+    Token token;
     uint minPrice;
     uint minBidStep;
     uint duration;
@@ -107,7 +76,7 @@ abstract contract MrktTypes {
   }
 
   struct MultiTokenAuctionOfferRequest {
-    Token[] acceptedTokens;
+    TokenContract[] acceptedTokens;
     uint duration;
     /**
      * `extensionTriggerDuration` is amount of seconds before the end of auction,

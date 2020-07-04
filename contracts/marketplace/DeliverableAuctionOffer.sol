@@ -28,10 +28,10 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
   function initialize(
     address _offerer,
     address[] memory _allowedRespondents,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     bytes memory _ipfsData
   ) external {
-    super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
+    super._initialize(_offerer, _allowedRespondents, _offeredValues, _ipfsData);
   }
 
 
@@ -40,9 +40,9 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    *
    * Respondent can specify different price than is the offered value.
    *
-   * `_responseValue` must be of the same token as the offered value, but amounts
+   * `_responseValues` must be exactly same tokens as the offered value, but amounts
    * can be either lower or higher.
-   * If `_responseValue` is ERC721/ERC1155 token, it needs to have same token id(s) as the offered value.
+   * If `_responseValues` are ERC721/ERC1155 tokens, it needs to have same token ids as the offered value.
    *
    * Emits {OfferResponseCreated} event
    *
@@ -55,7 +55,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    */
   function createOfferResponse(
     address _respondent,
-    MrktTypes.TradeValue memory _responseValue,
+    MrktTypes.TokenValue[] memory _responseValues,
     bytes memory _ipfsData
   ) external {
     super._createOfferResponse(_respondent);
@@ -120,7 +120,7 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    * If the offered value is a deliverable, dispute can never be raised, because it's
    * deliverable-for-deliverable trade with no value stored in the contract.
    *
-   * It calls {BaseOffer._raiseDispute} with `_disputedValue` being `_responseValue` specified
+   * It calls {BaseOffer._raiseDispute} with `_disputedValues` being `_responseValues` specified
    * by the respondent when creating the response.
    *
    * Requirements:
@@ -136,23 +136,23 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
 
 
   /**
-   * @dev Amount of supply that can be widthdrawn is
-   * the supply in the contract minus value reserved for accepted responses, that
+   * @dev Values that can be widthdrawn are
+   * the values in the contract minus values reserved for accepted responses, that
    * haven't yet been {markDeliverableReceived}
    *
    * If offered value is deliverable, it always reverts.
    *
-   * It calls {BaseOffer._withdrawSupply}
+   * It calls {BaseOffer._withdrawAvailableValues}
    * TODO: Needs implementation
    */
-  function withdrawSupply(
+  function withdrawAvailableValues(
   ) external onlyOfferer {
   }
 
 
   /**
    * @dev Adds a new sponsorship
-   * It checks if `_transferredValue` is the same token and token id(s) as the offered value.
+   * It checks if `_transferredValues` is the same tokens and token id(s) as the offered values.
    * If offered value is deliverable, it reverts.
    * It calls {Sponsorable._addSponsorship}
    *
@@ -160,14 +160,14 @@ contract DeliverableAuctionOffer is BaseOffer, Sponsorable, ApproveAndCallFallBa
    */
   function _addSponsorship(
     address _sponsor,
-    MrktTypes.TradeValue memory _transferredValue
+    MrktTypes.TokenValue[] memory _transferredValues
   ) internal {
   }
 
 
   /**
    * @dev Withdraws previously added sponsorship for `msg.sender`
-   * It calls {Sponsorable._withdrawSponsorship} with `_availableSupply` argument being value stored
+   * It calls {Sponsorable._withdrawSponsorship} with `_availableValues` argument being value stored
    * in the contract minus value reserved for accepted responses, that haven't yet been {markDeliverableReceived}
    *
    * TODO: Needs implementation

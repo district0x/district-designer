@@ -33,11 +33,11 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
   function initialize(
     address _offerer,
     address[] memory _allowedRespondents,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     MrktTypes.HighestBidAuctionOfferRequest memory _request,
     bytes memory _ipfsData
   ) external {
-    super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
+    super._initialize(_offerer, _allowedRespondents, _offeredValues, _ipfsData);
   }
 
 
@@ -80,7 +80,7 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    */
   function _createOfferResponse(
     address _respondent,
-    MrktTypes.TradeValue memory _transferredValue,
+    MrktTypes.TokenValue memory _transferredValue,
     bytes calldata _ipfsData
   ) internal {
     super._createOfferResponse(_respondent);
@@ -164,10 +164,10 @@ contract HighestBidAuctionOffer is BaseOffer, ApproveAndCallFallBack, ERC1155Rec
    *
    * If he withdraws before the auction is finished, the auction is immidiately finished.
    *
-   * It calls {BaseOffer._withdrawSupply} with `_withdrawableValue` being the offered value
+   * It calls {BaseOffer._withdrawAvailableValues} with `_withdrawableValue` being the offered values
    * TODO: Needs implementation
    */
-  function withdrawSupply(
+  function withdrawAvailableValues(
   ) external onlyOfferer {
   }
 

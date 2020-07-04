@@ -34,11 +34,11 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
   function initialize(
     address _offerer,
     address[] memory _allowedRespondents,
-    MrktTypes.TradeValue memory _offeredValue,
+    MrktTypes.TokenValue[] memory _offeredValues,
     MrktTypes.FixedPricesOfferRequest memory _request,
     bytes memory _ipfsData
   ) external {
-    super._initialize(_offerer, _allowedRespondents, _offeredValue, _ipfsData);
+    super._initialize(_offerer, _allowedRespondents, _offeredValues, _ipfsData);
   }
 
 
@@ -66,7 +66,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
 
   /**
    * @dev Buys the offered value at fixed price.
-   * Checks if `_transferredValue` is one of fixed prices.
+   * Checks if `_transferredValues` matches one of fixed prices.
    *
    * If the offered value is non-deliverable, it'll transfer respective values to both
    * offerer and respondent and the trade is completed.
@@ -83,7 +83,7 @@ contract FixedPricesOffer is BaseOffer, ApproveAndCallFallBack, IERC721Receiver,
    */
   function _createOfferResponse(
     address _respondent,
-    MrktTypes.TradeValue memory _transferredValue,
+    MrktTypes.TokenValue[] memory _transferredValues,
     bytes calldata _ipfsData
   ) internal {
     super._createOfferResponse(_respondent);
