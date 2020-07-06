@@ -1,0 +1,529 @@
+scalar Date
+scalar Keyword
+
+"""
+------------------------
+District Designer Module
+------------------------
+"""
+
+
+type Query {
+    smartContract(smartContract_address: ID!): SmartContract
+    latestVersionSmartContract(smartContract_name: String): SmartContract
+    district(district_address: ID!): District
+    file(file_hash: ID!): File
+    permissions: [Permission]
+    modules: [Module]
+    themes: [Theme]
+    wizards: [Wizard]
+}
+
+enum ProxyType {
+    ownerProxy
+    districtAdminProxy
+}
+
+type SmartContract {
+    smartContract_address: ID!
+    smartContract_abi: String!
+    smartContract_name: String!
+    smartContract_owner: String!
+    smartContract_proxyTarget: String
+    smartContract_proxyType: ProxyType
+    smartContract_proxy_: Boolean
+    smartContract_version: Int!
+    smartContract_createdOn: Date!
+}
+
+type District {
+    district_address: ID!
+    district_smartContract: SmartContract!
+    district_name: String!
+    district_title: String
+    district_subdomain: String!
+    district_description: String
+    district_logo: File
+    district_coverImage: File
+    district_favicon: File
+    district_gaTrackingId: String
+    district_treasury: String
+    district_updatedOn: Date
+    district_createdOn: Date!
+    district_permissionUserRoles: [PermissionUserRoles]!
+    district_modules: [DistrictModule]!
+    district_themes: [DistrictTheme]!
+    district_activeTheme: DistrictTheme!
+    district_uiComponents: [UIComponent]!
+}
+
+type Permission {
+    permission_code: ID!
+    permission_name: String!
+    permission_description: String!
+}
+
+type UserRole {
+    userRole_uuid: ID!
+    userRole_name: String!
+    userRole_addresses: [String]!
+    userRole_adminUserRole_: Boolean
+}
+
+type PermissionUserRoles {
+    permission: Permission!
+    userRoles: [UserRole]!
+}
+
+type File {
+    file_hash: ID!
+    file_name: String
+    file_encrypted_: Boolean
+    file_decryptable_by: String
+}
+
+type Field {
+    field_uuid: ID!
+    field_name: String!
+    field_namespace: String
+    field_settings: String
+    field_type: String!
+}
+
+enum FieldValueType {
+    string
+    int
+    bigInt
+    float
+    boolean
+    date
+    file
+}
+
+type FieldValue {
+    fieldValue_uuid: ID!
+    fieldValue_field: Field!
+    fieldValue_type: FieldValueType!
+    fieldValue_string: String
+    fieldValue_int: Int
+    fieldValue_bigInt: Int
+    fieldValue_float: Float
+    fieldValue_boolean: Boolean
+    fieldValue_date: Date
+    fieldValue_file: File
+}
+
+type Module {
+    module_code: ID!
+    module_name: String!
+    module_description: String!
+    module_owner: String!
+    module_logo: File!
+    module_previewImages: [File]!
+    module_activeCount: Int!
+    module_createdOn: Date!
+}
+
+type DistrictModule {
+    districtModule_module: Module!
+    districtModule_activatedOn: Date!
+}
+
+type Theme {
+    theme_code: ID!
+    theme_name: String!
+    theme_description: String!
+    theme_defaultSettings: String
+    theme_owner: String!
+    theme_previewImages: [File]!
+    theme_activeCount: Int!
+    theme_createdOn: Date!
+}
+
+type DistrictTheme {
+    districtTheme_theme: Theme!
+    districtTheme_settings: String
+    districtTheme_css: File
+    districtTheme_less: File
+    districtTheme_active_: File
+}
+
+type Wizard {
+    wizard_code: ID!
+    wizard_name: String!
+    wizard_description: String!
+    wizard_owner: String!
+    wizard_logo: File!
+    wizard_completionsCount: Int!
+    wizard_createdOn: Date!
+}
+
+type UIComponent {
+    uiComponent_uuid: ID!
+    uiComponent_name: String!
+    uiComponent_settings: String
+    uiComponent_type: String!
+    uiComponent_files: [File]
+    uiComponent_children: [UIComponent]
+}
+
+
+"""
+------------------------
+Tokens Module
+------------------------
+"""
+
+
+type TokenContract {
+    tokenContract_address: ID!
+    tokenContract_smartContract: SmartContract!
+    tokenContract_fields: [Field]
+    tokenContract_symbol: String
+    tokenContract_type: String!
+    tokenContract_districtOrigin: District!
+    tokenContract_metadataFormat: String
+    tokenContract_metadataFormatSettings: String
+    tokenContract_misconfigReportCreator: String
+    tokenContract_misconfigReportComment: String
+    tokenContract_misconfigReportCreatedOn: Date
+    tokenContract_misconfigReportResolvedBy: String
+    tokenContract_misconfigReportResolvedOn: Date
+    tokenContract_tokens: [Token]
+}
+
+type Token {
+    token_tokenContract: TokenContract!
+    token_id: Int!
+    token_decimals: Int!
+    token_totalSupply: Int!
+    token_fieldValues: [FieldValue]
+}
+
+type TokenValue {
+    tokenValue_uuid: ID!
+    tokenValue_token: Token!
+    tokenValue_value: Int!
+}
+
+extend type District {
+    tokenContracts: [TokenContract]
+}
+
+extend type Query {
+    tokenContract(tokenContract_address: ID!): TokenContract
+    token(tokenContract_address: ID!, token_id: Int!): Token
+    tokenValue(tokenValue_uuid: ID!): TokenValue
+}
+
+
+"""
+------------------------
+Users Module
+------------------------
+"""
+
+
+type User {
+    user_address: ID!
+    user_fieldValues: [FieldValue]
+    user_globalRating: Float!
+    user_globalRatingCount: Int!
+}
+
+type UserProfile {
+    userProfile_uuid: ID!
+    userProfile_fields: [Field]!
+    userProfile_name: String!
+    userProfile_districtOrigin: District!
+    userProfile_globalEnabled_: Boolean
+    userProfile_globalDescription: String
+    userProfile_globalLogo: File
+}
+
+type Message {
+    message_uuid: ID!
+    message_sender: String!
+    message_receiver: String!
+    message_type: String!
+    message_text: String!
+    message_files: [File]!
+    message_createdOn: Date!
+}
+
+extend type District {
+    userProfiles: [UserProfile]
+}
+
+extend type Query {
+    tokenContract(tokenContract_address: ID!): TokenContract
+    token(tokenContract_address: ID!, token_id: Int!): Token
+    tokenValue(tokenValue_uuid: ID!): TokenValue
+}
+
+
+"""
+------------------------
+Marketplace Module
+------------------------
+"""
+
+
+enum OfferType {
+    deliverableAuction
+    dynamicPrice
+    fixedPrices
+    highestBidAuction
+    multiTokenAuction
+}
+
+type OfferGroup {
+    offerGroup_address: ID!
+    offerGroup_smartContract: SmartContract!
+    offerGroup_offerFields: [Field]!
+    offerGroup_offerResponseFields: [Field]!
+    offerGroup_allowedOfferTypes: [OfferType]!
+    offerGroup_offerableTokenContracts: [TokenContract]!
+    offerGroup_requestableTokenContracts: [TokenContract]!
+    offerGroup_createOfferUserRoles: [UserRole]
+    offerGroup_createOfferResponseUserRoles: [UserRole]
+    offerGroup_resolveDisputeUserRoles: [UserRole]
+    offerGroup_name: String!
+    offerGroup_districtOrigin: District!
+    offerGroup_globalEnabled_: Boolean
+    offerGroup_globalDescription: String
+    offerGroup_globalLogo: File
+    offerGroup_createdOn: Date!
+    offerGroup_users: [OfferGroupUser]
+}
+
+type OfferGroupUser {
+    offerGroupUser_offerGroup: OfferGroup
+    offerGroupUser_user: User
+    offerGroupUser_rating: Float!
+    offerGroupUser_ratingCount: Int!
+}
+
+type Offer {
+    offer_address: ID!
+    offer_smartContract: SmartContract!
+    offer_offerGroup: OfferGroup
+    offer_fieldValues: [FieldValue]
+    offer_type: OfferType!
+    offer_creator: String!
+    offer_offeredValues: [TokenValue]!
+    offer_requestedValues: [TokenValue]!
+    offer_availableValues: [TokenValue]
+    offer_allowedRespondents: [String]
+    offer_createdOn: Date!
+    offer_fixedPricesOfferRequest: FixedPricesOfferRequest
+    offer_dynamicPriceOfferRequest: DynamicPriceOfferRequest
+    offer_highestBidAuctionOfferRequest: HighestBidAuctionOfferRequest
+    offer_multiTokenAuctionOfferRequest: MultiTokenAuctionOfferRequest
+}
+
+type FixedPricesOfferRequest {
+    offerRequest_fixedPrices: [[TokenValue]]
+}
+
+type DynamicPriceOfferRequest {
+    offerRequest_token: Token!
+    offerRequest_startPrice: Int!
+    offerRequest_endPrice: Int!
+    offerRequest_duration: Int!
+    offerRequest_endPriceOn: Date!
+}
+
+type HighestBidAuctionOfferRequest {
+    offerRequest_token: Token!
+    offerRequest_minPrice: Int!
+    offerRequest_minBidStep: Int!
+    offerRequest_duration: Int!
+    offerRequest_extensionDuration: Int!
+    offerRequest_extensionTriggerDuration: Int!
+    offerRequest_endsOn: Date!
+}
+
+type MultiTokenAuctionOfferRequest {
+    offerRequest_acceptedTokenContracts: [TokenContract]!
+    offerRequest_duration: Int!
+    offerRequest_extensionDuration: Int!
+    offerRequest_extensionTriggerDuration: Int!
+}
+
+type OfferResponse {
+    offerResponse_offerAddress: ID!
+    offerResponse_index: ID!
+    offerResponse_fieldValues: [FieldValue]
+    offerResponse_respondent: String!
+    offerResponse_responseValues: [TokenValue]
+    offerResponse_offererReceivedValues: [TokenValue]
+    offerResponse_respondentReceivedValues: [TokenValue]
+    offerResponse_messages: [Message]
+    offerResponse_offererFeedback: [Feedback]
+    offerResponse_respondentFeedback: [Feedback]
+    offerResponse_canceledOn: Date
+    offerResponse_completedOn: Date
+    offerResponse_createdOn: Date!
+    offerResponse_updatedOn: Date
+    offerResponse_disputeRaisedOn: Date
+    offerResponse_disputeResolvedOn: Date
+    offerResponse_disputeResolvedBy: String
+}
+
+type OfferSponsorship {
+    offerSponsorship_sponsor: String!
+    offerSponsorship_sponsoredValues: [TokenValue]!
+    offerSponsorship_updatedOn: Date
+    offerSponsorship_createdOn: Date!
+}
+
+type Feedback {
+    feedback_uuid: ID!
+    feedback_rating: Float!
+    feedback_sender: String!
+    feedback_receiver: String!
+    feedback_text: String!
+    feedback_updatedOn: Date
+    feedback_createdOn: Date!
+}
+
+
+extend type District {
+    offerGroups: [OfferGroup]
+}
+
+
+"""
+------------------------
+TCR Module
+------------------------
+"""
+
+enum TCRType {
+    challengeableOnce
+    challengeableAnytime
+}
+
+enum TCRRegEntryRepresentationCategory {
+    erc721
+    erc1155
+    noToken
+}
+
+enum TCREntriesGroup {
+    registryEntries
+    paramChangeEntries
+}
+
+enum TCRParameterKey {
+    challengeDispensation
+    challengePeriodDuration
+    deposit
+    voteCommitPeriodDuration
+    voteQuorum
+    voteRevealPeriodDuration
+}
+
+enum TCRVoteOption {
+    include
+    exclude
+    noVote
+}
+
+type TCR {
+    tcr_address: ID!
+    tcr_smartContract: SmartContract!
+    tcr_regEntryFields: [Field]!
+    tcr_regEntryRepresentationCategory: TCRRegEntryRepresentationCategory!
+    tcr_regEntryRepresentationTokenContract: TokenContract
+    tcr_type: TCRType!
+    tcr_votingToken: Token!
+    tcr_regEntryParameters: TCRParameter!
+    tcr_paramChangeEntryParameters: TCRParameter!
+    tcr_createRegEntryUserRoles: [UserRole]
+    tcr_createParamChangeEntryUserRoles: [UserRole]
+    tcr_districtOrigin: District!
+    tcr_globalEnabled_: Boolean
+    tcr_globalDescription: String
+    tcr_globalLogo: File
+    tcr_createdOn: Date!
+}
+
+interface TCREntry {
+    tcrEntry_address: ID!
+    tcrEntry_smartContract: SmartContract!
+    tcrEntry_creator: String!
+    tcrEntry_challengePeriodEnd: Date
+    tcrEntry_createdOn: Date!
+}
+
+type TCRRegEntry implements TCREntry {
+    tcrEntry_address: ID!
+    tcrEntry_smartContract: SmartContract!
+    tcrEntry_creator: String!
+    tcrEntry_challengePeriodEnd: Date
+    tcrEntry_createdOn: Date!
+    tcrRegEntry_fieldValues: [FieldValue]!
+    tcrRegEntry_mintedTokenValue: TokenValue
+    tcrRegEntry_mintedOn: Date
+}
+
+type TCRParamChangeEntry implements TCREntry {
+    tcrEntry_address: ID!
+    tcrEntry_smartContract: SmartContract!
+    tcrEntry_creator: String!
+    tcrEntry_challengePeriodEnd: Date
+    tcrEntry_createdOn: Date!
+    tcrParamChangeEntry_parameterKey: TCRParameterKey!
+    tcrParamChangeEntry_parameterValue: Int!
+    tcrParamChangeEntry_parameterOriginalValue: Int!
+    tcrParamChangeEntry_entriesGroup: TCREntriesGroup!
+    tcrParamChangeEntry_comment: String
+    tcrParamChangeEntry_appliedOn: Date
+}
+
+type TCRChallenge {
+    tcrChallenge_tcrEntryAddress: ID!
+    tcrChallenge_index: ID!
+    tcrChallenge_tcrEntry: TCREntry
+    tcrChallenge_challenger: String!
+    tcrChallenge_voteCommitPeriodEnd: Date!
+    tcrChallenge_voteRevealPeriodEnd: Date!
+    tcrChallenge_challengerReward: TokenValue
+    tcrChallenge_challengerRewardClaimedOn: Date
+    tcrChallenge_creatorReward: TokenValue
+    tcrChallenge_creatorRewardClaimedOn: Date
+    tcrChallenge_comment: String
+    tcrChallenge_rewardPool: TokenValue
+    tcrChallenge_votesExclude: Int!
+    tcrChallenge_votesInclude: Int!
+    tcrChallenge_votesTotal: Int!
+    tcrChallenge_createdOn: Date!
+}
+
+type TCRVote {
+    tcrVote_challenge: TCRChallenge
+    tcrVote_voter: String!
+    tcrVote_option: TCRVoteOption!
+    tcrVote_amount: Int!
+    tcrVote_voterRewardClaimedOn: Date
+    tcrVote_voterReward: TokenValue
+    tcrVote_votesReclaimedOn: Date
+    tcrVote_revealedOn: Date
+    tcrVote_createdOn: Date!
+}
+
+type TCRParameter {
+    tcrParameter_entriesGroup: TCREntriesGroup!
+    tcrParameter_challengeDispensation: Int!
+    tcrParameter_challengePeriodDuration: Int!
+    tcrParameter_deposit: Int!
+    tcrParameter_voteCommitPeriodDuration: Int!
+    tcrParameter_voteQuorum: Int!
+    tcrParameter_voteRevealPeriodDuration: Int!
+}
+
+extend type District {
+    tcrs: [TCR]
+}

@@ -76,7 +76,7 @@ abstract contract MrktTypes {
   }
 
   struct MultiTokenAuctionOfferRequest {
-    TokenContract[] acceptedTokens;
+    TokenContract[] acceptedTokenContracts;
     uint duration;
     /**
      * `extensionTriggerDuration` is amount of seconds before the end of auction,

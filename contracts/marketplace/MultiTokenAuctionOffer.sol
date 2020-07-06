@@ -25,7 +25,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
    *
    * Requirements:
    *
-   * - `_request.acceptedTokens` cannot be empty
+   * - `_request.acceptedTokenContracts` cannot be empty
    *
    * See spec :marketplace/offer-created for format of _ipfsData file
    * TODO: Needs implementation
@@ -60,7 +60,7 @@ contract MultiTokenAuctionOffer is BaseOffer, ApproveAndCallFallBack, IERC721Rec
 
   /**
    * @dev It makes a bid to the auction.
-   * It checks if `_transferredValues` are all within MultiTokenAuctionOfferRequest.acceptedTokens
+   * It checks if `_transferredValues` are all within MultiTokenAuctionOfferRequest.acceptedTokenContracts
    * Bid can be made only before auction countdown is finished, otherwise revert.
    *
    * If bid arrives `extensionTriggerDuration` seconds before the end of auction,
