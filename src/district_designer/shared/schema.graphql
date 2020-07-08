@@ -82,6 +82,19 @@ type File {
     file_decryptable_by: String
 }
 
+type TagGroup {
+    tagGroup_uuid: ID!
+    tagGroup_name: String!
+    tagGroup_districtOrigin: District!
+    tagGroup_globalEnabled_: Boolean!
+    tagGroup_usersAllowedAddingTags_: Boolean!
+    tagGroup_tags: [Tag]
+}
+
+type Tag {
+    tag_name: String!
+}
+
 type Field {
     field_uuid: ID!
     field_name: String!
@@ -93,11 +106,11 @@ type Field {
 enum FieldValueType {
     string
     int
-    bigInt
     float
     boolean
     date
     file
+    tags
 }
 
 type FieldValue {
@@ -106,7 +119,6 @@ type FieldValue {
     fieldValue_type: FieldValueType!
     fieldValue_string: String
     fieldValue_int: Int
-    fieldValue_bigInt: Int
     fieldValue_float: Float
     fieldValue_boolean: Boolean
     fieldValue_date: Date
@@ -167,6 +179,72 @@ type UIComponent {
     uiComponent_children: [UIComponent]
 }
 
+enum SearchFilterOperation {
+    equal
+    notEqual
+    moreThan
+    moreThanEqual
+    lessThan
+    lessThanEqual
+    containAll
+    notContainAll
+    containAny
+    notContainAny
+}
+
+enum SearchFilterComparedValueType {
+    string
+    int
+    float
+    boolean
+    date
+    tags
+    fieldValueUuid
+}
+
+input SearchFilterComparedValue {
+    comparedValue_type: SearchFilterComparedValueType!
+    comparedValue_string: String
+    comparedValue_int: Int
+    comparedValue_float: Float
+    comparedValue_boolean: Boolean
+    comparedValue_date: Date
+    comparedValue_tags: [String]
+    comparedValue_fieldValueUuid: String
+}
+
+input SearchFilter {
+    field_uuid: String!
+    operation: SearchFilterOperation!
+    comparedValue: SearchFilterComparedValue!
+}
+
+enum SearchOrderType {
+    asc
+    desc
+}
+
+input SearchOrder {
+    field_uuid: String!
+    orderType: SearchOrderType
+}
+
+input SearchPage {
+    limit: Int!
+    offset: Int!
+}
+
+input SearchOptions {
+    filters: [SearchFilter]
+    order: [SearchOrder]
+    page: SearchPage
+}
+
+interface SearchResults {
+    hasNextPage: Boolean!
+    totalCount: Int!
+}
+
 
 """
 ------------------------
@@ -206,6 +284,12 @@ type TokenValue {
     tokenValue_value: Int!
 }
 
+type SearchTokensResults implements SearchResults {
+    hasNextPage: Boolean!
+    totalCount: Int!
+    items: [Token]
+}
+
 extend type District {
     tokenContracts: [TokenContract]
 }
@@ -213,7 +297,7 @@ extend type District {
 extend type Query {
     tokenContract(tokenContract_address: ID!): TokenContract
     token(tokenContract_address: ID!, token_id: Int!): Token
-    tokenValue(tokenValue_uuid: ID!): TokenValue
+    searchTokens(tokenContract_address: ID!, searchOptions: SearchOptions): SearchTokensResults
 }
 
 
@@ -255,10 +339,17 @@ extend type District {
     userProfiles: [UserProfile]
 }
 
+type SearchUsersResults implements SearchResults {
+    hasNextPage: Boolean!
+    totalCount: Int!
+    items: [User]
+}
+
 extend type Query {
-    tokenContract(tokenContract_address: ID!): TokenContract
-    token(tokenContract_address: ID!, token_id: Int!): Token
-    tokenValue(tokenValue_uuid: ID!): TokenValue
+    user(user_address: ID!): User
+    userProfile(userProfile_uuid: ID!): UserProfile
+    globalUserProfiles: [UserProfile]
+    searchUsers(searchOptions: SearchOptions): SearchUsersResults
 }
 
 
@@ -388,9 +479,21 @@ type Feedback {
     feedback_createdOn: Date!
 }
 
-
 extend type District {
     offerGroups: [OfferGroup]
+}
+
+type SearchOffersResults implements SearchResults {
+    hasNextPage: Boolean!
+    totalCount: Int!
+    items: [Offer]
+}
+
+extend type Query {
+    offerGroup(offerGroup_address: ID!): OfferGroup
+    globalOfferGroups: [OfferGroup]
+    offer(offer_address: ID!): Offer
+    searchOffers(offerGroup_address: ID!, searchOptions: SearchOptions): SearchOffersResults
 }
 
 
@@ -526,4 +629,25 @@ type TCRParameter {
 
 extend type District {
     tcrs: [TCR]
+}
+
+type SearchTCRRegEntriesResults implements SearchResults {
+    hasNextPage: Boolean!
+    totalCount: Int!
+    items: [TCRRegEntry]
+}
+
+type SearchTCRParamChangeEntriesResults implements SearchResults {
+    hasNextPage: Boolean!
+    totalCount: Int!
+    items: [TCRParamChangeEntry]
+}
+
+extend type Query {
+    TCR(tcr_address: ID!): TCR
+    globalTCRs: [TCR]
+    tcrRegEntry(tcrEntry_address: ID!): TCRRegEntry
+    tcrParamChangeEntry(tcrEntry_address: ID!): TCRParamChangeEntry
+    searchRegEntries(tcr_address: ID!, searchOptions: SearchOptions): SearchTCRRegEntriesResults
+    searchParamChangeEntries(tcr_address: ID!): SearchTCRParamChangeEntriesResults
 }

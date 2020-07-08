@@ -187,10 +187,12 @@ class FieldValues << (T, #c0b7b1) Table >> {
   :field-value/boolean               - boolean, indexed
   :field-value/date                  - unsigned integer, indexed
   :field-value/file                  - ipfs
+  :field-value/tags                  - uuid
 
   primary key(:field-value/uuid)
   foreign key(:field/uuid, Fields(:field/uuid))
   foreign key(:field-value/file, Files(:file/hash))
+  foreign key(:field-value/tags, MultiTags(:field-value/tags))
 }
 FieldValues -- Fields : fk(:field/uuid)
 FieldValues -- Files : fk(:file/hash)
@@ -307,6 +309,41 @@ class UIComponentChildren << (T, #c0b7b1) Table >> {
 UIComponentChildren -- UIComponents : fk(:ui-component/uuid)
 
 
+class TagGroups << (T, #c0b7b1) Table >> {
+  :tag-group/uuid                        - uuid
+  :tag-group/name                        - varchar, indexed not null
+  :tag-group/district-origin             - address, not null
+  :tag-group/global-enabled?             - boolean, indexed
+  :tag-group/users-allowed-adding-tags?  - boolean
+
+  primary key(:tag-group/uuid)
+  foreign key(:tag-group/district-origin, Districts(:district/address))
+}
+TagGroups -- Districts : fk(:tag-group/district-origin)
+
+
+class Tags << (T, #c0b7b1) Table >> {
+  :tag-group/uuid                        - uuid, not null
+  :tag/name                              - varchar, not null
+
+  primary key(:tag-group/uuid, :tag/name)
+  foreign key(:tag-group/uuid, TagGroups(:tag-group/uuid))
+}
+Tags -- TagGroups : fk(:tag-group/uuid)
+
+
+class MultiTags << (T, #c0b7b1) Table >> {
+  :multi-tag/uuid                        - uuid
+  :tag-group/uuid                        - uuid
+  :tag/name                              - varchar, not null
+
+  primary key(:multi-tag/uuid, :tag-group/uuid, :tag/name)
+  foreign key(:tag-group/uuid, Tags(:tag-group/uuid))
+  foreign key(:tag/name, Tags(:tag/name))
+}
+MultiTags -- Tags : fk(:tag-group/uuid, :tag/name)
+
+
 ' -------------
 ' Tokens Module
 ' -------------
@@ -418,7 +455,7 @@ class UserProfiles << (T, #FFD166) Table >> {
   :user-profile/fields                      - uuid, not null
   :user-profile/name                        - varchar, not null
   :user-profile/district-origin             - address, not null
-  :user-profile/global-enabled?             - boolean
+  :user-profile/global-enabled?             - boolean, indexed
   :user-profile/global-description          - varchar
   :user-profile/global-logo                 - ipfs
 
@@ -504,7 +541,7 @@ class OfferGroups << (T, #00B4D8) Table >> {
   :offer-group/resolve-dispute-user-roles         - uuid
   :offer-group/name                               - varchar, not null
   :offer-group/district-origin                    - address, not null
-  :offer-group/global-enabled?                    - boolean
+  :offer-group/global-enabled?                    - boolean, indexed
   :offer-group/global-description                 - varchar
   :offer-group/global-logo                        - ipfs
   :offer-group/created-on                         - unsigned integer, not null
@@ -763,9 +800,8 @@ class TCRs << (T, #06D6A0) Table >> {
   :tcr/create-reg-entry-user-roles                - uuid
   :tcr/create-param-change-entry-user-roles       - uuid
   :tcr/district-origin                            - address, not null
-  :tcr/global-enabled?                            - boolean
+  :tcr/global-enabled?                            - boolean, indexed
   :tcr/global-description                         - varchar
-  :tcr/global-imports-count                       - unsigned integer
   :tcr/global-logo                                - ipfs
   :tcr/created-on                                 - unsigned integer, indexed not null
 
