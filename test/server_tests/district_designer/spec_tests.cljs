@@ -25,7 +25,7 @@
                                                 :file/name "abc"}
                            :smart-contract/proxy? true
                            :smart-contract/proxy-target "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                           :smart-contract/proxy-type :proxy-type/owner-proxy
+                           :smart-contract/proxy-type :owner-proxy
                            :smart-contract/owner "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}]}))
 
 
@@ -33,7 +33,7 @@
                 {:event/type :district-designer/add-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :module/id "district_designer"
+                 :module/code "district_designer"
                  :module/name "District Designer"
                  :module/logo "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                  :module/owner "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
@@ -44,20 +44,20 @@
                 {:event/type :district-designer/update-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :module/id "district_designer"
+                 :module/code "district_designer"
                  :module/name "District Designer"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/remove-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :module/id "district_designer"}))
+                 :module/code "district_designer"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/add-wizard
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :wizard/id "collectibles_marketplace"
+                 :wizard/code "collectibles_marketplace"
                  :wizard/name "Collectibles Marketplace"
                  :wizard/logo "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                  :wizard/owner "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
@@ -68,20 +68,20 @@
                 {:event/type :district-designer/update-wizard
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :wizard/id "collectibles_marketplace"
+                 :wizard/code "collectibles_marketplace"
                  :wizard/name "Collectibles Marketplace"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/remove-wizard
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :wizard/id "collectibles_marketplace"}))
+                 :wizard/code "collectibles_marketplace"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/add-theme
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :theme/id "some_theme"
+                 :theme/code "some_theme"
                  :theme/name "Some Theme"
                  :theme/owner "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :theme/description "abc"
@@ -93,20 +93,20 @@
                 {:event/type :district-designer/update-theme
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :theme/id "some_theme"
+                 :theme/code "some_theme"
                  :theme/name "Some Theme"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/remove-theme
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :theme/id "some_theme"}))
+                 :theme/code "some_theme"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/add-permission
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :permission/id "some_permission"
+                 :permission/code "some_permission"
                  :permission/name "Some permission"
                  :permission/description "abc"}))
 
@@ -114,14 +114,14 @@
                 {:event/type :district-designer/update-permission
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :permission/id "some_permission"
+                 :permission/code "some_permission"
                  :permission/name "Some permission"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/remove-permission
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :permission/id "some_permission"}))
+                 :permission/code "some_permission"}))
 
   (is (s/valid? :event/event
                 {:event/type :district-designer/add-tag-group
@@ -129,6 +129,7 @@
                  :timestamp 1590913803
                  :tag-group/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :tag-group/name "abc"
+                 :tag-group/district-origin "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :tag-group/users-allowed-adding-tags? true
                  :tag-group/global-enabled? true}))
 
@@ -144,32 +145,25 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :district/theme "some_theme"
-                 :district/theme-settings "{:a 1 :b 2}"}))
+                 :theme/code "some_theme"
+                 :district-theme/settings "{:a 1 :b 2}"
+                 :district-theme/css {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
+                 :district-theme/less {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
+                 :district-theme/active? true}))
 
   (is (s/valid? :event/event
-                {:event/type :district/update-styles
+                {:event/type :district/activate-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :district/less-file {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
-                                      :file/name "abc"}
-                 :district/css-file {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
-                                     :file/name "abc"}}))
+                 :module/code "marketplace"}))
 
   (is (s/valid? :event/event
-                {:event/type :district/add-module
+                {:event/type :district/deactivate-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :module/id "marketplace"}))
-
-  (is (s/valid? :event/event
-                {:event/type :district/remove-module
-                 :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :timestamp 1590913803
-                 :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :module/id "marketplace"}))
+                 :module/code "marketplace"}))
 
   (is (s/valid? :event/event
                 {:event/type :district/add-ui-component
@@ -214,12 +208,13 @@
                  :permissions [{:permission-id "some_permission"
                                 :user-role-ids [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}]
                  :user-roles [{:user-role-id #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                               :addresses ["0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"]}]
+                               :addresses ["0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"]
+                               :is-removed false}]
                  :admin-user-role-id #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :treasury "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :ipfs-data {:user-role-names [{:user-role/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                                                 :user-role/name "Admins"}]
-                             :wizard/id "some_wizard"
+                             :wizard/code "some_wizard"
                              :some-key "random_value"}}))
 
 
@@ -238,7 +233,8 @@
                  :timestamp 1590913803
                  :district "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :user-roles [{:user-role-id #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                               :addresses ["0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"]}]
+                               :addresses ["0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"]
+                               :is-removed false}]
                  :ipfs-data {:user-role-names [{:user-role/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                                                 :user-role/name "Admins"}]}}))
 

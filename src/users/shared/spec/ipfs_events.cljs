@@ -16,7 +16,8 @@
 
 (s/def :user-profile/uuid uuid?)
 (s/def :user-profile/name string?)
-(s/def :user-profile/field-configs (s/coll-of :field-config/field-config))
+(s/def :user-profile/district-origin address?)
+(s/def :user-profile/fields (s/coll-of :field/field))
 (s/def :user-profile/global-enabled? :global/enabled?)
 (s/def :user-profile/global-logo :global/logo)
 (s/def :user-profile/global-description :global/description)
@@ -33,10 +34,10 @@
 (defmethod event-type :users/add-user-profile [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:district/address
-                  :user-profile/uuid
+    (s/keys :req [:user-profile/uuid
                   :user-profile/name
-                  :user-profile/field-configs]
+                  :user-profile/district-origin
+                  :user-profile/fields]
             :opt [:user-profile/global-enabled?
                   :user-profile/global-logo
                   :user-profile/global-description])))
@@ -47,7 +48,7 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:user-profile/uuid]
             :opt [:user-profile/name
-                  :user-profile/field-configs
+                  :user-profile/fields
                   :user-profile/global-enabled?
                   :user-profile/global-logo
                   :user-profile/global-description])))
@@ -72,7 +73,9 @@
     (s/keys :req [:district/address
                   :user-profile/uuid])))
 
+(s/def :user/field-values (s/coll-of :field-value/field-value))
 
 (defmethod event-type :users/update-user [_]
   (s/merge
-    :district-designer.shared.spec.ipfs-events/event-base))
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req [:user/field-values])))

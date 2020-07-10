@@ -10,8 +10,8 @@
 
 (s/def :offer-group/address address?)
 (s/def :offer-group/name string?)
-(s/def :offer-group/offer-field-configs (s/coll-of :field-config/field-config))
-(s/def :offer-group/response-field-configs (s/coll-of :field-config/field-config))
+(s/def :offer-group/offer-fields (s/coll-of :field/field))
+(s/def :offer-group/response-fields (s/coll-of :field/field))
 (s/def :offer-group/global-enabled? :global/enabled?)
 (s/def :offer-group/global-logo :global/logo)
 (s/def :offer-group/global-description :global/description)
@@ -31,8 +31,8 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:offer-group/address]
             :opt [:offer-group/name
-                  :offer-group/offer-field-configs
-                  :offer-group/response-field-configs
+                  :offer-group/offer-fields
+                  :offer-group/response-fields
                   :offer-group/global-enabled?
                   :offer-group/global-logo
                   :offer-group/global-description])))
@@ -51,17 +51,20 @@
     (s/keys :req [:district/address
                   :offer-group/address])))
 
+(s/def :offer/field-values (s/coll-of :field-value/field-value))
 
 (defmethod event-type :marketplace/update-offer [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:offer/address])))
+    (s/keys :req [:offer/address
+                  :offer/field-values])))
 
 
-(defmethod event-type :marketplace/add-message [_]
+(defmethod event-type :marketplace/add-offer-response-message [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:offer-response/index
+    (s/keys :req [:offer/address
+                  :offer-response/index
                   :message/uuid
                   :message/receiver
                   :message/text]
@@ -71,11 +74,18 @@
 (defmethod event-type :marketplace/add-feedback [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req [:offer-response/index
+    (s/keys :req [:offer/address
+                  :offer-response/index
                   :feedback/uuid
                   :feedback/rating
                   :feedback/text])))
 
 
 (defmethod event-type :marketplace/update-feedback [_]
-  :marketplace/add-feedback)
+  (s/merge
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req [:offer/address
+                  :offer-response/index
+                  :feedback/uuid]
+            :opt [:feedback/rating
+                  :feedback/text])))

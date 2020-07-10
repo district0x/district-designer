@@ -257,7 +257,9 @@ type TokenContract {
     tokenContract_address: ID!
     tokenContract_smartContract: SmartContract!
     tokenContract_fields: [Field]
+    tokenContract_name: String
     tokenContract_symbol: String
+    tokenContract_baseUri: String
     tokenContract_type: String!
     tokenContract_districtOrigin: District!
     tokenContract_metadataFormat: String

@@ -7,20 +7,21 @@
 
 
 (s/def ::token address?)
-(s/def ::token-type #{:token-type/erc-20
-                      :token-type/erc-721
-                      :token-type/erc-1155})
+(s/def ::token-type #{:erc20
+                      :erc721
+                      :erc1155})
 (s/def ::token-ipfs-abi ipfs-hash?)
 (s/def ::token-version integer?)
 (s/def ::token-name string?)
 (s/def ::token-symbol string?)
-(s/def ::base-metadata-uri string?)
+(s/def ::base-uri string?)
 (s/def ::decimal-units nat-int?)
 (s/def ::owner address?)
 
 
 (s/def :token-created/ipfs-data
-  (s/keys :req [:token-contract/metadata-format
+  (s/keys :req [:token-contract/fields
+                :token-contract/metadata-format
                 :token-contract/metadata-format-settings]))
 
 
@@ -34,7 +35,7 @@
                      ::token-version
                      ::token-name
                      ::token-symbol
-                     ::base-metadata-uri
+                     ::base-uri
                      ::decimal-units
                      ::owner
                      :token-created/ipfs-data])))

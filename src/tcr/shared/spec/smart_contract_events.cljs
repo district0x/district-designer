@@ -10,23 +10,23 @@
 (s/def ::tcr address?)
 (s/def ::tcr-target :proxy-factory/proxy-target)
 (s/def ::tcr-version :district-designer.shared.spec.ipfs-events/version)
-(s/def ::voting-token-type #{:voting-token-type/erc-20
-                             :voting-token-type/erc-1155})
+(s/def ::voting-token-type #{:erc20
+                             :erc1155})
 (s/def ::token-address address?)
 (s/def ::token-id nat-int?)
 (s/def ::voting-token (s/keys :req-un [::voting-token-type ::token-address]
                               :opt-un [::token-id]))
-(s/def ::tcr-type #{:tcr-type/challengeable-anytime
-                    :tcr-type/challengeable-once})
-(s/def :reg-entry-representation/category #{:tcr-reg-entry-representation-category/erc-1155
-                                            :tcr-reg-entry-representation-category/erc-721
-                                            :tcr-reg-entry-representation-category/no-token})
+(s/def ::tcr-type #{:challengeable-anytime
+                    :challengeable-once})
+(s/def :reg-entry-representation/category #{:erc1155
+                                            :erc721
+                                            :no-token})
 
 
 (s/def ::reg-entry-representation (s/keys :req-un [:reg-entry-representation/category
                                                    :tokens.shared.spec.smart-contract-events/token-name
                                                    :tokens.shared.spec.smart-contract-events/token-symbol
-                                                   :tokens.shared.spec.smart-contract-events/base-metadata-uri]))
+                                                   :tokens.shared.spec.smart-contract-events/base-uri]))
 
 
 (s/def ::create-reg-entry-user-roles (s/coll-of :user-role/uuid))
@@ -55,14 +55,14 @@
 (s/def ::param-change-entry-parameters ::tcr-parameters)
 
 (s/def :tcr/name string?)
-(s/def :tcr/reg-entry-field-configs (s/coll-of :field-config/field-config))
+(s/def :tcr/reg-entry-fields (s/coll-of :field/field))
 (s/def :tcr/global-enabled? :global/enabled?)
 (s/def :tcr/global-logo :global/logo)
 (s/def :tcr/global-description :global/description)
 
 (s/def :tcr-created/ipfs-data
   (s/keys :req [:tcr/name
-                :tcr/reg-entry-field-configs]
+                :tcr/reg-entry-fields]
           :opt [:tcr/global-enabled?
                 :tcr/global-logo
                 :tcr/global-description]))
@@ -85,16 +85,15 @@
 
 
 (s/def ::reg-entry address?)
-(s/def ::reg-entry-base-contract address?)
 (s/def ::reg-entry-target :proxy-factory/proxy-target)
 (s/def ::creator address?)
 (s/def ::token-amount pos-int?)
 (s/def ::token-meta-ipfs-data ipfs-hash?)
 (s/def ::reg-entry-version :district-designer.shared.spec.ipfs-events/version)
-
+(s/def :reg-entry/field-values (s/coll-of :field-value/field-value))
 
 (s/def :registry-entry-created/ipfs-data
-  (s/keys))
+  (s/keys :req [:reg-entry/field-values]))
 
 
 (defmethod event-type :tcr/registry-entry-created [_]
@@ -113,8 +112,7 @@
 (s/def ::param-change-entry-target :proxy-factory/proxy-target)
 (s/def ::param-change-entry-version :district-designer.shared.spec.ipfs-events/version)
 
-(s/def ::entries-group #{:entries-group/registry-entries
-                         :entries-group/param-change-entries})
+(s/def ::entries-group #{:registry-entries :param-change-entries})
 
 (s/def :param-change-entry/parameter-key string?)
 (s/def :param-change-entry/parameter-value nat-int?)

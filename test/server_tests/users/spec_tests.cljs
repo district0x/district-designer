@@ -24,11 +24,12 @@
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :user-profile/name "abc"
-                 :user-profile/field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                               :field-config/name "abc"
-                                               :field-config/namespace "abc"
-                                               :field-config/type "abc"
-                                               :field-config/settings "{:a 1 :b 2}"}]
+                 :user-profile/district-origin "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :user-profile/fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                        :field/name "abc"
+                                        :field/namespace "abc"
+                                        :field/type "abc"
+                                        :field/settings "{:a 1 :b 2}"}]
                  :user-profile/global-enabled? true
                  :user-profile/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                                             :file/name "abc"}
@@ -41,11 +42,11 @@
                  :timestamp 1590913803
                  :user-profile/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :user-profile/name "abc"
-                 :user-profile/field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                               :field-config/name "abc"
-                                               :field-config/namespace "abc"
-                                               :field-config/type "abc"
-                                               :field-config/settings "{:a 1 :b 2}"}]
+                 :user-profile/fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                        :field/name "abc"
+                                        :field/namespace "abc"
+                                        :field/type "abc"
+                                        :field/settings "{:a 1 :b 2}"}]
                  :user-profile/global-enabled? true
                  :user-profile/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                                             :file/name "abc"}
@@ -72,4 +73,7 @@
                 {:event/type :users/update-user
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :user/field-909659f5-560c-4640-9d67-7a1977da92b5 "abc"})))
+                 :user/field-values [{:field-value/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                      :field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                      :field-value/type :string
+                                      :field-value/value "Some Name"}]})))

@@ -20,6 +20,11 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :token-contract/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :token-contract/fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                          :field/name "abc"
+                                          :field/namespace "abc"
+                                          :field/type "abc"
+                                          :field/settings "{:a 1 :b 2}"}]
                  :token-contract/metadata-format "abc"
                  :token-contract/metadata-format-settings "{:a 1 :b 2}"}))
 
@@ -64,15 +69,20 @@
                  :timestamp 1590913803
                  :district "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :token "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :token-type :token-type/erc-20
+                 :token-type :erc20
                  :token-ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                  :token-version 1
                  :token-name "Some Name"
                  :token-symbol "SOME"
-                 :base-metadata-uri "Some"
+                 :base-uri "Some"
                  :decimal-units 18
                  :owner "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :ipfs-data {:token-contract/metadata-format "abc"
+                 :ipfs-data {:token-contract/fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                      :field/name "abc"
+                                                      :field/namespace "abc"
+                                                      :field/type "abc"
+                                                      :field/settings "{:a 1 :b 2}"}]
+                             :token-contract/metadata-format "abc"
                              :token-contract/metadata-format-settings "{:a 1 :b 2}"}}))
 
   (is (s/valid? :event/event
@@ -80,4 +90,4 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :new-factory "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :token-type :token-type/erc-1155})))
+                 :token-type :erc1155})))

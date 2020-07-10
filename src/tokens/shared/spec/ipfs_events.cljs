@@ -7,6 +7,7 @@
 (s/def :token-contract/address address?)
 (s/def :token-contract/metadata-format string?)
 (s/def :token-contract/metadata-format-settings edn?)
+(s/def :token-contract/fields (s/coll-of :field/field))
 (s/def :token-contract/reported-misconfig-comment string?)
 
 (defmethod event-type :tokens/add-token-factory [_]
@@ -16,7 +17,8 @@
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:token-contract/address]
-            :opt [:token-contract/metadata-format
+            :opt [:token-contract/fields
+                  :token-contract/metadata-format
                   :token-contract/metadata-format-settings])))
 
 

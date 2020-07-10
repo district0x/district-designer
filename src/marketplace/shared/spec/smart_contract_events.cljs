@@ -8,35 +8,29 @@
 
 
 (s/def ::offer-group address?)
-(s/def ::offer-group-base-contract address?)
 (s/def ::offer-group-target :proxy-factory/proxy-target)
-(s/def ::offer-target :proxy-factory/proxy-target)
 (s/def ::offer-group-version pos-int?)
-(s/def ::trade-asset-category #{:trade-asset-category/eth
-                                :trade-asset-category/erc-20
-                                :trade-asset-category/erc-721
-                                :trade-asset-category/erc-1155
-                                :trade-asset-category/deliverable})
+(s/def ::offer-target :proxy-factory/proxy-target)
+(s/def ::token-type #{:eth
+                      :erc20
+                      :erc721
+                      :erc1155
+                      :deliverable})
 (s/def ::token-address address?)
+(s/def ::token-contract (s/keys :req-un [::token-type
+                                         ::token-address]))
 
-(s/def ::trade-asset (s/keys :req-un [::trade-asset-category]
-                             :opt-un [::token-address]))
-(s/def ::trade-assets (s/coll-of ::trade-asset))
+(s/def ::offerable-token-contracts (s/coll-of ::token-contract))
+(s/def ::requestable-token-contracts (s/coll-of ::token-contract))
 
-(s/def ::offerable-assets ::trade-assets)
-(s/def ::requestable-assets ::trade-assets)
-
-(s/def ::offer-type #{:offer-type/dynamic-price
-                      :offer-type/fixed-prices
-                      :offer-type/higest-bid-auction
-                      :offer-type/multi-token-auction
-                      :offer-type/deliverable-auction})
+(s/def ::offer-type #{:dynamic-price
+                      :fixed-prices
+                      :higest-bid-auction
+                      :multi-token-auction
+                      :deliverable-auction})
 
 
 (s/def ::allowed-offer-types (s/coll-of ::offer-type))
-
-(s/def ::create-offer-fee nat-int?)
-(s/def ::offer-response-fee nat-int?)
 
 (s/def ::create-offer-user-roles (s/coll-of :user-role/uuid))
 (s/def ::offer-response-user-roles (s/coll-of :user-role/uuid))
@@ -44,15 +38,11 @@
 (s/def ::permission-user-roles (s/keys :req-un [::create-offer-user-roles
                                                 ::offer-response-user-roles
                                                 ::resolve-dispute-user-roles]))
-(s/def :offer-group/name string?)
-(s/def :offer-group/offer-field-configs (s/coll-of :field-config/field-config))
-(s/def :offer-group/response-field-configs (s/coll-of :field-config/field-config))
-
 
 (s/def :offer-group-created/ipfs-data
   (s/keys :req [:offer-group/name
-                :offer-group/offer-field-configs]
-          :opt [:offer-group/response-field-configs
+                :offer-group/offer-fields]
+          :opt [:offer-group/response-fields
                 :offer-group/global-enabled?
                 :offer-group/global-logo
                 :offer-group/global-description]))
@@ -65,8 +55,8 @@
                      ::offer-group
                      ::offer-group-target
                      ::offer-group-version
-                     ::offerable-assets
-                     ::requestable-assets
+                     ::offerable-token-contracts
+                     ::requestable-token-contracts
                      ::allowed-offer-types
                      ::permission-user-roles
                      :offer-group-created/ipfs-data])))
@@ -74,8 +64,8 @@
 
 (s/def :offer-group-updated/ipfs-data
   (s/keys :opt [:offer-group/name
-                :offer-group/offer-field-configs
-                :offer-group/response-field-configs
+                :offer-group/offer-fields
+                :offer-group/response-fields
                 :offer-group/global-enabled?
                 :offer-group/global-logo
                 :offer-group/global-description]))
@@ -85,8 +75,8 @@
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-group
-                     ::offerable-assets
-                     ::requestable-assets
+                     ::offerable-token-contracts
+                     ::requestable-token-contracts
                      ::allowed-offer-types
                      ::permission-user-roles
                      :offer-group-updated/ipfs-data])))
@@ -96,37 +86,25 @@
 (s/def ::offer-version :district-designer.shared.spec.ipfs-events/version)
 
 (s/def ::token-id nat-int?)
-(s/def ::token-ids (s/coll-of ::token-id))
-
+(s/def ::token (s/keys :req-un [::token-contract
+                                ::token-id]))
 (s/def ::value nat-int?)
-(s/def ::values (s/coll-of ::value))
-(s/def ::eth-value (s/keys :req-un [::value]))
-(s/def ::erc20-value (s/keys :req-un [::value]))
-(s/def ::erc721-value (s/keys :req-un [::token-id]))
-(s/def ::erc1155-value (s/keys :req-un [::token-ids ::values]))
-(s/def ::trade-value (s/keys :req-un [::trade-asset]
-                             :opt-un [::eth-value
-                                      ::erc20-value
-                                      ::erc721-value
-                                      ::erc1155-value]))
-(s/def ::offered-value ::trade-value)
-(s/def ::token-type #{:token-type/eth
-                      :token-type/erc-20
-                      :token-type/erc-721
-                      :token-type/erc-1155})
+(s/def ::token-value (s/keys :req-un [::token
+                                      ::value]))
+(s/def ::token-values (s/coll-of ::token-value))
+
+(s/def ::offered-values ::token-values)
 
 (s/def ::start-price ::value)
 (s/def ::end-price ::value)
 (s/def ::duration nat-int?)
 
-(s/def ::dynamic-price-offer-request (s/keys :req-un [::token-type
-                                                      ::token-address
-                                                      ::token-id
+(s/def ::dynamic-price-offer-request (s/keys :req-un [::token
                                                       ::start-price
                                                       ::end-price
                                                       ::duration]))
 
-(s/def ::prices (s/coll-of ::trade-value))
+(s/def ::prices (s/coll-of (s/coll-of ::token-value)))
 
 (s/def ::fixed-price-offer-request (s/keys ::req-un [::prices]))
 
@@ -135,22 +113,17 @@
 (s/def ::extension-trigger-duration ::duration)
 (s/def ::extension-duration ::duration)
 
-(s/def ::highest-bid-auction-offer-request (s/keys :req-un [::token-type
-                                                            ::token-address
-                                                            ::token-id
+(s/def ::highest-bid-auction-offer-request (s/keys :req-un [::token
                                                             ::min-price
                                                             ::min-bid-step
                                                             ::duration
                                                             ::extension-trigger-duration
                                                             ::extension-duration]))
 
-(s/def ::token (s/keys :req-un [::token-type
-                                ::token-address]))
-
-(s/def ::accepted-tokens (s/coll-of :token))
+(s/def ::accepted-token-contracts (s/coll-of ::token-contract))
 
 
-(s/def ::multi-token-auction-offer-request (s/keys :req-un [::accepted-tokens
+(s/def ::multi-token-auction-offer-request (s/keys :req-un [::accepted-token-contracts
                                                             ::duration
                                                             ::extension-trigger-duration
                                                             ::extension-duration]))
@@ -161,13 +134,12 @@
                                         ::highest-bid-auction-offer-request
                                         ::multi-token-auction-offer-request]))
 
-(s/def ::requested-values (s/coll-of ::trade-value))
-
 (s/def ::allowed-respondents (s/coll-of address?))
-(s/def ::available-supply ::trade-value)
+(s/def ::available-values ::token-values)
+
 
 (s/def :offer-created/ipfs-data
-  (s/keys))
+  (s/keys :req [:offer/field-values]))
 
 
 (defmethod event-type :marketplace/offer-created [_]
@@ -178,22 +150,24 @@
                      ::offer-version
                      ::offer-type
                      ::offerer
-                     ::offered-value
+                     ::offered-values
                      ::offer-request
-                     ::available-supply
+                     ::available-values
                      ::allowed-respondents
                      :offer-created/ipfs-data])))
 
 
 (s/def ::respondent address?)
 (s/def ::offer-response-index nat-int?)
-(s/def ::response-value ::trade-value)
-(s/def ::offerer-received-value ::trade-value)
-(s/def ::respondent-received-value ::trade-value)
-
+(s/def ::response-values ::token-values)
+(s/def ::offerer-received-values ::token-values)
+(s/def ::respondent-received-values ::token-values)
+(s/def :offer-response/field-values :offer/field-values)
+(s/def :offer-response/messages :users.shared.spec.ipfs-events/messages)
 
 (s/def :offer-response-created/ipfs-data
-  (s/keys :opt-un [:users.shared.spec.ipfs-events/messages]))
+  (s/keys :opt [:offer-response/field-values
+                :offer-response/messages]))
 
 
 (defmethod event-type :marketplace/offer-response-created [_]
@@ -202,15 +176,15 @@
     (s/keys :req-un [::offer
                      ::respondent
                      ::offer-response-index
-                     ::response-value
-                     ::offerer-received-value
-                     ::respondent-received-value
-                     ::available-supply
+                     ::response-values
+                     ::offerer-received-values
+                     ::respondent-received-values
+                     ::available-values
                      :offer-response-created/ipfs-data])))
 
 
 (s/def :offer-request-updated/ipfs-data
-  (s/keys))
+  (s/keys :opt [:offer/field-values]))
 
 
 (defmethod event-type :marketplace/offer-request-updated [_]
@@ -222,7 +196,7 @@
 
 
 (s/def :offer-response-accepted/ipfs-data
-  (s/keys :opt-un [:users.shared.spec.ipfs-events/messages]))
+  (s/keys :opt [:offer-response/messages]))
 
 
 (defmethod event-type :marketplace/offer-response-accepted [_]
@@ -230,30 +204,22 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
                      ::offer-response-index
-                     ::offerer-received-value
-                     ::respondent-received-value
-                     ::available-supply
+                     ::offerer-received-values
+                     ::respondent-received-values
+                     ::available-values
                      :offer-response-accepted/ipfs-data])))
 
-
-(defmethod event-type :marketplace/supply-withdrawn [_]
-  (s/merge
-    :district-designer.shared.spec.ipfs-events/event-base
-    (s/keys :req-un [::offer])))
-
-
 (s/def :deliverable-received/ipfs-data
-  (s/keys :opt-un [:users.shared.spec.ipfs-events/messages]))
-
+  (s/keys :opt [:offer-response/messages]))
 
 (defmethod event-type :marketplace/deliverable-received [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
                      ::offer-response-index
-                     ::offerer-received-value
-                     ::respondent-received-value
-                     ::available-supply
+                     ::offerer-received-values
+                     ::respondent-received-values
+                     ::available-values
                      :deliverable-received/ipfs-data])))
 
 
@@ -266,7 +232,7 @@
 
 (s/def ::raised-by address?)
 (s/def :dispute-raised/ipfs-data
-  (s/keys :opt-un [:users.shared.spec.ipfs-events/messages]))
+  (s/keys :opt [:offer-response/messages]))
 
 (defmethod event-type :marketplace/dispute-raised [_]
   (s/merge
@@ -277,42 +243,47 @@
                      :dispute-raised/ipfs-data])))
 
 
-(s/def ::value-for-offerer ::trade-value)
-(s/def ::value-for-respondent ::trade-value)
 (s/def ::resolved-by address?)
 (s/def :dispute-resolved/ipfs-data
-  (s/keys :opt-un [:users.shared.spec.ipfs-events/messages]))
+  (s/keys :opt [:offer-response/messages]))
 
 (defmethod event-type :marketplace/dispute-resolved [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
                      ::offer-response-index
-                     ::offerer-received-value
-                     ::respondent-received-value
-                     ::available-supply
+                     ::offerer-received-values
+                     ::respondent-received-values
+                     ::available-values
                      ::resolved-by
                      :dispute-resolved/ipfs-data])))
 
+(s/def ::withdrawn-values ::available-values)
+
+(defmethod event-type :marketplace/available-values-withdrawn [_]
+  (s/merge
+    :district-designer.shared.spec.ipfs-events/event-base
+    (s/keys :req-un [::offer
+                     ::withdrawn-values])))
 
 (s/def ::sponsor address?)
-(s/def ::sponsorship ::trade-value)
+(s/def ::sponsored-values ::token-values)
 
 (defmethod event-type :marketplace/sponsorship-added [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
                      ::sponsor
-                     ::sponsorship])))
-
-(s/def ::withdrawal ::trade-value)
+                     ::sponsored-values
+                     ::available-values])))
 
 (defmethod event-type :marketplace/sponsorship-withdrawn [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer
                      ::sponsor
-                     ::withdrawal])))
+                     ::withdrawn-values
+                     ::available-values])))
 
 (s/def ::offer-group-target :proxy-factory/proxy-target)
 (s/def ::fixed-prices-offer-target :proxy-factory/proxy-target)

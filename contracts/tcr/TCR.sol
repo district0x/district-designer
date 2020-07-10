@@ -76,7 +76,7 @@ contract TCR is UpdateTargetAndCallFallBack, ApproveAndCallFallBack, ERC1155Rece
     RegistryEntryRepresentationCategory category;
     string tokenName;
     string tokenSymbol;
-    string baseMetadataUri;
+    string baseUri;
   }
 
   struct PermissionUserRoles {

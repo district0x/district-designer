@@ -6,10 +6,10 @@
 
 (s/def :tcr/address address?)
 (s/def :tcr/name string?)
-(s/def :tcr/reg-entry-field-configs (s/coll-of :field-config/field-config))
-(s/def :tcr/global-enabled? boolean?)
+(s/def :tcr/reg-entry-fields (s/coll-of :field/field))
+(s/def :tcr/global-enabled? :global/enabled?)
 (s/def :tcr/global-logo :file/file)
-(s/def :tcr/global-description string?)
+(s/def :tcr/global-description :global/description)
 
 (defmethod event-type :tcr/add-tcr-factory [_]
   :district-designer/add-smart-contract)
@@ -19,7 +19,7 @@
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req [:tcr/address]
             :opt [:tcr/name
-                  :tcr/reg-entry-field-configs
+                  :tcr/reg-entry-fields
                   :tcr/global-enabled?
                   :tcr/global-logo
                   :tcr/global-description])))

@@ -4,12 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[hodur/datomic-schema "0.1.0"]
-                 [hodur/engine "0.1.7"]
-                 [hodur/graphviz-schema "0.1.1"]
-                 [hodur/spec-schema "0.1.5"]
-                 [hodur/visualizer-schema "0.1.1"]
-                 [org.clojure/clojurescript "1.10.439"]]
+  :dependencies [[org.clojure/clojurescript "1.10.439"]]
 
   :source-paths ["src" "test" "resources"]
 

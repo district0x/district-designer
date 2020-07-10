@@ -13,11 +13,11 @@
                  :timestamp 1590913803
                  :tcr/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :tcr/name "abc"
-                 :tcr/reg-entry-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                                :field-config/name "abc"
-                                                :field-config/namespace "abc"
-                                                :field-config/type "abc"
-                                                :field-config/settings "{:a 1 :b 2}"}]
+                 :tcr/reg-entry-fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                         :field/name "abc"
+                                         :field/namespace "abc"
+                                         :field/type "abc"
+                                         :field/settings "{:a 1 :b 2}"}]
                  :tcr/global-enabled? true
                  :tcr/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
                                    :file/name "abc"}
@@ -41,14 +41,14 @@
                  :tcr-target {:contract-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                               :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
                  :tcr-version 1
-                 :voting-token {:voting-token-type :voting-token-type/erc-1155
+                 :voting-token {:voting-token-type :erc1155
                                 :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                                 :token-id 15}
-                 :tcr-type :tcr-type/challengeable-anytime
-                 :reg-entry-representation {:category :tcr-reg-entry-representation-category/erc-721
+                 :tcr-type :challengeable-anytime
+                 :reg-entry-representation {:category :erc721
                                             :token-name "Name"
                                             :token-symbol "Symbol"
-                                            :base-metadata-uri "uri"}
+                                            :base-uri "uri"}
                  :permission-user-roles {:create-reg-entry-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :create-param-change-entry-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}
                  :reg-entry-parameters {:challenge-dispensation 1
@@ -65,11 +65,11 @@
                                                  :vote-reveal-period-duration 1}
                  :ipfs-data {:event/type :tcr/tcr-created
                              :tcr/name "Some Name"
-                             :tcr/reg-entry-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                                            :field-config/name "Some Field"
-                                                            :field-config/namespace "Marketplace"
-                                                            :field-config/type "Text"
-                                                            :field-config/settings "{:a 1 :b 2}"}]
+                             :tcr/reg-entry-fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                     :field/name "Some Field"
+                                                     :field/namespace "Marketplace"
+                                                     :field/type "Text"
+                                                     :field/settings "{:a 1 :b 2}"}]
 
                              :tcr/global-enabled? true
                              :tcr/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
@@ -88,7 +88,10 @@
                  :creator "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :token-amount 1
                  :token-meta-ipfs-data "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
-                 :ipfs-data {:reg-entry/field-909659f5-560c-4640-9d67-7a1977da92b5 "Some"}}))
+                 :ipfs-data {:reg-entry/field-values [{:field-value/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                       :field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                       :field-value/type :string
+                                                       :field-value/value "Some Name"}]}}))
 
 
   (is (s/valid? :event/event
@@ -101,7 +104,7 @@
                                              :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
                  :param-change-entry-version 1
                  :creator "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/registry-entries
+                 :entries-group :registry-entries
                  :parameter-key "deposit"
                  :parameter-value 10
                  :original-parameter-value 1
@@ -113,7 +116,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/registry-entries
+                 :entries-group :registry-entries
                  :challenge-index 0
                  :challenger "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :commit-period-end 1
@@ -142,7 +145,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/param-change-entries
+                 :entries-group :param-change-entries
                  :challenger "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :amount 1}))
 
@@ -152,7 +155,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/param-change-entries
+                 :entries-group :param-change-entries
                  :creator "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :amount 1}))
 
@@ -162,7 +165,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/param-change-entries
+                 :entries-group :param-change-entries
                  :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :amount 1}))
 
@@ -172,7 +175,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/param-change-entries
+                 :entries-group :param-change-entries
                  :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :amount 1}))
 
@@ -182,7 +185,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/param-change-entries
+                 :entries-group :param-change-entries
                  :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :vote-option :tcr-vote-option/include
                  :amount 1}))
@@ -193,7 +196,7 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :entry "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :entries-group :entries-group/param-change-entries
+                 :entries-group :param-change-entries
                  :voter "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :amount 1}))
 

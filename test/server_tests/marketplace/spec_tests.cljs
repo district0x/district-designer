@@ -12,17 +12,17 @@
                  :timestamp 1590913803
                  :offer-group/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-group/name "abc"
-                 :offer-group/offer-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                                    :field-config/name "abc"
-                                                    :field-config/namespace "abc"
-                                                    :field-config/type "abc"
-                                                    :field-config/settings "{:a 1 :b 2}"}]
+                 :offer-group/offer-fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                             :field/name "abc"
+                                             :field/namespace "abc"
+                                             :field/type "abc"
+                                             :field/settings "{:a 1 :b 2}"}]
 
-                 :offer-group/response-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                                       :field-config/name "abc"
-                                                       :field-config/namespace "abc"
-                                                       :field-config/type "abc"
-                                                       :field-config/settings "{:a 1 :b 2}"}]
+                 :offer-group/response-fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                :field/name "abc"
+                                                :field/namespace "abc"
+                                                :field/type "abc"
+                                                :field/settings "{:a 1 :b 2}"}]
 
                  :offer-group/global-enabled? true
                  :offer-group/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"
@@ -47,12 +47,17 @@
                 {:event/type :marketplace/update-offer
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :offer/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}))
+                 :offer/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :offer/field-values [{:field-value/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                       :field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                       :field-value/type :string
+                                       :field-value/value "Some Name"}]}))
 
   (is (s/valid? :event/event
-                {:event/type :marketplace/add-message
+                {:event/type :marketplace/add-offer-response-message
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
+                 :offer/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-response/index 1
                  :message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
@@ -64,6 +69,7 @@
                 {:event/type :marketplace/add-feedback
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
+                 :offer/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-response/index 0
                  :feedback/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
                  :feedback/rating 4.5
@@ -80,24 +86,25 @@
                  :offer-group-target {:contract-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                                       :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
                  :offer-group-version 1
-                 :offerable-assets [{:trade-asset-category :trade-asset-category/erc-20
-                                     :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}]
-                 :requestable-assets [{:trade-asset-category :trade-asset-category/deliverable}]
-                 :allowed-offer-types [:offer-type/deliverable-auction]
+                 :offerable-token-contracts [{:token-type :erc20
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}]
+                 :requestable-token-contracts [{:token-type :deliverable
+                                                :token-address "0xABCDabcdABcDabcDaBCDAbcdABcdAbCdABcDABCd"}]
+                 :allowed-offer-types [:deliverable-auction]
                  :permission-user-roles {:create-offer-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :offer-response-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :resolve-dispute-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}
                  :ipfs-data {:offer-group/name "Some Name"
-                             :offer-group/offer-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                                                :field-config/name "Some Field"
-                                                                :field-config/namespace "Marketplace"
-                                                                :field-config/type "Text"
-                                                                :field-config/settings "{:a 1 :b 2}"}]
-                             :offer-group/response-field-configs [{:field-config/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                                                   :field-config/name "Some Field"
-                                                                   :field-config/namespace "Marketplace"
-                                                                   :field-config/type "Text"
-                                                                   :field-config/settings "{:a 1 :b 2}"}]
+                             :offer-group/offer-fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                         :field/name "Some Field"
+                                                         :field/namespace "Marketplace"
+                                                         :field/type "Text"
+                                                         :field/settings "{:a 1 :b 2}"}]
+                             :offer-group/response-fields [{:field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                            :field/name "Some Field"
+                                                            :field/namespace "Marketplace"
+                                                            :field/type "Text"
+                                                            :field/settings "{:a 1 :b 2}"}]
                              :offer-group/global-enabled? true
                              :offer-group/global-logo {:file/hash "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
                              :offer-group/global-description "Some"}}))
@@ -108,10 +115,11 @@
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :offer-group "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :offerable-assets [{:trade-asset-category :trade-asset-category/erc-20
-                                     :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}]
-                 :requestable-assets [{:trade-asset-category :trade-asset-category/deliverable}]
-                 :allowed-offer-types [:offer-type/deliverable-auction]
+                 :offerable-token-contracts [{:token-type :erc20
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}]
+                 :requestable-token-contracts [{:token-type :deliverable
+                                                :token-address "0xABCDabcdABcDabcDaBCDAbcdABcdAbCdABcDABCd"}]
+                 :allowed-offer-types [:deliverable-auction]
                  :permission-user-roles {:create-offer-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :offer-response-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]
                                          :resolve-dispute-user-roles [#uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"]}
@@ -127,25 +135,33 @@
                  :offer-target {:contract-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                                 :ipfs-abi "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ"}
                  :offer-version 1
-                 :offer-type :offer-type/higest-bid-auction
+                 :offer-type :higest-bid-auction
                  :offerer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :offered-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-20
-                                               :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                 :erc20-value {:value 10}}
+                 :offered-values [{:token {:token-contract
+                                           {:token-type :erc20
+                                            :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                           :token-id 0}
+                                   :value 10}]
                  :offer-request {:highest-bid-auction-offer-request
-                                 {:token-type :token-type/erc-20
-                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                                  :token-id 0
+                                 {:token {:token-contract
+                                          {:token-type :erc20
+                                           :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                          :token-id 0}
                                   :min-price 10
                                   :min-bid-step 2
                                   :duration 100
                                   :extension-trigger-duration 5
                                   :extension-duration 10}}
-                 :available-supply {:trade-asset {:trade-asset-category :trade-asset-category/erc-20
-                                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                    :erc20-value {:value 10}}
+                 :available-values [{:token {:token-contract
+                                             {:token-type :erc20
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 0}
+                                     :value 10}]
                  :allowed-respondents ["0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"]
-                 :ipfs-data {:offer/field-909659f5-560c-4640-9d67-7a1977da92b5 "Some"}}))
+                 :ipfs-data {:offer/field-values [{:field-value/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                   :field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                   :field-value/type :string
+                                                   :field-value/value "Some Name"}]}}))
 
 
   (is (s/valid? :event/event
@@ -156,23 +172,35 @@
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :respondent "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-response-index 0
-                 :response-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-1155
-                                                :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                  :erc1155-value {:token-ids [1]
-                                                  :values [10]}}
-                 :offerer-received-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-1155
+                 :response-values [{:token {:token-contract
+                                            {:token-type :erc1155
+                                             :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                            :token-id 1}
+                                    :value 1}
+                                   {:token {:token-contract
+                                            {:token-type :erc1155
+                                             :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                            :token-id 2}
+                                    :value 4}]
+                 :offerer-received-values [{:token {:token-contract
+                                                    {:token-type :erc20
+                                                     :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                                    :token-id 0}
+                                            :value 10}]
+                 :respondent-received-values [{:token {:token-contract
+                                                       {:token-type :erc20
                                                         :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                          :erc1155-value {:token-ids [1]
-                                                          :values [10]}}
-                 :respondent-received-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-1155
-                                                           :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                             :erc1155-value {:token-ids [1]
-                                                             :values [10]}}
-                 :available-supply {:trade-asset {:trade-asset-category :trade-asset-category/erc-1155
-                                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                    :erc1155-value {:token-ids [1]
-                                                    :values [10]}}
-                 :ipfs-data {:offer-response/field-909659f5-560c-4640-9d67-7a1977da92b5 "Some"}}))
+                                                       :token-id 0}
+                                               :value 10}]
+                 :available-values [{:token {:token-contract
+                                             {:token-type :erc20
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 0}
+                                     :value 10}]
+                 :ipfs-data {:offer-response/field-values [{:field-value/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                            :field/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                                                            :field-value/type :string
+                                                            :field-value/value "Some Name"}]}}))
 
 
   (is (s/valid? :event/event
@@ -181,25 +209,37 @@
                  :timestamp 1590913803
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-response-index 0
-                 :offerer-received-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
+                 :offerer-received-values [{:token {:token-contract
+                                                    {:token-type :erc721
+                                                     :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                                    :token-id 9}
+                                            :value 1}]
+                 :respondent-received-values [{:token {:token-contract
+                                                       {:token-type :erc721
                                                         :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                          :erc721-value {:token-id 1}}
-                 :respondent-received-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                                           :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                             :erc721-value {:token-id 1}}
-                 :available-supply {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                    :erc721-value {:token-id 1}}
-                 :ipfs-data {:messages [{:message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                         :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                                         :message/text "abc"}]}}))
+                                                       :token-id 9}
+                                               :value 1}]
+                 :available-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]
+                 :ipfs-data {:offer-response/messages
+                             [{:message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                               :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                               :message/text "abc"}]}}))
 
 
   (is (s/valid? :event/event
-                {:event/type :marketplace/supply-withdrawn
+                {:event/type :marketplace/available-values-withdrawn
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
-                 :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}))
+                 :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                 :withdrawn-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]}))
 
 
   (is (s/valid? :event/event
@@ -217,9 +257,10 @@
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-response-index 0
                  :raised-by "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :ipfs-data {:messages [{:message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                         :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                                         :message/text "abc"}]}}))
+                 :ipfs-data {:offer-response/messages
+                             [{:message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                               :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                               :message/text "abc"}]}}))
 
 
   (is (s/valid? :event/event
@@ -228,19 +269,26 @@
                  :timestamp 1590913803
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :offer-response-index 0
-                 :respondent-received-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                                           :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                             :erc721-value {:token-id 1}}
-                 :offerer-received-value {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
+                 :respondent-received-values [{:token {:token-contract
+                                                       {:token-type :erc721
                                                         :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                          :erc721-value {:token-id 2}}
-                 :available-supply {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                    :erc721-value {:token-id 1}}
+                                                       :token-id 9}
+                                               :value 1}]
+                 :offerer-received-values [{:token {:token-contract
+                                                    {:token-type :erc721
+                                                     :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                                    :token-id 9}
+                                            :value 1}]
+                 :available-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]
                  :resolved-by "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :ipfs-data {:messages [{:message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
-                                         :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                                         :message/text "abc"}]}}))
+                 :ipfs-data {:offer-response/messages
+                             [{:message/uuid #uuid "e151c39c-9b81-4efd-a9ac-860956e008a8"
+                               :message/receiver "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
+                               :message/text "abc"}]}}))
 
 
   (is (s/valid? :event/event
@@ -249,12 +297,16 @@
                  :timestamp 1590913803
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :sponsor "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :sponsorship {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                             :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                               :erc721-value {:token-id 1}}
-                 :available-supply {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                    :erc721-value {:token-id 1}}}))
+                 :sponsored-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]
+                 :available-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]}))
 
 
   (is (s/valid? :event/event
@@ -263,12 +315,16 @@
                  :timestamp 1590913803
                  :offer "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :sponsor "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
-                 :withdrawal {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                            :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                              :erc721-value {:token-id 1}}
-                 :available-supply {:trade-asset {:trade-asset-category :trade-asset-category/erc-721
-                                                  :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
-                                    :erc721-value {:token-id 1}}}))
+                 :withdrawn-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]
+                 :available-values [{:token {:token-contract
+                                             {:token-type :erc721
+                                              :token-address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"}
+                                             :token-id 9}
+                                     :value 1}]}))
 
 
   (is (s/valid? :event/event

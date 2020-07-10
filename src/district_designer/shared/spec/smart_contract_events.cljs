@@ -14,19 +14,19 @@
 (s/def ::permissions (s/coll-of ::permission))
 (s/def ::addresses (s/coll-of ::address))
 (s/def ::treasury ::address)
-(s/def ::user-role (s/keys :req-un [::user-role-id ::addresses]))
+(s/def ::is-removed boolean?)
+(s/def ::user-role (s/keys :req-un [::user-role-id ::addresses ::is-removed]))
 (s/def ::user-roles (s/coll-of ::user-role))
 (s/def ::admin-user-role-id ::user-role-id)
 
-(s/def :wizard/id string?)
-(s/def ::wizard-base (s/keys :req [:wizard/id]))
+(s/def ::wizard-base (s/keys :req [:wizard/code]))
 
 (s/def :user-role/uuid uuid?)
 (s/def :user-role/name string?)
 (s/def ::user-role-names (s/coll-of (s/keys :req [:user-role/uuid :user-role/name])))
 
 
-(s/def :district-initialized/ipfs-data
+(s/def :district-created/ipfs-data
   (s/merge
     ::wizard-base
     (s/keys :req-un [::user-role-names])))
@@ -40,7 +40,7 @@
                      ::user-roles
                      ::admin-user-role-id
                      ::treasury
-                     :district-initialized/ipfs-data])))
+                     :district-created/ipfs-data])))
 
 
 (defmethod event-type :district-designer/permissions-updated [_]
@@ -68,7 +68,7 @@
                      ::treasury])))
 
 
-(s/def ::module-id :module/id)
+(s/def ::module-id :module/code)
 (s/def ::is-emergency boolean?)
 
 

@@ -352,7 +352,9 @@ MultiTags -- Tags : fk(:tag-group/uuid, :tag/name)
 class TokenContracts << (T, #EF476F) Table >> {
   :token-contract/address                           - address
   :token-contract/fields                            - uuid
+  :token-contract/name                              - varchar
   :token-contract/symbol                            - varchar
+  :token-contract/base-uri                          - varchar
   :token-contract/type                              - varchar, indexed not null
   :token-contract/district-origin                   - address, not null
   :token-contract/metadata-format                   - varchar
