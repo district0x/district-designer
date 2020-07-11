@@ -1132,7 +1132,7 @@
 <text text-anchor="start" x="11824.9891" y="-770.9" font-family="Times,serif" font-size="14.00" fill="#000000">category: RegistryEntryRepresentationCategory</text>
 <text text-anchor="start" x="11824.9891" y="-754.1" font-family="Times,serif" font-size="14.00" fill="#000000">tokenName: string</text>
 <text text-anchor="start" x="11824.9891" y="-737.3" font-family="Times,serif" font-size="14.00" fill="#000000">tokenSymbol: string</text>
-<text text-anchor="start" x="11824.9891" y="-720.5" font-family="Times,serif" font-size="14.00" fill="#000000">baseMetadataUri: string</text>
+<text text-anchor="start" x="11824.9891" y="-720.5" font-family="Times,serif" font-size="14.00" fill="#000000">baseUri: string</text>
 </g>
 <!-- 14struct2&#45;&gt;14 -->
 <g id="edge17" class="edge">
