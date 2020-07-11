@@ -36,9 +36,11 @@
 
 
   :cljsbuild {:builds [{:id "dev-server"
-                        :source-paths ["src/district_designer/server" "src/district_designer/shared"]
-                        :figwheel {:on-jsload "district-designer.server.system.dev/on-jsload"}
-                        :compiler {:main "district-designer.server.system.dev"
+                        :source-paths ["src/district_designer/system"
+                                       "src/district_designer/server"
+                                       "src/district_designer/shared"]
+                        :figwheel {:on-jsload "district-designer.system.dev/on-jsload"}
+                        :compiler {:main "district-designer.system.dev"
                                    :output-to "dev-server/district_designer.js"
                                    :output-dir "dev-server"
                                    :target :nodejs

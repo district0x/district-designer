@@ -103,8 +103,6 @@
                                               :field-value/value]))
 
 
-;; IPFS Events
-
 (defmethod event-type :district-designer/events-batch [_]
   (s/merge
     ::event-base
@@ -271,7 +269,7 @@
     (s/keys :req [:tag-group/uuid :tag-group/tags])))
 
 
-(defmethod event-type :district/update-theme [_]
+(defmethod event-type :district-designer/district-update-theme [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/address
@@ -282,18 +280,18 @@
                   :district-theme/active?])))
 
 
-(defmethod event-type :district/activate-module [_]
+(defmethod event-type :district-designer/district-activate-module [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/address :module/code])))
 
-(defmethod event-type :district/deactivate-module [_]
+(defmethod event-type :district-designer/district-deactivate-module [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/address :module/code])))
 
 
-(defmethod event-type :district/add-ui-component [_]
+(defmethod event-type :district-designer/district-add-ui-component [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/address
@@ -305,7 +303,7 @@
                   :ui-component/files])))
 
 
-(defmethod event-type :district/update-ui-component [_]
+(defmethod event-type :district-designer/district-update-ui-component [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/address
@@ -317,7 +315,7 @@
                   :ui-component/files])))
 
 
-(defmethod event-type :district/remove-ui-component [_]
+(defmethod event-type :district-designer/district-remove-ui-component [_]
   (s/merge
     ::event-base
     (s/keys :req [:district/address

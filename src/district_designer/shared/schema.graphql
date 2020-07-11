@@ -199,7 +199,7 @@ enum SearchFilterComparedValueType {
     boolean
     date
     tags
-    fieldValueUuid
+    field
 }
 
 input SearchFilterComparedValue {
@@ -210,7 +210,7 @@ input SearchFilterComparedValue {
     comparedValue_boolean: Boolean
     comparedValue_date: Date
     comparedValue_tags: [String]
-    comparedValue_fieldValueUuid: String
+    comparedValue_fieldUuid: String
 }
 
 input SearchFilter {

@@ -1,1 +1,0 @@
-(ns marketplace.server.db-schema)

@@ -141,7 +141,7 @@
                  :tag-group/tags ["abc" "def"]}))
 
   (is (s/valid? :event/event
-                {:event/type :district/update-theme
+                {:event/type :district-designer/district-update-theme
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
@@ -152,21 +152,21 @@
                  :district-theme/active? true}))
 
   (is (s/valid? :event/event
-                {:event/type :district/activate-module
+                {:event/type :district-designer/district-activate-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :module/code "marketplace"}))
 
   (is (s/valid? :event/event
-                {:event/type :district/deactivate-module
+                {:event/type :district-designer/district-deactivate-module
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :module/code "marketplace"}))
 
   (is (s/valid? :event/event
-                {:event/type :district/add-ui-component
+                {:event/type :district-designer/district-add-ui-component
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
@@ -179,7 +179,7 @@
                                        :file/name "abc"}]}))
 
   (is (s/valid? :event/event
-                {:event/type :district/update-ui-component
+                {:event/type :district-designer/district-update-ui-component
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
@@ -192,7 +192,7 @@
                                        :file/name "abc"}]}))
 
   (is (s/valid? :event/event
-                {:event/type :district/remove-ui-component
+                {:event/type :district-designer/district-remove-ui-component
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :district/address "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"

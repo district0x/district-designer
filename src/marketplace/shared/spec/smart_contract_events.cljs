@@ -304,7 +304,7 @@
                      ::deliverable-auction-offer-target])))
 
 
-(defmethod event-type :marketplace/offer-group-base-contracts-updated [_]
+(defmethod event-type :marketplace/offer-group-proxy-targets-updated [_]
   (s/merge
     :district-designer.shared.spec.ipfs-events/event-base
     (s/keys :req-un [::offer-group

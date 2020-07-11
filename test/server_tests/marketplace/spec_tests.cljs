@@ -346,7 +346,7 @@
 
 
   (is (s/valid? :event/event
-                {:event/type :marketplace/offer-group-base-contracts-updated
+                {:event/type :marketplace/offer-group-proxy-targets-updated
                  :sender "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
                  :timestamp 1590913803
                  :offer-group "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8"
